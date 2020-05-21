@@ -1,0 +1,206 @@
+{
+  "project_info": {
+    "project_number": "740167288482",
+    "firebase_url": "https://glassy-imprint-168305.firebaseio.com",
+    "project_id": "glassy-imprint-168305",
+    "storage_bucket": "glassy-imprint-168305.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740167288482:android:614cc09284acecf5",
+        "android_client_info": {
+          "package_name": "co.swasth.actcoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740167288482-vti64crm5ddtr0220ql29k44mhmnmrv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKkxVahepN_7oFBnKrpZT51NkR4iJbJtM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740167288482:android:af8edef205172713",
+        "android_client_info": {
+          "package_name": "co.swasth.cbtcompanion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740167288482-vti64crm5ddtr0220ql29k44mhmnmrv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKkxVahepN_7oFBnKrpZT51NkR4iJbJtM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740167288482:android:3eb227f3f2055362",
+        "android_client_info": {
+          "package_name": "co.swasth.dbtcoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740167288482-vti64crm5ddtr0220ql29k44mhmnmrv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKkxVahepN_7oFBnKrpZT51NkR4iJbJtM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740167288482:android:b56a583d639c7cd9",
+        "android_client_info": {
+          "package_name": "co.swasth.dbtcompanion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740167288482-6gf1o8qq1rerk3i0ns1gnpdr1666c7jb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.swasth.dbtcompanion",
+            "certificate_hash": "13872f86fc77607bc9ad48c8e588bdb43a59fade"
+          }
+        },
+        {
+          "client_id": "740167288482-vti64crm5ddtr0220ql29k44mhmnmrv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKkxVahepN_7oFBnKrpZT51NkR4iJbJtM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740167288482-9gqghsijpetqnqgjdvqmkcennrhecq13.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "740167288482-l0serjq58badqar2veisl81jvbn1tr64.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.swasth.dbt-coach"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740167288482:android:128d30f6acd1de9e",
+        "android_client_info": {
+          "package_name": "co.swasth.dbtdaily"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740167288482-js76an6d27rv58ivsrs88s6j3g4as2oh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.swasth.dbtdaily",
+            "certificate_hash": "1c32bd56abb5b0561a0cc827ec1e3ef4a883f922"
+          }
+        },
+        {
+          "client_id": "740167288482-vti64crm5ddtr0220ql29k44mhmnmrv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKkxVahepN_7oFBnKrpZT51NkR4iJbJtM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740167288482-9gqghsijpetqnqgjdvqmkcennrhecq13.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "740167288482-l0serjq58badqar2veisl81jvbn1tr64.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.swasth.dbt-coach"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

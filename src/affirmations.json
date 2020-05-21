@@ -1,0 +1,486 @@
+{
+  "Happiness": {
+    "colors": ["#ff9a9e", "#fad0c4"],
+    "content": [
+      {
+        "Text": "I feel joy and contentment at this moment right now.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I awaken in the morning feeling happy and enthusiastic about life.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I can tap into a wellspring of inner happiness anytime I wish.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "By allowing myself to be happy, I inspire others to be happy as well.",
+        "Audio": ""
+      },
+      {
+        "Text": "I have fun with all of my endeavors, even the most mundane.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I look at the world around me and can't help but smile and feel joy.",
+        "Audio": ""
+      },
+      {
+        "Text": "I find joy and pleasure in the most simple things in life.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I have an active sense of humor and love to share laughter with others.",
+        "Audio": ""
+      },
+      {
+        "Text": "My heart is overflowing with joy.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I rest in happiness when I go to sleep, knowing all is well in my world.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Love": {
+    "colors": ["#ff758c", "#ff7eb3"],
+    "content": [
+      {
+        "Text":
+          "My partner and I share a deep and powerful love for each other.",
+        "Audio": ""
+      },
+      {
+        "Text": "I respect and admire my partner and see the best in him/her.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I love my partner exactly how he/she is and enjoy his/her unique qualities.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "My partner and I share emotional intimacy daily through talking and touch.",
+        "Audio": ""
+      },
+      {
+        "Text": "I have healthy boundaries with my partner.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "My partner and I have fun together and find new ways to enjoy our time together.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "My partner and I communicate openly and resolve conflict peacefully and respectfully.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am able to be fully myself and completely authentic in my love relationship.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "�I communicate my desires and needs clearly and confidently with my partner.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I want the best for my partner and easily go out of my way to support him/her.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Success": {
+    "colors": ["#c79081", "#dfa579"],
+    "content": [
+      {
+        "Text":
+          "I expect to be successful in all of my endeavors. Success is my natural state.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I easily find solutions to challenges and roadblocks and move past them quickly.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "Mistakes and setbacks are stepping stones to my success because I learn from them.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "Every day in every way, I am becoming more and more successful.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I feel successful in my life right now, even as I work toward future success.",
+        "Audio": ""
+      },
+      {
+        "Text": "I know exactly what I need to do to achieve success.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I see fear as the fuel for my success and take bold action in spite of fear.",
+        "Audio": ""
+      },
+
+      {
+        "Text":
+          "I feel powerful, capable, confident, energetic, and on top of the world.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I have an intention for success and know it is a reality awaiting my arrival.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I have now reached my goal of _______ and feel the excitement of my achievement.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "Today I am successful. Tomorrow I will be successful. Every day I am successful.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Confidence": {
+    "colors": ["#09203f", "#537895"],
+    "content": [
+      {
+        "Text": "When I breathe, I inhale confidence and exhale timidity.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I love meeting strangers and approach them with boldness and enthusiasm.",
+        "Audio": ""
+      },
+      {
+        "Text": "I live in the present and am confident of the future.",
+        "Audio": ""
+      },
+      {
+        "Text": "My personality exudes confidence. I am bold and outgoing.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am self-reliant, creative and persistent in whatever I do.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am energetic and enthusiastic. Confidence is my second nature.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I always attract only the best of circumstances and the best positive people in my life.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am a problem solver. I focus on solutions and always find the best solution.",
+        "Audio": ""
+      },
+      {
+        "Text": "I love change and easily adjust myself to new situations.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am well groomed, healthy and full of confidence. My outer self�is matched by my inner well being.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "Self-confidence is what I thrive on. Nothing is impossible and life is great.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I always see only the good in others. I attract only positive�confident people.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Self-Esteem": {
+    "colors": ["#1e3c72", "#2a5298"],
+    "content": [
+      {
+        "Text": "I approve of myself and love myself deeply and completely.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am unique. I feel good about being alive and being me.",
+        "Audio": ""
+      },
+      {
+        "Text": "I trust myself and know my inner wisdom is my best guide.",
+        "Audio": ""
+      },
+      {
+        "Text": "I have integrity. I am totally reliable. I do what I say.",
+        "Audio": ""
+      },
+      {
+        "Text": "I act from a place of personal security.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I fully accept myself and know that I am worthy of great things in life.",
+        "Audio": ""
+      },
+      {
+        "Text": "I choose to be proud of myself.",
+        "Audio": ""
+      },
+      {
+        "Text": "I find deep inner peace within myself as I am.",
+        "Audio": ""
+      },
+      {
+        "Text": "I fill my mind with positive and nourishing thoughts.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "My confidence,�self-esteem, and inner wisdom are increasing with each day.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "My immune system is very strong and can deal with any kind of bacteria, germs, and viruses.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Health": {
+    "colors": ["#B7F8DB", "#50A7C2"],
+    "content": [
+      {
+        "Text": "Every cell in my body vibrates with energy and health.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am completely pain-free, and my body is full of energy.",
+        "Audio": ""
+      },
+      {
+        "Text": "I nourish my body with healthy food.",
+        "Audio": ""
+      },
+      {
+        "Text": "All of my body systems are functioning perfectly..",
+        "Audio": ""
+      },
+      {
+        "Text": "My body is healing, and I feel better and better every day.",
+        "Audio": ""
+      },
+      {
+        "Text": "I enjoy exercising my body and strengthening my muscles.",
+        "Audio": ""
+      },
+      {
+        "Text": "With every breath out, I�release stress�in my body.",
+        "Audio": ""
+      },
+      {
+        "Text": "I send love and healing to every organ of my body.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I breathe deeply, exercise regularly and feed only good nutritious food to my body.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I pay attention and listen to what my body needs for health and vitality.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I sleep soundly and peacefully and awaken feeling rested and energetic.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am surrounded by people who encourage and support healthy choices.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Peace": {
+    "colors": ["#a3bded", "#6991c7"],
+    "content": [
+      {
+        "Text": "My world is a peaceful, loving, and joy-filled place to live.",
+        "Audio": ""
+      },
+      {
+        "Text": "I sow the seeds of peace wherever I go.",
+        "Audio": ""
+      },
+      {
+        "Text": "I surround myself with peaceful people.",
+        "Audio": ""
+      },
+      {
+        "Text": "My work environment is calm and peaceful.",
+        "Audio": ""
+      },
+      {
+        "Text": "I breathe in peace, I breathe out chaos and disorder.",
+        "Audio": ""
+      },
+      {
+        "Text": "My home is a peaceful sanctuary where I feel safe and happy.",
+        "Audio": ""
+      },
+      {
+        "Text": "In all that I say and do, I choose peace.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I release past anger and hurts and fill myself with serenity and peaceful thoughts.",
+        "Audio": ""
+      },
+      {
+        "Text": "Peace descends all around me now and always.",
+        "Audio": ""
+      },
+      {
+        "Text": "I send peace from myself into the world.",
+        "Audio": ""
+      },
+      {
+        "Text": "I respond peacefully in all situations.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Mindfulness": {
+    "colors": ["#667eea", "#764ba2"],
+    "content": [
+      {
+        "Text": "I am grounded in the experience of the present moment.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am focused and engaged in the task at hand.",
+        "Audio": ""
+      },
+      {
+        "Text": "All is well right now.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am grateful for this moment and find joy in it.",
+        "Audio": ""
+      },
+      {
+        "Text": "I gently and easily return to the present moment.",
+        "Audio": ""
+      },
+      {
+        "Text": "I observe my thoughts and actions without judging them.",
+        "Audio": ""
+      },
+      {
+        "Text": "I am fully present in all of my relationships.",
+        "Audio": ""
+      },
+      {
+        "Text": "Life is happening in this moment.",
+        "Audio": ""
+      },
+      {
+        "Text": "I accept and embrace all experiences, even unpleasant ones.",
+        "Audio": ""
+      },
+      {
+        "Text": "I observe my emotions without getting attached to them.",
+        "Audio": ""
+      },
+      {
+        "Text": "I meditate easily without resistance or anxiety.",
+        "Audio": ""
+      },
+      {
+        "Text": "I release the past and live fully in the present moment.",
+        "Audio": ""
+      }
+    ]
+  },
+  "Inner Calm": {
+    "colors": ["#48c6ef", "#6f86d6"],
+    "content": [
+      {
+        "Text": "Calmness washes over me with every deep breath I take.",
+        "Audio": ""
+      },
+      {
+        "Text": "Every day I am more and more at ease.",
+        "Audio": ""
+      },
+      {
+        "Text": "Being calm and relaxed energizes my whole being.",
+        "Audio": ""
+      },
+      {
+        "Text": "All the muscles in my body are releasing and relaxing.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "All�negativity�and stress are evaporating from my body and my mind.",
+        "Audio": ""
+      },
+      {
+        "Text": "I breathe in relaxation. I breathe out stress.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "Even when there is chaos around me, I remain calm and centered.",
+        "Audio": ""
+      },
+      {
+        "Text": "I transcend stress of any kind. I live in peace.",
+        "Audio": ""
+      },
+      {
+        "Text":
+          "I am free of anxiety, and a calm inner peace fills my mind and body.",
+        "Audio": ""
+      },
+      {
+        "Text": "All is well in my world. I am calm, happy, and content.",
+        "Audio": ""
+      }
+    ]
+  }
+}

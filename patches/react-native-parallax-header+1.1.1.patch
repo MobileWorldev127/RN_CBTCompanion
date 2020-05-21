@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-parallax-header/index.js b/node_modules/react-native-parallax-header/index.js
+index 9f960bf..544bcdb 100644
+--- a/node_modules/react-native-parallax-header/index.js
++++ b/node_modules/react-native-parallax-header/index.js
+@@ -345,9 +345,9 @@ class RNParallax extends Component {
+   }
+ 
+   render() {
+-    const { navbarColor, statusBarColor } = this.props;
++    const { navbarColor, statusBarColor, style } = this.props;
+     return (
+-      <View style={styles.container}>
++      <View style={[styles.container, style]}>
+         <StatusBar backgroundColor={statusBarColor || navbarColor} />
+         {this.renderScrollView()}
+         {this.renderNavbarBackground()}

@@ -1,0 +1,6 @@
+module Pods_CBTCompanion {
+  umbrella header "Pods-CBTCompanion-umbrella.h"
+
+  export *
+  module * { export * }
+}

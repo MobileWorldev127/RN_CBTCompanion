@@ -1,0 +1,22 @@
+diff --git a/node_modules/@haskkor/react-native-pincode/dist/index.d.ts b/node_modules/@haskkor/react-native-pincode/dist/index.d.ts
+index d6911f7..dec855d 100644
+--- a/node_modules/@haskkor/react-native-pincode/dist/index.d.ts
++++ b/node_modules/@haskkor/react-native-pincode/dist/index.d.ts
+@@ -120,4 +120,5 @@ declare class PINCode extends React.PureComponent<IProps, IState> {
+ export declare function hasUserSetPinCode(serviceName?: string): Promise<boolean>;
+ export declare function deleteUserPinCode(serviceName?: string): Promise<void>;
+ export declare function resetPinCodeInternalStates(pinAttempsStorageName?: string, timePinLockedStorageName?: string): Promise<void>;
++export const PinResultStatus;
+ export default PINCode;
+diff --git a/node_modules/@haskkor/react-native-pincode/dist/index.js b/node_modules/@haskkor/react-native-pincode/dist/index.js
+index a77e46d..7b917b8 100644
+--- a/node_modules/@haskkor/react-native-pincode/dist/index.js
++++ b/node_modules/@haskkor/react-native-pincode/dist/index.js
+@@ -65,6 +65,7 @@ function resetPinCodeInternalStates(pinAttempsStorageName, timePinLockedStorageN
+     ]);
+ }
+ exports.resetPinCodeInternalStates = resetPinCodeInternalStates;
++exports.PinResultStatus = utils_1.PinResultStatus;
+ exports.default = PINCode;
+ let styles = react_native_1.StyleSheet.create({
+     container: {
