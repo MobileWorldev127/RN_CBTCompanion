@@ -58,6 +58,7 @@ import DiscussionViewScreen from "../screens/community/discussions/DiscussionVie
 import HomeScreen from "../screens/TabComponents/HomeScreen";
 import FollowUpScreen from "../screens/FollowUpScreen";
 import ExerciseModules from "../screens/exercise/ExerciseListScreen";
+import LogFoodScreen from "../screens/TabComponents/LogFoodScreen";
 
 const DrawerRoutes = createDrawerNavigator(
   {
@@ -147,6 +148,12 @@ const Routes = {
   },
   Home: {
     screen: HomeScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  LogFood: {
+    screen: LogFoodScreen,
     navigationOptions: {
       header: null
     }

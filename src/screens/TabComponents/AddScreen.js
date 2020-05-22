@@ -1,30 +1,30 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   TouchableHighlight,
   ScrollView,
   Text,
-  TouchableOpacity
-} from "react-native";
-import * as Animatable from "react-native-animatable";
-import Header from "../../components/Header";
-import ThemeStyle from "../../styles/ThemeStyle";
-import { withSubscriptionActions } from "../../utils/StoreUtils";
-import TextStyles from "../../common/TextStyles";
-import CachedImage from "react-native-image-cache-wrapper";
-import { client } from "../../App";
-import { screenNames, recordScreenEvent } from "../../utils/AnalyticsUtils";
-import { getExercisesByModuleQuery } from "../../queries/getExercisesByModule";
+  TouchableOpacity,
+} from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import Header from '../../components/Header';
+import ThemeStyle from '../../styles/ThemeStyle';
+import { withSubscriptionActions } from '../../utils/StoreUtils';
+import TextStyles from '../../common/TextStyles';
+import CachedImage from 'react-native-image-cache-wrapper';
+import { client } from '../../App';
+import { screenNames, recordScreenEvent } from '../../utils/AnalyticsUtils';
+import { getExercisesByModuleQuery } from '../../queries/getExercisesByModule';
 
-import { getExerciseByIDQuery } from "../../queries/getExercise";
-import { flowConstants } from "../../constants";
-import { setCurrentExercise } from "../../actions/RecordActions";
-import { showApiError } from "../../utils";
-import { performNetworkTask } from "../../utils/NetworkUtils";
-import LinearGradient from "react-native-linear-gradient";
-import Card from "../../components/Card";
-import { setTopSafeAreaView } from "../../actions/AppActions";
-import _ from "lodash";
+import { getExerciseByIDQuery } from '../../queries/getExercise';
+import { flowConstants } from '../../constants';
+import { setCurrentExercise } from '../../actions/RecordActions';
+import { showApiError } from '../../utils';
+import { performNetworkTask } from '../../utils/NetworkUtils';
+import LinearGradient from 'react-native-linear-gradient';
+import Card from '../../components/Card';
+import { setTopSafeAreaView } from '../../actions/AppActions';
+import _ from 'lodash';
 
 class AddScreen extends Component {
   constructor(props) {
@@ -32,16 +32,16 @@ class AddScreen extends Component {
     this.state = {
       items: [
         {
-          title: "Record Entry",
+          title: 'Record Entry',
           onPress: () =>
-            this.props.navigation.navigate("Home", {
-              isBack: true
+            this.props.navigation.navigate('Home', {
+              isBack: true,
             }),
-          color: "#000",
+          color: '#000',
           isIcon: true,
-          image: require("../../assets/images/redesign/cbt-recordentry-graphic.png")
-        }
-      ]
+          image: require('../../assets/images/redesign/cbt-recordentry-graphic.png'),
+        },
+      ],
     };
   }
 
@@ -51,7 +51,7 @@ class AddScreen extends Component {
     client
       .watchQuery({
         query: getExercisesByModuleQuery,
-        variables: { module: "CBT Tracking" }
+        variables: { module: 'CBT Tracking' },
       })
       .subscribe({
         next: data => {
@@ -59,7 +59,7 @@ class AddScreen extends Component {
           if (data.loading && !data.data) {
             return;
           }
-          console.log("DATA", data);
+          console.log('DATA', data);
           if (
             data.data &&
             data.data.getExercisesByModule &&
@@ -67,16 +67,26 @@ class AddScreen extends Component {
           ) {
             const items = this.state.items;
             data.data.getExercisesByModule.forEach(exercise => {
-              const isPrediction = exercise.title === "Prediction";
+              const isPrediction = exercise.title === 'Prediction';
               items.push({
                 ...exercise,
                 image: isPrediction
-                  ? require("../../assets/images/redesign/cbt-predictions-graphic-blue.png")
-                  : require("../../assets/images/redesign/cbt-automaticthought-graphic.png"),
-                color: isPrediction ? ThemeStyle.mainColor : "#39F",
+                  ? require('../../assets/images/redesign/cbt-predictions-graphic-blue.png')
+                  : require('../../assets/images/redesign/cbt-automaticthought-graphic.png'),
+                color: isPrediction ? ThemeStyle.mainColor : '#39F',
                 onPress: () => this.navigateToExercise(exercise),
-                type: "exercise"
+                type: 'exercise',
               });
+            });
+            items.push({
+              title: 'Log Food Entry',
+              onPress: () =>
+                this.props.navigation.navigate('LogFood', {
+                  isBack: true,
+                }),
+              color: '#000',
+              isIcon: true,
+              image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
             });
             this.setState({ items });
           }
@@ -85,7 +95,7 @@ class AddScreen extends Component {
           console.log(err);
           this.props.setLoading(false);
           showApiError(true);
-        }
+        },
       });
   }
 
@@ -100,7 +110,7 @@ class AddScreen extends Component {
         .watchQuery({
           query: getExerciseByIDQuery,
           variables: { id: exercise.id },
-          fetchPolicy: "cache-and-network"
+          fetchPolicy: 'cache-and-network',
         })
         .subscribe({
           next: data => {
@@ -112,10 +122,10 @@ class AddScreen extends Component {
               _.cloneDeep(data.data.getExercise),
               flowConstants.EXERCISE
             );
-            console.log("EXERCISE DATA", data.data.getExercise);
-            this.props.navigation.navigate("ExerciseScreen", {
+            console.log('EXERCISE DATA', data.data.getExercise);
+            this.props.navigation.navigate('ExerciseScreen', {
               currentIndex: 0,
-              exerciseId: exercise.id
+              exerciseId: exercise.id,
             });
             query.unsubscribe();
           },
@@ -123,13 +133,13 @@ class AddScreen extends Component {
             this.props.setLoading(false);
             console.log(error);
             showApiError(true);
-          }
+          },
         });
     }
   }
 
   render() {
-    console.log("RENDER", this.state.items);
+    console.log('RENDER', this.state.items);
     return (
       <View style={ThemeStyle.pageContainer}>
         <LinearGradient style={{ flex: 1 }} colors={ThemeStyle.gradientColor}>
@@ -138,8 +148,8 @@ class AddScreen extends Component {
             openDrawer={() => {
               this.props.navigation.openDrawer();
             }}
-            navBarStyle={{ backgroundColor: "transparent" }}
-            title={""}
+            navBarStyle={{ backgroundColor: 'transparent' }}
+            title={''}
           />
           <View style={{ flex: 1 }}>
             {this.state.items.map((item, index) => {
@@ -148,9 +158,9 @@ class AddScreen extends Component {
                   animation="pulse"
                   delay={index * 200}
                   style={{
-                    flex: 0.33,
+                    flex: 1,
                     maxHeight: 160,
-                    overflow: "hidden"
+                    overflow: 'hidden',
                   }}
                 >
                   <Card style={{ marginHorizontal: 20, marginVertical: 12 }}>
@@ -158,30 +168,31 @@ class AddScreen extends Component {
                       source={item.image}
                       style={{
                         width: 116,
-                        position: "absolute",
+                        height: 100,
+                        position: 'absolute',
                         top: 24,
-                        right: 16
+                        right: 16,
                       }}
                       resizeMode="contain"
                     />
                     <TouchableOpacity onPress={item.onPress}>
                       <View
                         style={{
-                          height: "100%",
-                          flexDirection: "row",
+                          height: '100%',
+                          flexDirection: 'row',
                           padding: 16,
-                          alignItems: "center",
-                          overflow: "hidden"
+                          alignItems: 'center',
+                          overflow: 'hidden',
                         }}
                       >
                         <Text
                           style={[
                             TextStyles.SubHeader2,
                             {
-                              width: "50%",
+                              width: '50%',
                               color: item.color,
-                              marginHorizontal: 12
-                            }
+                              marginHorizontal: 12,
+                            },
                           ]}
                         >
                           {item.title}
@@ -200,13 +211,13 @@ class AddScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  completedExercise: state.record.completedExercise
+  completedExercise: state.record.completedExercise,
 });
 
 const mapDispatchToProps = dispatch => ({
   setCurrentExercise: (exercise, flowType) =>
     dispatch(setCurrentExercise(exercise, flowType)),
-  setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color))
+  setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
 });
 
 export default withSubscriptionActions(
