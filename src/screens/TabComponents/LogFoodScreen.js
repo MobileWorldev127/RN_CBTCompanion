@@ -4,10 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Platform,
-  Animated,
   TouchableOpacity,
-  Image,
   Dimensions
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -15,20 +12,14 @@ import LinearGradient from "react-native-linear-gradient";
 import Header from "./../../components/Header";
 import Icon from "../../common/icons";
 import ThemeStyle from "../../styles/ThemeStyle";
-import Coverflow from "react-native-coverflow";
 import TextStyles from "./../../common/TextStyles";
-import { Transition } from "react-navigation-fluid-transitions";
-import { withStore, withSafeAreaActions } from "../../utils/StoreUtils";
+import { withSafeAreaActions } from "../../utils/StoreUtils";
 import { setMood } from "../../actions/RecordActions";
-import { Moods, moodImages, asyncStorageConstants } from "../../constants";
+import { Moods, asyncStorageConstants } from "../../constants";
 let moment = require("moment");
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Auth } from "aws-amplify";
-import CircularSlider from "../../components/CircularSliderGradient";
-import CustomButton from "../../components/Button";
 import { recordScreenEvent, screenNames } from "../../utils/AnalyticsUtils";
-import { showMessage } from "react-native-flash-message";
-import { errorMessage } from "../../utils";
 import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
 import CachedImage from 'react-native-image-cache-wrapper';
@@ -51,24 +42,42 @@ class LogFoodScreen extends Component {
         {
           title: 'Breakfast',
           onPress: () =>
-            this.props.navigation.navigate('Home', {
+            this.props.navigation.navigate('FoodAdd', {
               isBack: true,
+              title: 'Breakfast'
+            }),
+          onPressFoodDetail: () =>
+            this.props.navigation.navigate('FoodDetail', {
+              isBack: true,
+              title: 'Breakfast'
             }),
           image: require('../../assets/images/redesign/Breakfast-icon.png'),
         },
         {
           title: 'Add Lunch',
           onPress: () =>
-            this.props.navigation.navigate('Home', {
+            this.props.navigation.navigate('FoodAdd', {
               isBack: true,
+              title: 'Lunch'
+            }),
+          onPressFoodDetail: () =>
+            this.props.navigation.navigate('FoodDetail', {
+              isBack: true,
+              title: 'Breakfast'
             }),
           image: require('../../assets/images/redesign/Lunch-icon.png'),
         },
         {
           title: 'Add Dinner',
           onPress: () =>
-            this.props.navigation.navigate('Home', {
+            this.props.navigation.navigate('FoodAdd', {
               isBack: true,
+              title: 'Dinner'
+            }),
+          onPressFoodDetail: () =>
+            this.props.navigation.navigate('FoodDetail', {
+              isBack: true,
+              title: 'Breakfast'
             }),
           image: require('../../assets/images/redesign/DInner-icon.png'),
         },
@@ -80,7 +89,6 @@ class LogFoodScreen extends Component {
         userName: info && info.attributes && info.attributes.name
       });
     });
-    
   }
 
   async componentDidMount() {
@@ -213,7 +221,7 @@ class LogFoodScreen extends Component {
             <TouchableOpacity>
               <Text style={TextStyles.Header2}>
                 {this.state.currentDate.format("dddd, DD MMMM")}
-              </Text>              
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity>
               <Icon
@@ -237,28 +245,34 @@ class LogFoodScreen extends Component {
                   }}
                 >
                   <Card style={{ margin: 5}}>
-                    <View
+                    <TouchableOpacity
+                      onPress={item.onPressFoodDetail}
+                      underlayColor={item.color + "aa"}
                       style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15
+                        backgroundColor: item.color
                       }}
                     >
-                      <CachedImage
-                        source={item.image}
+                      <View
                         style={{
-                          width: 80,
-                          height: 80,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: 15
                         }}
-                        resizeMode="contain"
-                      />
-                      <TouchableOpacity onPress={item.onPress} style={{flex: 1}}>
+                      >
+                        <CachedImage
+                          source={item.image}
+                          style={{
+                            width: 80,
+                            height: 80,
+                          }}
+                          resizeMode="contain"
+                        />
                         <View
                           style={{
                             flexDirection: 'row',
                             padding: 15,
-                            alignItems: 'center',
+                            flex: 1,
                           }}
                         >
                           <Text
@@ -272,18 +286,18 @@ class LogFoodScreen extends Component {
                             {item.title}
                           </Text>
                         </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <CachedImage
-                          source={require('../../assets/images/redesign/add-food.png')}
-                          style={{
-                            width: 25,
-                            height: 25,
-                          }}
-                          resizeMode="contain"
-                        />
-                      </TouchableOpacity>
-                    </View>
+                        <TouchableOpacity onPress={item.onPress}>
+                          <CachedImage
+                            source={require('../../assets/images/redesign/add-food.png')}
+                            style={{
+                              width: 25,
+                              height: 25,
+                            }}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </TouchableOpacity>
                   </Card>
                 </Animatable.View>
               );

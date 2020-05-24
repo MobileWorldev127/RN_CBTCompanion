@@ -170,7 +170,7 @@ class HomeScreen extends Component {
             y: 0
           }}
           end={{ y: 1.4, x: 0.2 }}
-          style={{ borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}
+          style={{ borderBottomLeftRadius: 70, borderBottomRightRadius: 20 }}
         >
           <Header
             title={"Mood"}
