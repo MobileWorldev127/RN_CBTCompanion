@@ -26,7 +26,8 @@ import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
-import SearchField from "../../components/SearchField";;
+import SearchField from "../../components/SearchField";
+import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -41,18 +42,11 @@ class FoodAddScreen extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
-      foodList: [
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-        },
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-        },
-      ],
+      query: '',
+      queryTxt: '',
+      foodList: [],
+      addedFoodList: [],
+      isSpeaking: false
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -79,6 +73,36 @@ class FoodAddScreen extends Component {
 
   componentWillUnmount() {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  getFoodList = (index) => {
+    if(index == 0){
+      this.props.getNutritionixInstantFoodList(this.state.query, data => {
+        this.setState({
+          foodList: data.branded
+        })
+      });
+    }
+    else {
+      this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
+        console.log("@@")
+        console.log(data.foods)
+        this.setState({
+          foodList: data.foods
+        })
+      });
+    }    
+  }
+
+  addFoodList = (item) => {
+    var arr = this.state.addedFoodList;
+    if(arr.indexOf(item) > -1) {
+      return;
+    }
+    else {
+      arr.push(item)
+      this.setState({ addFoodList: arr })
+    }
   }
 
   render() {
@@ -114,17 +138,40 @@ class FoodAddScreen extends Component {
               animation="fadeInDown"
               style={{ alignItems: "center" }}
             >
-              <SearchField iconName="ios-search" placeholder="Search food..." />
-              <TextInput
-                style={[TextStyles.GeneralText, styles.inputBox]}
-                placeholder="Describe what happened"
-                multiline={true}
-                placeholderTextColor="lightgrey"
-                underlineColorAndroid="transparent"
-                defaultValue={this.state.description}
-                //value={this.state.description}
-                onChangeText={description => this.setState({ description })}
+              <SearchField 
+                iconName="ios-search" 
+                placeholder="Search food..." 
+                onChangeText={query => this.setState({query})}
+                onSubmitEditing={(event) => this.getFoodList(0)}
               />
+              <View style={styles.inputView}>
+                <TextInput
+                  style={[TextStyles.GeneralText, styles.inputBox]}
+                  placeholder="Describe what happened"
+                  multiline={true}
+                  placeholderTextColor="lightgrey"
+                  underlineColorAndroid="transparent"
+                  defaultValue={this.state.queryTxt}
+                  onChangeText={queryTxt => this.setState({ queryTxt })}
+                  onSubmitEditing={(event) => this.getFoodList(1)}
+                />
+                <TouchableOpacity 
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                  }}
+                  onPress = {() => this.setState({isSpeaking: !this.state.isSpeaking})}>
+                  <CachedImage
+                    source={
+                      this.state.isSpeaking?
+                      require("../../assets/images/redesign/Finish-icon-active.png") :
+                      require("../../assets/images/redesign/Talk-icon.png")
+                    }
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity style={styles.addView}>
                 <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
               </TouchableOpacity>
@@ -132,7 +179,9 @@ class FoodAddScreen extends Component {
           </View>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {this.state.foodList.map((item, index) => {
+          {this.state.addedFoodList.length > 0 ? 
+            <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
+          {this.state.addedFoodList.map((item, index) => {
             return (
               <Animatable.View
                 animation="pulse"
@@ -145,7 +194,13 @@ class FoodAddScreen extends Component {
               >
                 <Card style={{ margin: 5 }}>
                   <TouchableOpacity
-                    onPress={item.onPress}
+                    onPress={() =>
+                      this.props.navigation.navigate('FoodCaloriesDetail', {
+                        isBack: true,
+                        title: item.food_name,
+                        itemId: item.nix_item_id
+                      })
+                    }                    
                     underlayColor={item.color + "aa"}
                     style={{
                       backgroundColor: item.color
@@ -166,16 +221,84 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {item.name}
+                          {item.food_name}
                         </Text>
                         <Text style={TextStyles.GeneralText}>
-                          {item.detail}
+                          {item.brand_name}
                         </Text>
                         <Text style={TextStyles.GeneralText}>
-                          {item.value}
+                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
                         </Text>
                       </View>
-                      <TouchableOpacity onPress={item.onPress}>
+                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
+                        <CachedImage
+                          source={require("../../assets/images/redesign/active-icon.png")}
+                          style={{
+                            width: 25,
+                            height: 25
+                          }}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                </Card>
+              </Animatable.View>
+            );
+          })}
+
+          {this.state.foodList.length > 0 ? 
+            <Text style={styles.listedTitleTxt}>Recent</Text> : null}
+          {this.state.foodList.map((item, index) => {
+            return (
+              <Animatable.View
+                animation="pulse"
+                delay={index * 200}
+                style={{
+                  marginHorizontal: 20,
+                  marginBottom: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Card style={{ margin: 5 }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('FoodCaloriesDetail', {
+                        isBack: true,
+                        title: item.food_name,
+                        itemId: item.nix_item_id
+                      })
+                    }                    
+                    underlayColor={item.color + "aa"}
+                    style={{
+                      backgroundColor: item.color
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 15,
+                      }}
+                    >
+                      <View
+                        style={{
+                          padding: 5,
+                          flex: 1
+                        }}
+                      >
+                        <Text style={TextStyles.Header2}>
+                          {item.food_name}
+                        </Text>
+                        <Text style={TextStyles.GeneralText}>
+                          {item.brand_name}
+                        </Text>
+                        <Text style={TextStyles.GeneralText}>
+                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
+                        </Text>
+                      </View>
+                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
                         <CachedImage
                           source={require("../../assets/images/redesign/add-food.png")}
                           style={{
@@ -186,7 +309,7 @@ class FoodAddScreen extends Component {
                         />
                       </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>                  
+                  </TouchableOpacity>
                 </Card>
               </Animatable.View>
             );
@@ -206,6 +329,10 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    getNutritionixInstantFoodList: (query, data) =>
+      dispatch(getNutritionixInstantFoodList(query, data)),
+    getNutritionixNutrientsFoodList: (formdata, data) => 
+      dispatch(getNutritionixNutrientsFoodList(formdata, data))
   })
 );
 
@@ -264,19 +391,20 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 20
   },
-  inputBox: {
+  inputView: {
     width: "90%",
     height: 100,
-    borderColor: "#e0e0e0",
-    borderWidth: 1,
-    paddingTop: 24,
-    paddingHorizontal: 20,
-    margin: 16,
-    fontSize: 16,
-    textAlignVertical: "top",
-    color: "#000",
+    marginVertical: 16,
     borderRadius: 15,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
+    padding: 20,
+  },
+  inputBox: {
+    flex: 1,
+    fontSize: 16,
+    textAlignVertical: "center",
+    color: "#000",
+    
   },
   addView: {
     width: "88%",
@@ -287,4 +415,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 50,
   },
+  listedTitleTxt: {
+    fontSize: 20,
+    marginLeft: 25,
+    marginVertical: 15,
+  }
 });

@@ -21,13 +21,12 @@ import { Moods, asyncStorageConstants } from "../../constants";
 let moment = require("moment");
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Auth } from "aws-amplify";
-import { recordScreenEvent, screenNames } from "../../utils/AnalyticsUtils";
 import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { Circle } from 'react-native-svg'
+import {getNutritionixFoodItem} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -42,23 +41,7 @@ class FoodCaloriesDetailScreen extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
-      foodList: [
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-        },
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-        },
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-        }
-      ],
+      foodNutritinDetail: {}
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -69,8 +52,16 @@ class FoodCaloriesDetailScreen extends Component {
   }
 
   async componentDidMount() {
+    let { params } = this.props.navigation.state;
+    let itemId = params.itemId;
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
-    recordScreenEvent(screenNames.record);
+    this.props.getNutritionixFoodItem(itemId, data => {
+      console.log('@@@')
+      console.log(data)
+      this.setState({
+        foodNutritinDetail: data.foods[0]
+      })
+    });
     if (!isOnline()) {
       userInfo = JSON.parse(
         await AsyncStorage.getItem(asyncStorageConstants.userInfo)
@@ -121,23 +112,17 @@ class FoodCaloriesDetailScreen extends Component {
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 25,}}>
-            <TextInput
-              style={[TextStyles.SubHeaderBold, styles.input]}
-              onChangeText={username => (this.username = username.trim())}
-              defaultValue={this.username}
-              placeholder="Enter Email"
-              placeholderTextColor="#eee"
-              autoCapitalize="none"
-              underlineColorAndroid="transparent"
-            />
-            <Text style={[TextStyles.SubHeaderBold, styles.unitInput]}>Regular Glas(fl.oz)</Text>
+            <View style={styles.qtyView}>
+              <Text style={TextStyles.SubHeaderBold}>{this.state.foodNutritinDetail.serving_qty}</Text>
+            </View>            
+            <Text style={[TextStyles.SubHeaderBold, styles.unitInput]}>{this.state.foodNutritinDetail.serving_unit}</Text>
           </View>
           <TouchableOpacity style={styles.addBtn}>
             <Text style={{color: 'white', fontSize: 16}}>ADD TO LIST</Text>
           </TouchableOpacity>
           
           <View style={styles.calsView}>
-            <Text style={{color: ThemeStyle.accentColor, fontSize: 25}}> 243
+            <Text style={{color: ThemeStyle.accentColor, fontSize: 25}}> {this.state.foodNutritinDetail.nf_calories}
               <Text style={{fontSize: 25, color:'black'}}> cals
               </Text>
             </Text>
@@ -164,7 +149,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>95%</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_protein}</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -182,7 +167,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>35%</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_carbohydrate}</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -195,12 +180,11 @@ class FoodCaloriesDetailScreen extends Component {
                   fill={45}
                   rotation= {0}
                   tintColor={ThemeStyle.accentColor}
-
                   padding={10}
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>45%</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_fat}</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -211,38 +195,50 @@ class FoodCaloriesDetailScreen extends Component {
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Protein</Text>
-              <Text style={TextStyles.SubHeader2}>10.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_protein}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Carbs</Text>
-              <Text style={TextStyles.SubHeader2}>0.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_carbohydrate}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Fiber</Text>
-              <Text style={TextStyles.GeneralText}>0.4g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_dietary_fiber}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Sugar</Text>
-              <Text style={TextStyles.GeneralText}>0.2g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_sugars}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Fat</Text>
-              <Text style={TextStyles.SubHeader2}>0.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_fat}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Saturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>0.4g</Text>
-            </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={TextStyles.GeneralText}>Unsaturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>0.2g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_saturated_fat}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={TextStyles.SubHeader2}>Others</Text>
+            </View>
+            
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
+              <Text style={TextStyles.GeneralText}>Sodium</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_sodium}g</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={TextStyles.GeneralText}>Potassium</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_potassium}g</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
+              <Text style={TextStyles.GeneralText}>Cholesterol</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_cholesterol}g</Text>
+            </View>
           </View>
 
         </ScrollView>
@@ -260,6 +256,8 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    getNutritionixFoodItem: (itemId, data) =>
+      dispatch(getNutritionixFoodItem(itemId, data))
   })
 );
 
@@ -362,7 +360,6 @@ const styles = StyleSheet.create({
   nutritionView: {
     marginHorizontal: 25,
     paddingBottom: 10,
-    // backgroundColor: 'yellow'
   },
   processTxt: {
     fontSize: 20,
@@ -375,16 +372,15 @@ const styles = StyleSheet.create({
     backgroundColor: ThemeStyle.disabled,
     marginVertical: 20
   },
-  input: {
+  qtyView: {
     width: 50,
     height: 50,
     borderWidth: 1,
+    borderRadius: 5,
     borderColor: 'gray',
     fontSize: 18,
-    alignSelf: "stretch",
-    // paddingLeft: 12,
-    borderRadius: 5,
-    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   unitInput: {
     flex: 0.95,

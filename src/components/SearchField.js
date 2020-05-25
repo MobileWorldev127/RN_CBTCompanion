@@ -25,6 +25,7 @@ const SearchField = props => {
           underlineColorAndroid="transparent"
           style={styles.inputField}
           secureTextEntry={props.boolean}
+          onSubmitEditing={props.onSubmitEditing}
         />
       </View>
     </View>

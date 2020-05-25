@@ -37,7 +37,7 @@ class LogFoodScreen extends Component {
     console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
-      currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
+      currentDate: moment(),
       items: [
         {
           title: 'Breakfast',
