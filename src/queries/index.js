@@ -21,3 +21,4 @@ export * from "./shareData";
 export * from "./patchEntry";
 export * from "./getUserAssessmentsById";
 export * from "./getUserScheduledAssessments";
+export * from "./addFoodEntry";

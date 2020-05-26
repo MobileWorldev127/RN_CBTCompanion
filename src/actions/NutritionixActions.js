@@ -1,4 +1,11 @@
 import { setLoading } from "./AppActions";
+import { client, swasthCommonsClient } from "../App";
+import { addFoodEntryQuery } from "../queries/addFoodEntry";
+
+import Amplify from "aws-amplify";
+import { getAmplifyConfig, getEnvVars } from "../constants";
+import { API, graphqlOperation } from "aws-amplify";
+
 const NUTRITIONIX_INSTANT_SUCCESS = "NUTRITIONIX_INSTANT_SUCCESS";
 
 const BASE_URL = 'https://trackapi.nutritionix.com/v2/';
@@ -39,7 +46,7 @@ export function getNutritionixInstantFoodList(query, foodData) {
         dispatch(setLoading(false));
       });
   };
-}
+};
 
 export function getNutritionixNutrientsFoodList(querytxt, foodData) {
   console.log(querytxt)
@@ -71,7 +78,7 @@ export function getNutritionixNutrientsFoodList(querytxt, foodData) {
         dispatch(setLoading(false));
       });
   };
-}
+};
 
 export function getNutritionixFoodItem(itemId, foodData) {
   return function(dispatch, state) {
@@ -96,6 +103,49 @@ export function getNutritionixFoodItem(itemId, foodData) {
         dispatch(setLoading(false));
       });
   };
-}
+};
 
+
+export function addFoodEntry(entry, foodEntryData) {
+  return function(dispatch, state) {
+    
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    
+    let variables = {
+      dateTime:"2020-05-26",
+      meal:"Breakfast1111",
+      details:[
+        {
+          name:"Chicken Soup",
+          qty:2,
+          unit: "cup",
+          weight_grams: 30,
+          macroNutrients: "{\"calories\":62}",
+          microNutrients:[
+            {
+                attr_id: 203,
+                value: 3.1496
+            }
+          ]
+        }
+      ],
+    };
+    console.log("--Submitting homework--", variables);
+    API.graphql(graphqlOperation(addFoodEntryQuery, variables))
+      .then(data => {
+        console.log('@@@@@@@@@@@@@@@@@-- true')
+        console.log(data);
+      })
+      .catch(err => {
+        console.log('@@@@@@@@@@@@@@@@@-- false')
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
 

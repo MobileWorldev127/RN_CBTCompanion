@@ -28,6 +28,7 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
 import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList} from "../../actions/NutritionixActions"
+import {addFoodEntry} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -105,6 +106,20 @@ class FoodAddScreen extends Component {
     }
   }
 
+  getEntryInputFromRecordFlow = () => {
+    let entry = {};
+    entry.name = "ABC"
+    return entry;
+  };
+
+  onClickAdd = () => {
+    // alert('1')
+    this.props. addFoodEntry(this.getEntryInputFromRecordFlow(), data => {
+      console.log('SUUUCCESSS__________-')
+    })
+    
+  }
+
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
@@ -155,7 +170,7 @@ class FoodAddScreen extends Component {
                   onChangeText={queryTxt => this.setState({ queryTxt })}
                   onSubmitEditing={(event) => this.getFoodList(1)}
                 />
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                   style={{
                     position: 'absolute',
                     bottom: 0,
@@ -170,9 +185,9 @@ class FoodAddScreen extends Component {
                     }
                     resizeMode="contain"
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
-              <TouchableOpacity style={styles.addView}>
+              <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
                 <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -332,7 +347,9 @@ export default withSafeAreaActions(
     getNutritionixInstantFoodList: (query, data) =>
       dispatch(getNutritionixInstantFoodList(query, data)),
     getNutritionixNutrientsFoodList: (formdata, data) => 
-      dispatch(getNutritionixNutrientsFoodList(formdata, data))
+      dispatch(getNutritionixNutrientsFoodList(formdata, data)),
+    addFoodEntry: (exerciseInput, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, onAdded)),
   })
 );
 
