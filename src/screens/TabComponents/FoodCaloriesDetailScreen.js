@@ -56,15 +56,43 @@ class FoodCaloriesDetailScreen extends Component {
   async componentDidMount() {
     let { params } = this.props.navigation.state;
     let itemId = params.itemId;
+    let item = params.itemEntry;
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
-    this.props.getNutritionixFoodItem(itemId, data => {
-      console.log('success===========+>')
-      console.log(data)
+    if(itemId === 0) {
+      var value = {};
+      value.serving_qty = item.details[0].qty;
+      value.serving_unit = item.details[0].unit;
+      value.nf_calories = JSON.parse(item.details[0].macroNutrients).calories;
+      value.nf_total_carbohydrate = JSON.parse(item.details[0].macroNutrients).total_carbohydrate;
+      value.nf_protein = JSON.parse(item.details[0].macroNutrients).protein;
+      value.nf_total_carbohydrate = JSON.parse(item.details[0].macroNutrients).total_carbohydrate;
+      value.nf_dietary_fiber = JSON.parse(item.details[0].macroNutrients).dietary_fiber;
+      value.nf_sugars = JSON.parse(item.details[0].macroNutrients).sugars;
+      value.nf_total_fat = JSON.parse(item.details[0].macroNutrients).total_fat;
+      value.nf_saturated_fat = JSON.parse(item.details[0].macroNutrients).saturated_fat;
+      value.nf_sodium = JSON.parse(item.details[0].macroNutrients).sodium;
+      value.nf_potassium = JSON.parse(item.details[0].macroNutrients).potassium;
+      value.nf_cholesterol = JSON.parse(item.details[0].macroNutrients).cholesterol;
       this.setState({
-        foodNutritinDetail: data.foods[0],
+        foodNutritinDetail: value,
         isVisiableAdd: true
       })
-    });
+    }
+    else {
+      this.props.getNutritionixFoodItem(itemId, data => {
+        console.log('====>', data)
+        if (!data.foods) {
+          setTimeout(() => {
+            alert("Something went wrong. Try again.")
+          }, 500);
+          return;
+        }
+        this.setState({
+          foodNutritinDetail: data.foods[0],
+          isVisiableAdd: true
+        })
+      });
+    }    
     if (!isOnline()) {
       userInfo = JSON.parse(
         await AsyncStorage.getItem(asyncStorageConstants.userInfo)
@@ -81,18 +109,18 @@ class FoodCaloriesDetailScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  onClickAddToList = () => {
-    if (this.state.isVisiableAdd ){
-      let { params } = this.props.navigation.state;
-      let title = params.title;
-      this.props.addFoodEntry(this.state.foodNutritinDetail, title, onAdded => {
-        this.setState({isVisiableAdd: false})
-      })
-    }
-    else {
-      alert('You already added to your Food List');    }
+  // onClickAddToList = () => {
+  //   if (this.state.isVisiableAdd ){
+  //     let { params } = this.props.navigation.state;
+  //     let title = params.title;
+  //     this.props.addFoodEntry(this.state.foodNutritinDetail, title, dateTime, onAdded => {
+  //       this.setState({isVisiableAdd: false})
+  //     })
+  //   }
+  //   else {
+  //     alert('You already added to your Food List');    }
     
-  }
+  // }
 
   render() {
     console.log("Render home", this.state);
@@ -274,8 +302,8 @@ export default withSafeAreaActions(
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getNutritionixFoodItem: (itemId, data) =>
       dispatch(getNutritionixFoodItem(itemId, data)),
-    addFoodEntry: (exerciseInput, title, onAdded) =>
-      dispatch(addFoodEntry(exerciseInput, title, onAdded))
+    addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, title, dateTime, onAdded))
   })
 );
 

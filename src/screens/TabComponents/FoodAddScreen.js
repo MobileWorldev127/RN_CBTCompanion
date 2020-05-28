@@ -41,11 +41,11 @@ class FoodAddScreen extends Component {
     console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
-      currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
+      currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
       query: '',
       queryTxt: '',
       foodList: [],
-      addedFoodList: [],
+      addedFoodList: props.navigation.state.params.alreadyAddedFoodList,
       isSpeaking: false,
       foodNutritinDetail: {},
       addedFoodKeyList: []
@@ -59,6 +59,10 @@ class FoodAddScreen extends Component {
   }
 
   async componentDidMount() {
+    console.log('===>', this.state.addedFoodList)
+
+
+
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
     recordScreenEvent(screenNames.record);
     if (!isOnline()) {
@@ -100,10 +104,10 @@ class FoodAddScreen extends Component {
     var addedFoodList = this.state.addedFoodList;
     var foodList = [...this.state.foodList];
     if (addedFoodList.indexOf(item) > -1) {
-      let date = moment().format("YYYY-MM-DD");
+      let date = this.state.currentDate.format("YYYY-MM-DD");
       this.props.getFoodEntries(date, fetchListData => {
         fetchListData.map(item1 => {
-          if (item1.details[0].name == item.food_name){
+          if (item1.details[0].name == (item.food_name? item.food_name : item.details[0].name)){
             this.props.deleteFoodEntries(item1._id, fetchData => {
               var index = addedFoodList.indexOf(item);
               if (index !== -1) {
@@ -115,37 +119,44 @@ class FoodAddScreen extends Component {
               }
             })
           }
-        });        
+        });
       });
     }
     else {
       this.props.getNutritionixFoodItem(item.nix_item_id, data => {
-        console.log('===>')
-        console.log(data)
-        this.props.addFoodEntry(data.foods[0], title, onAdded => {
-          let date = moment().format("YYYY-MM-DD");
-            console.log('_____')
-          addedFoodList.push(item);
-          var index = foodList.indexOf(item);
-          if (index !== -1) {
-            foodList.splice(index, 1);
-            this.setState({
-              addFoodList: addedFoodList,
-              foodList: foodList,
-            });
-          };
-        });
+        if (!data.foods) {
+          setTimeout(() => {
+            alert("Something went wrong. Try again. Or use the search function")
+          }, 500)
+        }
+        else {
+          let dateTime = this.state.currentDate.format("YYYY-MM-DD");
+          this.props.addFoodEntry(data.foods[0], title, dateTime, onAdded => {
+            console.log('~~~~~>>', onAdded)
+            addedFoodList.push(item);
+            var index = foodList.indexOf(item);
+            if (index !== -1) {
+              foodList.splice(index, 1);
+              this.setState({
+                addFoodList: addedFoodList,
+                foodList: foodList,
+              });
+            };
+          });
+        }
       });
     }
   }
 
   onClickAdd = () => {
     this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
-      this.setState({
-        foodList: data.foods
-      })
+      if (data.foods) {
+        this.setState({ foodList: data.foods })
+      }
+      else {
+        this.setState({ foodList: [] })
+      }
     });
-    
   }
 
   render() {
@@ -153,6 +164,7 @@ class FoodAddScreen extends Component {
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     let title = params.title;
+    console.log('@@@@', this.state.addedFoodList)
     return (
       <View style={[ThemeStyle.pageContainer, { overflow: "hidden" }]}>
         <LinearGradient
@@ -172,6 +184,7 @@ class FoodAddScreen extends Component {
                 this.props.navigation.openDrawer();
               }}
               goBack={() => {
+                this.props.navigation.state.params.onGoBack();
                 this.props.navigation.goBack("");
               }}
               navBarStyle={{ backgroundColor: "transparent" }}
@@ -184,9 +197,7 @@ class FoodAddScreen extends Component {
               <SearchField 
                 iconName="ios-search" 
                 placeholder="Search food..." 
-                // onChangeText={query => this.setState({query})}
                 onChangeText={query => this.onChangeQuery(query)}
-                // onSubmitEditing={(event) => this.getFoodList(0)}
               />
               <View style={styles.inputView}>
                 <TextInput
@@ -197,7 +208,6 @@ class FoodAddScreen extends Component {
                   underlineColorAndroid="transparent"
                   defaultValue={this.state.queryTxt}
                   onChangeText={queryTxt => this.setState({ queryTxt })}
-                  // onSubmitEditing={(event) => this.getFoodList(1)}
                 />
                 {/* <TouchableOpacity 
                   style={{
@@ -244,9 +254,10 @@ class FoodAddScreen extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('FoodCaloriesDetail', {
                         isBack: true,
-                        foodName: item.food_name,
+                        foodName: item.food_name ? item.food_name : item.details[0].name,
                         title: title,
-                        itemId: item.nix_item_id
+                        itemId: item.nix_item_id ? item.nix_item_id : 0,
+                        itemEntry: item
                       })
                     }                    
                     underlayColor={item.color + "aa"}
@@ -269,23 +280,29 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {item.food_name}
+                          {item.food_name ? item.food_name : item.details[0].name}
                         </Text>
-                        <Text style={TextStyles.GeneralText}>
+                        {/* <Text style={TextStyles.GeneralText}>
                           {item.brand_name}
-                        </Text>
+                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
+                          {item.nf_calories ? item.nf_calories : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addFoodList(item)}>
-                        <CachedImage
+                        {/* <CachedImage
                           source={require("../../assets/images/redesign/active-icon.png")}
                           style={{
                             width: 25,
                             height: 25
                           }}
                           resizeMode="contain"
+                        /> */}
+                        <Icon
+                          family={"MaterialCommunityIcons"}
+                          name={"delete"}
+                          color="red"
+                          size={25}
                         />
                       </TouchableOpacity>
                     </View>
@@ -294,7 +311,7 @@ class FoodAddScreen extends Component {
               </Animatable.View>
             );
           })}
-          {this.state.addedFoodList.length > 0 ? 
+          {this.state.foodList.length > 0 ? 
             <Text style={styles.listedTitleTxt}>Recent</Text> : null}
           {this.state.foodList.map((item, index) => {
             return (
@@ -314,7 +331,8 @@ class FoodAddScreen extends Component {
                         isBack: true,
                         foodName: item.food_name,
                         title: title,
-                        itemId: item.nix_item_id
+                        itemId: item.nix_item_id,
+                        itemEntry: item
                       })
                     }                    
                     underlayColor={item.color + "aa"}
@@ -339,9 +357,9 @@ class FoodAddScreen extends Component {
                         <Text style={TextStyles.Header2}>
                           {item.food_name}
                         </Text>
-                        <Text style={TextStyles.GeneralText}>
+                        {/* <Text style={TextStyles.GeneralText}>
                           {item.brand_name}
-                        </Text>
+                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
                           {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
                         </Text>
@@ -382,8 +400,8 @@ export default withSafeAreaActions(
       dispatch(getNutritionixInstantFoodList(query, data)),
     getNutritionixNutrientsFoodList: (formdata, data) => 
       dispatch(getNutritionixNutrientsFoodList(formdata, data)),
-    addFoodEntry: (exerciseInput, title, onAdded) =>
-      dispatch(addFoodEntry(exerciseInput, title, onAdded)),
+    addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, title, dateTime, onAdded)),
     getNutritionixFoodItem: (itemId, data) =>
       dispatch(getNutritionixFoodItem(itemId, data)),
     deleteFoodEntries: (entryId, fetchData) =>

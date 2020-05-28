@@ -42,7 +42,7 @@ class FoodDetailScreen extends Component {
     console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
-      currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
+      currentDate: props.navigation.state.params.date ? props.navigation.state.params.date : moment(),
       foodList: [],
 
       sum_cals: 0,
@@ -77,8 +77,16 @@ class FoodDetailScreen extends Component {
         });
       }
     }
+    let date = this.state.currentDate.format("YYYY-MM-DD");
+    this.getFoodEntries(date);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  getFoodEntries(date) {
     let { params } = this.props.navigation.state;
-    let date = params.date.format("YYYY-MM-DD");
     let title = params.title;
     var sum_cals = 0;
     var sum_protein = 0;
@@ -124,33 +132,28 @@ class FoodDetailScreen extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
-  }
-
   onClickAddMoreFood = () => {
     let { params } = this.props.navigation.state;
     let title = params.title;
     this.props.navigation.navigate('FoodAdd', {
       isBack: true,
-      title: title
+      title: title,
+      dateTime: this.state.currentDate,
+      alreadyAddedFoodList: this.state.foodList,
+      onGoBack: this.onSelect
     });
+  }
+
+  onSelect = () => {
+    var date = this.state.currentDate.format("YYYY-MM-DD");
+    this.getFoodEntries(date);
   }
 
   deleteFood = id => {
     this.props.deleteFoodEntries(id, fetchData => {
       let { params } = this.props.navigation.state;
       let date = params.date.format("YYYY-MM-DD");
-      let title = params.title;
-      this.props.getFoodEntries(date, fetchListData => {
-        var arr = [];
-        fetchListData.map((item, index) => {
-          if (item.meal == title) {
-            arr.push(item);
-          }
-        });
-        this.setState({ foodList: arr });
-      });
+      this.getFoodEntries(date);
     })
   }
 
@@ -190,6 +193,7 @@ class FoodDetailScreen extends Component {
               this.props.navigation.openDrawer();
             }}
             goBack={() => {
+              this.props.navigation.state.params.onGoBack();
               this.props.navigation.goBack("");
             }}
             navBarStyle={{ backgroundColor: "transparent" }}
@@ -235,13 +239,19 @@ class FoodDetailScreen extends Component {
                       </Text> */}
                     </View>
                     <TouchableOpacity onPress={() => this.deleteFood(item._id)}>
-                      <CachedImage
+                      {/* <CachedImage
                           source={require("../../assets/images/redesign/active-icon.png")}
                           style={{
                             width: 25,
                             height: 25
                           }}
                           resizeMode="contain"
+                        /> */}
+                        <Icon
+                          family={"MaterialCommunityIcons"}
+                          name={"delete"}
+                          color="red"
+                          size={25}
                         />
                     </TouchableOpacity>
                   </View>

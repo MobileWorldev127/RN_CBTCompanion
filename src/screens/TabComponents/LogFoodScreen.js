@@ -42,29 +42,14 @@ class LogFoodScreen extends Component {
       items: [
         {
           title: "Breakfast",
-          onPress: () =>
-            this.props.navigation.navigate("FoodAdd", {
-              isBack: true,
-              title: "Breakfast",
-            }),
           image: require("../../assets/images/redesign/Breakfast-icon.png")
         },
         {
           title: "Lunch",
-          onPress: () =>
-            this.props.navigation.navigate("FoodAdd", {
-              isBack: true,
-              title: "Lunch",
-            }),
           image: require("../../assets/images/redesign/Lunch-icon.png")
         },
         {
           title: "Dinner",
-          onPress: () =>
-            this.props.navigation.navigate("FoodAdd", {
-              isBack: true,
-              title: "Dinner",
-            }),
           image: require("../../assets/images/redesign/DInner-icon.png")
         }
       ],
@@ -100,19 +85,91 @@ class LogFoodScreen extends Component {
         });
       }
     }
-    var sum_total_cals = 0;
-    var sum_protein = 0;
-    var sum_carbs = 0;
-    var sum_fat = 0;
-    var cals_breakfast = 0;
-    var cals_lunch = 0;
-    var cals_dinner = 0;
-    var food_breakfast_list = [];
-    var food_lunch_list = [];
-    var food_dinner_list = [];
     var date = this.state.currentDate.format("YYYY-MM-DD");
+    this.getFoodList(date);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  onPressFoodDetail = title => {
+    this.props.navigation.navigate("FoodDetail", {
+      isBack: true,
+      title: title,
+      date: this.state.currentDate,
+      onGoBack: this.onSelect
+    });
+  };
+
+  onPressAddFood = title => {
+    this.props.navigation.navigate("FoodAdd", {
+      isBack: true,
+      title: title,
+      dateTime: this.state.currentDate,
+      alreadyAddedFoodList: [],
+      onGoBack: this.onSelect
+    });
+  }
+
+  onSelect = () => {
+    var date = this.state.currentDate.format("YYYY-MM-DD");
+    this.getFoodList(date);
+  }
+
+  showFoodNamesList = meal => {
+    switch (meal) {
+      case "Breakfast":
+        return this.state.food_breakfast_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+      case "Lunch":
+        return this.state.food_lunch_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+      case "Dinner":
+        return this.state.food_dinner_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+    }
+  }
+
+  onClickBeforeDay = () => {
+    var prev_date = new Date(this.state.currentDate - 864e5);
+    this.setState({
+      currentDate: moment(prev_date)
+    });
+    this.getFoodList(moment(prev_date).format("YYYY-MM-DD"));
+  }
+
+  onClickAfterDay = () => {
+    var after_date = new Date(this.state.currentDate + 864e5);
+    this.setState({
+      currentDate: moment(after_date)
+    });
+    this.getFoodList(moment(after_date).format("YYYY-MM-DD"));
+  }
+
+  getFoodList(date) {
     this.props.getFoodEntries(date, fetchListData => {
-      fetchListData.map(item => {
+      var sum_total_cals = 0;
+      var sum_protein = 0;
+      var sum_carbs = 0;
+      var sum_fat = 0;
+      var cals_breakfast = 0;
+      var cals_lunch = 0;
+      var cals_dinner = 0;
+      var food_breakfast_list = [];
+      var food_lunch_list = [];
+      var food_dinner_list = [];
+      
+        fetchListData.map(item => {
         sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;
         sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
         sum_carbs += JSON.parse(item.details[0].macroNutrients)
@@ -144,41 +201,6 @@ class LogFoodScreen extends Component {
         food_dinner_list: food_dinner_list,
       });
     });
-  }
-
-  componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
-  }
-
-  onPressFoodDetail = title => {
-    this.props.navigation.navigate("FoodDetail", {
-      isBack: true,
-      title: title,
-      date: this.state.currentDate,
-    });
-  };
-
-  showFoodNamesList = meal => {
-    switch (meal) {
-      case "Breakfast":
-        return this.state.food_breakfast_list.map((item1, index) => {
-          if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
-          }
-        });
-      case "Lunch":
-        return this.state.food_lunch_list.map((item1, index) => {
-          if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
-          }
-        });
-      case "Dinner":
-        return this.state.food_dinner_list.map((item1, index) => {
-          if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
-          }
-        });
-    }
   }
 
   render() {
@@ -287,7 +309,7 @@ class LogFoodScreen extends Component {
         </LinearGradient>
         <View style={styles.mainContainerView}>
           <View style={styles.dateView}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.onClickBeforeDay}>
               <Icon
                 name="ios-arrow-back"
                 size={22}
@@ -295,12 +317,12 @@ class LogFoodScreen extends Component {
                 style={styles.pickerIcon}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.onClickDay}>
               <Text style={TextStyles.Header2}>
                 {this.state.currentDate.format("dddd, DD MMMM")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.onClickAfterDay}>
               <Icon
                 name="ios-arrow-forward"
                 size={22}
@@ -323,7 +345,6 @@ class LogFoodScreen extends Component {
                 >
                   <Card style={{ margin: 5 }}>
                     <TouchableOpacity
-                      // onPress={item.onPressFoodDetail}
                       onPress={() => this.onPressFoodDetail(item.title)}
                       underlayColor={item.color + "aa"}
                       style={{
@@ -362,18 +383,9 @@ class LogFoodScreen extends Component {
                           >
                             {item.title}
                           </Text>
-                          {/* {
-                            this.state.food_breakfast_list.map((item1, index) => {
-                              if(index < 3){
-                                return (
-                                  <Text>{item1.details[0].name}</Text>
-                                );
-                              };
-                            })
-                          } */}
                           {this.showFoodNamesList(item.title)}
                         </View>
-                        <TouchableOpacity onPress={item.onPress}>
+                        <TouchableOpacity onPress={() => this.onPressAddFood(item.title)}>
                           <CachedImage
                             source={require("../../assets/images/redesign/add-food.png")}
                             style={{

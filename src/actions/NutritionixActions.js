@@ -15,8 +15,8 @@ const BASE_URL = 'https://trackapi.nutritionix.com/v2/';
 const INSTANT = 'search/instant';
 const ITEM = 'search/item';
 const NUTIENTS = 'natural/nutrients'
-const nutritionix_id = '57e669fc';
-const nutritionix_key = '0826d9bbad26f5448beada63a3a59f7c';
+const nutritionix_id = '7ff2fd49';
+const nutritionix_key = '884a94b05d6044a0e241747c7496dc2a';
 
 
 export function getNutritionixInstantFoodListSuccess(response) {
@@ -105,7 +105,9 @@ export function getNutritionixFoodItem(itemId, foodData) {
 };
 
 
-export function addFoodEntry(entry, title, foodEntryData) {
+export function addFoodEntry(entry, title, dateTime, foodEntryData) {
+  console.log('------------->')
+  console.log(dateTime)
   return function(dispatch, state) {
     // dispatch(setLoading(true));
     Amplify.configure(
@@ -113,7 +115,7 @@ export function addFoodEntry(entry, title, foodEntryData) {
     );
 
     let variables = {
-      dateTime: moment().format("YYYY-MM-DD"),
+      dateTime: dateTime,
       meal: title,
       source: "Nutritionix",
       details: [
