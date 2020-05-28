@@ -5,7 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import LinearGradient from "react-native-linear-gradient";
@@ -22,8 +22,9 @@ import { Auth } from "aws-amplify";
 import { recordScreenEvent, screenNames } from "../../utils/AnalyticsUtils";
 import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
-import CachedImage from 'react-native-image-cache-wrapper';
-import Card from '../../components/Card';
+import CachedImage from "react-native-image-cache-wrapper";
+import Card from "../../components/Card";
+import { getFoodEntries } from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -40,53 +41,48 @@ class LogFoodScreen extends Component {
       currentDate: moment(),
       items: [
         {
-          title: 'Breakfast',
+          title: "Breakfast",
           onPress: () =>
-            this.props.navigation.navigate('FoodAdd', {
+            this.props.navigation.navigate("FoodAdd", {
               isBack: true,
-              title: 'Breakfast'
+              title: "Breakfast",
             }),
-          onPressFoodDetail: () =>
-            this.props.navigation.navigate('FoodDetail', {
-              isBack: true,
-              title: 'Breakfast'
-            }),
-          image: require('../../assets/images/redesign/Breakfast-icon.png'),
+          image: require("../../assets/images/redesign/Breakfast-icon.png")
         },
         {
-          title: 'Add Lunch',
+          title: "Lunch",
           onPress: () =>
-            this.props.navigation.navigate('FoodAdd', {
+            this.props.navigation.navigate("FoodAdd", {
               isBack: true,
-              title: 'Lunch'
+              title: "Lunch",
             }),
-          onPressFoodDetail: () =>
-            this.props.navigation.navigate('FoodDetail', {
-              isBack: true,
-              title: 'Breakfast'
-            }),
-          image: require('../../assets/images/redesign/Lunch-icon.png'),
+          image: require("../../assets/images/redesign/Lunch-icon.png")
         },
         {
-          title: 'Add Dinner',
+          title: "Dinner",
           onPress: () =>
-            this.props.navigation.navigate('FoodAdd', {
+            this.props.navigation.navigate("FoodAdd", {
               isBack: true,
-              title: 'Dinner'
+              title: "Dinner",
             }),
-          onPressFoodDetail: () =>
-            this.props.navigation.navigate('FoodDetail', {
-              isBack: true,
-              title: 'Breakfast'
-            }),
-          image: require('../../assets/images/redesign/DInner-icon.png'),
-        },
+          image: require("../../assets/images/redesign/DInner-icon.png")
+        }
       ],
+      sum_total_cals: 0,
+      sum_carbs: 0,
+      sum_protein: 0,
+      sum_fat: 0,
+      cals_breakfast: 0,
+      cals_lunch: 0,
+      cals_dinner: 0,
+      food_breakfast_list: [],
+      food_lunch_list: [],
+      food_dinner_list: [],
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
       this.setState({
-        userName: info && info.attributes && info.attributes.name
+        userName: info && info.attributes && info.attributes.name,
       });
     });
   }
@@ -100,14 +96,89 @@ class LogFoodScreen extends Component {
       );
       if (userInfo && userInfo.attributes) {
         this.setState({
-          userName: userInfo.attributes.name,
+          userName: userInfo.attributes.name
         });
       }
     }
+    var sum_total_cals = 0;
+    var sum_protein = 0;
+    var sum_carbs = 0;
+    var sum_fat = 0;
+    var cals_breakfast = 0;
+    var cals_lunch = 0;
+    var cals_dinner = 0;
+    var food_breakfast_list = [];
+    var food_lunch_list = [];
+    var food_dinner_list = [];
+    var date = this.state.currentDate.format("YYYY-MM-DD");
+    this.props.getFoodEntries(date, fetchListData => {
+      fetchListData.map(item => {
+        sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;
+        sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
+        sum_carbs += JSON.parse(item.details[0].macroNutrients)
+          .total_carbohydrate;
+        sum_fat += JSON.parse(item.details[0].macroNutrients).total_fat;
+        if (item.meal === "Breakfast") {
+          cals_breakfast += JSON.parse(item.details[0].macroNutrients).calories;
+          food_breakfast_list.push(item);
+        }
+        if (item.meal === "Lunch") {
+          cals_lunch += JSON.parse(item.details[0].macroNutrients).calories;
+          food_lunch_list.push(item);
+        }
+        if (item.meal === "Dinner") {
+          cals_dinner += JSON.parse(item.details[0].macroNutrients).calories;
+          food_dinner_list.push(item);
+        }
+      });
+      this.setState({
+        sum_total_cals: sum_total_cals,
+        sum_protein: sum_protein,
+        sum_carbs: sum_carbs,
+        sum_fat: sum_fat,
+        cals_breakfast: cals_breakfast,
+        cals_lunch: cals_lunch,
+        cals_dinner: cals_dinner,
+        food_breakfast_list: food_breakfast_list,
+        food_lunch_list: food_lunch_list,
+        food_dinner_list: food_dinner_list,
+      });
+    });
   }
 
   componentWillUnmount() {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  onPressFoodDetail = title => {
+    this.props.navigation.navigate("FoodDetail", {
+      isBack: true,
+      title: title,
+      date: this.state.currentDate,
+    });
+  };
+
+  showFoodNamesList = meal => {
+    switch (meal) {
+      case "Breakfast":
+        return this.state.food_breakfast_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+      case "Lunch":
+        return this.state.food_lunch_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+      case "Dinner":
+        return this.state.food_dinner_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+    }
   }
 
   render() {
@@ -115,12 +186,12 @@ class LogFoodScreen extends Component {
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     return (
-      <View style={[ThemeStyle.pageContainer, { overflow: 'hidden' }]}>
+      <View style={[ThemeStyle.pageContainer, { overflow: "hidden" }]}>
         <LinearGradient
           colors={ThemeStyle.gradientColor}
           start={{
             x: 0.2,
-            y: 0
+            y: 0,
           }}
           end={{ y: 1.4, x: 0.2 }}
           style={styles.headerView}
@@ -140,76 +211,82 @@ class LogFoodScreen extends Component {
             />
             <Animatable.View animation="fadeInDown">
               <View style={styles.calorieCircleView}>
-                <Text style={styles.calorieCircleTxt}>0</Text>
+                <Text style={styles.calorieCircleTxt}>
+                  {this.state.sum_total_cals}
+                </Text>
                 <Text>Calories</Text>
               </View>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: "row" }}>
                 <View style={styles.nutritionixTabView}>
-                  <Text style={{ color: 'white' }}>CARBS</Text>
+                  <Text style={{ color: "white" }}>CARBS</Text>
                   <View
                     style={{
                       width: screenWidth / 5,
                       height: 5,
-                      backgroundColor: '#ccc',
-                      marginVertical: 5,
+                      backgroundColor: "#ccc",
+                      marginVertical: 5
                     }}
                   >
                     <View
                       style={{
                         width: screenWidth / 7,
                         height: 5,
-                        backgroundColor: 'white',
+                        backgroundColor: "white"
                       }}
                     />
                   </View>
-                  <Text style={{ color: 'white' }}>100g</Text>
+                  <Text style={{ color: "white" }}>
+                    {this.state.sum_carbs}g
+                  </Text>
                 </View>
                 <View style={styles.nutritionixTabView}>
-                  <Text style={{ color: 'white' }}>PROTEIN</Text>
+                  <Text style={{ color: "white" }}>PROTEIN</Text>
                   <View
                     style={{
                       width: screenWidth / 5,
                       height: 5,
-                      backgroundColor: '#ccc',
-                      marginVertical: 5,
+                      backgroundColor: "#ccc",
+                      marginVertical: 5
                     }}
                   >
                     <View
                       style={{
                         width: screenWidth / 7,
                         height: 5,
-                        backgroundColor: 'white',
+                        backgroundColor: "white"
                       }}
                     />
                   </View>
-                  <Text style={{ color: 'white' }}>100g</Text>
+                  <Text style={{ color: "white" }}>
+                    {this.state.sum_protein}g
+                  </Text>
                 </View>
                 <View style={styles.nutritionixTabView}>
-                  <Text style={{ color: 'white' }}>FAT</Text>
+                  <Text style={{ color: "white" }}>FAT</Text>
                   <View
                     style={{
                       width: screenWidth / 5,
                       height: 5,
-                      backgroundColor: '#ccc',
-                      marginVertical: 5,
+                      backgroundColor: "#ccc",
+                      marginVertical: 5
                     }}
                   >
                     <View
                       style={{
                         width: screenWidth / 7,
                         height: 5,
-                        backgroundColor: 'white',
+                        backgroundColor: "white"
                       }}
                     />
                   </View>
-                  <Text style={{ color: 'white' }}>100g</Text>
+                  <Text style={{ color: "white" }}>{this.state.sum_fat}g</Text>
                 </View>
               </View>
             </Animatable.View>
           </View>
         </LinearGradient>
-        <View style = {styles.mainContainerView}>
-          <View style = {styles.dateView}>
+        <View style={styles.mainContainerView}>
+          <View style={styles.dateView}>
             <TouchableOpacity>
               <Icon
                 name="ios-arrow-back"
@@ -241,15 +318,16 @@ class LogFoodScreen extends Component {
                   style={{
                     flex: 1,
                     maxHeight: 160,
-                    overflow: 'hidden',
+                    overflow: "hidden"
                   }}
                 >
-                  <Card style={{ margin: 5}}>
+                  <Card style={{ margin: 5 }}>
                     <TouchableOpacity
-                      onPress={item.onPressFoodDetail}
+                      // onPress={item.onPressFoodDetail}
+                      onPress={() => this.onPressFoodDetail(item.title)}
                       underlayColor={item.color + "aa"}
                       style={{
-                        backgroundColor: item.color
+                        backgroundColor: item.color,
                       }}
                     >
                       <View
@@ -257,41 +335,50 @@ class LogFoodScreen extends Component {
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          padding: 15
+                          padding: 15,
                         }}
                       >
                         <CachedImage
                           source={item.image}
                           style={{
                             width: 80,
-                            height: 80,
+                            height: 80
                           }}
                           resizeMode="contain"
                         />
                         <View
                           style={{
-                            flexDirection: 'row',
                             padding: 15,
-                            flex: 1,
+                            flex: 1
                           }}
                         >
                           <Text
                             style={[
                               TextStyles.Header2,
                               {
-                                color: item.color,
-                              },
+                                color: item.color
+                              }
                             ]}
                           >
                             {item.title}
                           </Text>
+                          {/* {
+                            this.state.food_breakfast_list.map((item1, index) => {
+                              if(index < 3){
+                                return (
+                                  <Text>{item1.details[0].name}</Text>
+                                );
+                              };
+                            })
+                          } */}
+                          {this.showFoodNamesList(item.title)}
                         </View>
                         <TouchableOpacity onPress={item.onPress}>
                           <CachedImage
-                            source={require('../../assets/images/redesign/add-food.png')}
+                            source={require("../../assets/images/redesign/add-food.png")}
                             style={{
                               width: 25,
-                              height: 25,
+                              height: 25
                             }}
                             resizeMode="contain"
                           />
@@ -310,14 +397,14 @@ class LogFoodScreen extends Component {
           mode="datetime"
           onCancel={() => {
             this.setState({
-              isDatePickerVisible: false,
+              isDatePickerVisible: false
             });
           }}
           onConfirm={date => {
             console.log(date);
             this.setState({
               isDatePickerVisible: false,
-              currentDate: moment(date),
+              currentDate: moment(date)
             });
           }}
           maximumDate={new Date()}
@@ -331,11 +418,13 @@ export default withSafeAreaActions(
   LogFoodScreen,
   state => ({
     isEdit: state.record.isEdit,
-    editEntry: state.record.editEntry
+    editEntry: state.record.editEntry,
   }),
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
-      dispatch(setMood(mood, timestamp, isEdit, entryID))
+      dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    getFoodEntries: (date, fetchListData) =>
+      dispatch(getFoodEntries(date, fetchListData))
   })
 );
 
@@ -345,43 +434,43 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
     borderBottomLeftRadius: 220,
     borderBottomRightRadius: 220,
-    transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }]
+    transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }],
   },
   headerMainView: {
-    transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }]
+    transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
   },
   calorieCircleView: {
     width: screenWidth / 3,
     height: screenWidth / 3,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: screenWidth / 3,
     borderWidth: 2,
-    borderColor: '#3992B6',
+    borderColor: "#3992B6",
     borderRadius: screenWidth / 3,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   calorieCircleTxt: {
     fontSize: 24,
-    color: '#3992B6',
-    fontWeight: 'bold'
+    color: "#3992B6",
+    fontWeight: "bold",
   },
   nutritionixTabView: {
     width: screenWidth / 3,
     height: 100,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center"
   },
   mainContainerView: {
     flex: 1,
     padding: 15,
-    marginTop: -30
+    marginTop: -30,
   },
   dateView: {
-    flexDirection: 'row',
-    alignItems:'center',
-    justifyContent: 'space-between',
-    margin: 10
-  }
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: 10,
+  },
 });

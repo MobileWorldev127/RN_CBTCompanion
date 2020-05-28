@@ -27,6 +27,7 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {getNutritionixFoodItem} from "../../actions/NutritionixActions"
+import {addFoodEntry} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -41,7 +42,8 @@ class FoodCaloriesDetailScreen extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
-      foodNutritinDetail: {}
+      foodNutritinDetail: {},
+      isVisiableAdd: true
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -56,10 +58,11 @@ class FoodCaloriesDetailScreen extends Component {
     let itemId = params.itemId;
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
     this.props.getNutritionixFoodItem(itemId, data => {
-      console.log('@@@')
+      console.log('success===========+>')
       console.log(data)
       this.setState({
-        foodNutritinDetail: data.foods[0]
+        foodNutritinDetail: data.foods[0],
+        isVisiableAdd: true
       })
     });
     if (!isOnline()) {
@@ -78,11 +81,24 @@ class FoodCaloriesDetailScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
+  onClickAddToList = () => {
+    if (this.state.isVisiableAdd ){
+      let { params } = this.props.navigation.state;
+      let title = params.title;
+      this.props.addFoodEntry(this.state.foodNutritinDetail, title, onAdded => {
+        this.setState({isVisiableAdd: false})
+      })
+    }
+    else {
+      alert('You already added to your Food List');    }
+    
+  }
+
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
-    let title = params.title;
+    let foodName = params.foodName;
     return (
       <View style={ThemeStyle.pageContainer}>
         <LinearGradient
@@ -95,7 +111,7 @@ class FoodCaloriesDetailScreen extends Component {
           style={styles.headerView}
         >
           <Header
-            title={title}
+            title={foodName}
             isDrawer={!isBack}
             openDrawer={() => {
               this.props.navigation.openDrawer();
@@ -117,12 +133,12 @@ class FoodCaloriesDetailScreen extends Component {
             </View>            
             <Text style={[TextStyles.SubHeaderBold, styles.unitInput]}>{this.state.foodNutritinDetail.serving_unit}</Text>
           </View>
-          <TouchableOpacity style={styles.addBtn}>
-            <Text style={{color: 'white', fontSize: 16}}>ADD TO LIST</Text>
-          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.addBtn} onPress = {this.onClickAddToList}>
+            <Text style={{color: 'white', fontSize: 16}}>ADD</Text>
+          </TouchableOpacity> */}
           
           <View style={styles.calsView}>
-            <Text style={{color: ThemeStyle.accentColor, fontSize: 25}}> {this.state.foodNutritinDetail.nf_calories}
+            <Text style={{color: '#f7992a', fontSize: 25}}> {this.state.foodNutritinDetail.nf_calories}
               <Text style={{fontSize: 25, color:'black'}}> cals
               </Text>
             </Text>
@@ -149,7 +165,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_protein}</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_carbohydrate}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -167,7 +183,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_carbohydrate}</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_protein}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -184,7 +200,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_fat}</Text>
+                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_fat}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -192,13 +208,13 @@ class FoodCaloriesDetailScreen extends Component {
               </View>
             </View>
 
-            <View style={styles.viewLine}/>
+            <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Protein</Text>
               <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_protein}g</Text>
             </View>
 
-            <View style={styles.viewLine}/>
+            <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Carbs</Text>
               <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_carbohydrate}g</Text>
@@ -212,7 +228,7 @@ class FoodCaloriesDetailScreen extends Component {
               <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_sugars}g</Text>
             </View>
 
-            <View style={styles.viewLine}/>
+            <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Fat</Text>
               <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_fat}g</Text>
@@ -222,7 +238,7 @@ class FoodCaloriesDetailScreen extends Component {
               <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_saturated_fat}g</Text>
             </View>
 
-            <View style={styles.viewLine}/>
+            <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Others</Text>
             </View>
@@ -257,7 +273,9 @@ export default withSafeAreaActions(
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getNutritionixFoodItem: (itemId, data) =>
-      dispatch(getNutritionixFoodItem(itemId, data))
+      dispatch(getNutritionixFoodItem(itemId, data)),
+    addFoodEntry: (exerciseInput, title, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, title, onAdded))
   })
 );
 
@@ -341,7 +359,7 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ThemeStyle.lessonColor,
+    backgroundColor: '#f7992a',
     borderRadius: 12
   },
   tableView: {
@@ -369,7 +387,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
     marginLeft: -25,
     height: 1,
-    backgroundColor: ThemeStyle.disabled,
+    backgroundColor: ThemeStyle.text3,
     marginVertical: 20
   },
   qtyView: {

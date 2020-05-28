@@ -170,19 +170,19 @@ export default class FollowUpItem extends Component<{}, {}> {
     let followUpResult;
     let title = "";
     let isPrediction = false;
-    switch (this.state.type) {
-      case followUpTypes.PREDICTION:
-        imagePath = require("../../assets/images/redesign/cbt-prediction-graphic.png");
-        followUpResult = followupData.details[0];
-        title = "Prediction";
-        isPrediction = true;
-        break;
-      case followUpTypes.THOUGHT:
-        imagePath = require("../../assets/images/redesign/cbt-automatic-thought-graphic.png");
-        followUpResult = followupData.details[1];
-        title = "Challenge Automatic \nThought";
-        break;
-    }
+    // switch (this.state.type) {
+    //   case followUpTypes.PREDICTION:
+    //     imagePath = require("../../assets/images/redesign/cbt-prediction-graphic.png");
+    //     followUpResult = followupData.details[0];
+    //     title = "Prediction";
+    //     isPrediction = true;
+    //     break;
+    //   case followUpTypes.THOUGHT:
+    //     imagePath = require("../../assets/images/redesign/cbt-automatic-thought-graphic.png");
+    //     followUpResult = followupData.details[1];
+    //     title = "Challenge Automatic \nThought";
+    //     break;
+    // }
     LayoutAnimation.easeInEaseOut();
     return (
       <TouchableOpacity

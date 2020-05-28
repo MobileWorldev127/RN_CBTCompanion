@@ -2,6 +2,7 @@ export * from "./defaultItems";
 export * from "./userPreference";
 export * from "./getEntries";
 export * from "./deleteEntry";
+export * from "./deleteFoodEntry"
 export * from "./addSkill";
 export * from "./addEntry";
 export * from "./addTarget";

@@ -27,7 +27,8 @@ import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { Circle } from 'react-native-svg'
+import { getFoodEntries, deleteFoodEntries } from "../../actions/NutritionixActions"
+
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -42,38 +43,18 @@ class FoodDetailScreen extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
-      foodList: [
-        {
-          name: "3 Eggs",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-          onPress: () =>
-            this.props.navigation.navigate('FoodCaloriesDetail', {
-              isBack: true,
-              title: 'Egg'
-            }),
-        },
-        {
-          name: "Orage Juice",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-          onPress: () =>
-            this.props.navigation.navigate('FoodCaloriesDetail', {
-              isBack: true,
-              title: 'Juice'
-            }),
-        },
-        {
-          name: "2 Kiwi",
-          detail: "Maritime Pride",
-          value: "70 cals - 1 eggs(1.9 oz)",
-          onPress: () =>
-            this.props.navigation.navigate('FoodCaloriesDetail', {
-              isBack: true,
-              title: 'Kiwi'
-            }),
-        }
-      ],
+      foodList: [],
+
+      sum_cals: 0,
+      sum_protein: 0,
+      sum_carbs: 0,
+      sum_fiber: 0,
+      sum_sugar: 0,
+      sum_fat: 0,
+      sum_saturated_fat: 0,
+      sum_sodium: 0,
+      sum_potassium: 0,
+      sum_cholesterol: 0
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -82,7 +63,7 @@ class FoodDetailScreen extends Component {
       });
     });
   }
-
+ 
   async componentDidMount() {
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
     recordScreenEvent(screenNames.record);
@@ -96,11 +77,95 @@ class FoodDetailScreen extends Component {
         });
       }
     }
+    let { params } = this.props.navigation.state;
+    let date = params.date.format("YYYY-MM-DD");
+    let title = params.title;
+    var sum_cals = 0;
+    var sum_protein = 0;
+    var sum_carbs = 0;
+    var sum_fiber = 0;
+    var sum_sugar = 0;
+    var sum_fat = 0;
+    var sum_saturated_fat = 0;
+    var sum_sodium = 0;
+    var sum_potassium = 0;
+    var sum_cholesterol = 0;
+
+    this.props.getFoodEntries(date, fetchListData => {
+      var arr = [];
+      fetchListData.map((item, index) => {
+        if (item.meal == title) {
+          arr.push(item);
+          sum_cals += JSON.parse(item.details[0].macroNutrients).calories;
+          sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
+          sum_carbs += JSON.parse(item.details[0].macroNutrients).total_carbohydrate;
+          sum_fiber += JSON.parse(item.details[0].macroNutrients).dietary_fiber;
+          sum_sugar += JSON.parse(item.details[0].macroNutrients).sugars;
+          sum_fat += JSON.parse(item.details[0].macroNutrients).total_fat;
+          sum_saturated_fat += JSON.parse(item.details[0].macroNutrients).saturated_fat;
+          sum_sodium += JSON.parse(item.details[0].macroNutrients).sodium;
+          sum_potassium += JSON.parse(item.details[0].macroNutrients).potassium;
+          sum_cholesterol += JSON.parse(item.details[0].macroNutrients).cholesterol;
+        }
+      });
+      this.setState({
+        foodList: arr,
+        sum_cals: sum_cals,
+        sum_protein: sum_protein,
+        sum_carbs: sum_carbs,
+        sum_fiber: sum_fiber,
+        sum_sugar: sum_sugar,
+        sum_fat: sum_fat,
+        sum_saturated_fat: sum_saturated_fat,
+        sum_sodium: sum_sodium,
+        sum_potassium: sum_potassium,
+        sum_cholesterol: sum_cholesterol
+      });
+    });
   }
 
   componentWillUnmount() {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
+
+  onClickAddMoreFood = () => {
+    let { params } = this.props.navigation.state;
+    let title = params.title;
+    this.props.navigation.navigate('FoodAdd', {
+      isBack: true,
+      title: title
+    });
+  }
+
+  deleteFood = id => {
+    this.props.deleteFoodEntries(id, fetchData => {
+      let { params } = this.props.navigation.state;
+      let date = params.date.format("YYYY-MM-DD");
+      let title = params.title;
+      this.props.getFoodEntries(date, fetchListData => {
+        var arr = [];
+        fetchListData.map((item, index) => {
+          if (item.meal == title) {
+            arr.push(item);
+          }
+        });
+        this.setState({ foodList: arr });
+      });
+    })
+  }
+
+  // onClickDetailFood = item => {
+  //   console.log(item)
+  //   let { params } = this.props.navigation.state;
+  //   let isBack = params && params.isBack;
+  //   let title = params.title;
+  //   this.props.navigation.navigate('FoodCaloriesDetail', {
+  //     isBack: true,
+  //     foodName: item.details[0].name,
+  //     title: title,
+  //     itemId: item._id
+  //   })
+  // }
 
   render() {
     console.log("Render home", this.state);
@@ -135,13 +200,13 @@ class FoodDetailScreen extends Component {
           </Text>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          <TouchableOpacity style={styles.addBtn}>
+          <TouchableOpacity style={styles.addBtn} onPress = {() => this.onClickAddMoreFood()}>
             <Text style={{color: 'white', fontSize: 16}}>ADD MORE FOOD</Text>
           </TouchableOpacity>
           <View style={styles.tableView}>
             {this.state.foodList.map((item, index) => {
               return (
-                <TouchableOpacity onPress={item.onPress}>
+                <TouchableOpacity>
                   <View
                     style={{
                       flexDirection: "row",
@@ -160,30 +225,32 @@ class FoodDetailScreen extends Component {
                       }}
                     >
                       <Text style={TextStyles.Header2}>
-                        {item.name}
+                        {item.details[0].name}
                       </Text>
                       <Text style={TextStyles.GeneralText}>
-                        {item.detail}
+                        {JSON.parse(item.details[0].macroNutrients).calories} cals - {item.details[0].qty} {item.details[0].unit}
                       </Text>
-                      <Text style={TextStyles.GeneralText}>
-                        {item.value}
-                      </Text>
+                      {/* <Text style={TextStyles.GeneralText}>
+                        {item.details[0].qty} {item.details[0].unit}
+                      </Text> */}
                     </View>
-                    <CachedImage
-                        source={require("../../assets/images/redesign/active-icon.png")}
-                        style={{
-                          width: 25,
-                          height: 25
-                        }}
-                        resizeMode="contain"
-                      />
+                    <TouchableOpacity onPress={() => this.deleteFood(item._id)}>
+                      <CachedImage
+                          source={require("../../assets/images/redesign/active-icon.png")}
+                          style={{
+                            width: 25,
+                            height: 25
+                          }}
+                          resizeMode="contain"
+                        />
+                    </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
               );
             })}
           </View>
           <View style={styles.calsView}>
-            <Text style={{color: ThemeStyle.accentColor, fontSize: 25}}> 243
+            <Text style={{color: '#f7992a', fontSize: 25}}> {this.state.sum_cals}
               <Text style={{fontSize: 25, color:'black'}}> cals
               </Text>
             </Text>
@@ -210,7 +277,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>95%</Text>
+                      <Text style={styles.processTxt}>{this.state.sum_carbs}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -228,7 +295,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>35%</Text>
+                      <Text style={styles.processTxt}>{this.state.sum_protein}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -246,7 +313,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>45%</Text>
+                      <Text style={styles.processTxt}>{this.state.sum_fat}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -257,35 +324,48 @@ class FoodDetailScreen extends Component {
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Protein</Text>
-              <Text style={TextStyles.SubHeader2}>10.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.sum_protein}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Carbs</Text>
-              <Text style={TextStyles.SubHeader2}>0.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.sum_carbs}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Fiber</Text>
-              <Text style={TextStyles.GeneralText}>0.4g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_fiber}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Sugar</Text>
-              <Text style={TextStyles.GeneralText}>0.2g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_sugar}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Fat</Text>
-              <Text style={TextStyles.SubHeader2}>0.6g</Text>
+              <Text style={TextStyles.SubHeader2}>{this.state.sum_fat}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Saturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>0.4g</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_saturated_fat}g</Text>
+            </View>
+            
+            <View style={styles.viewLine}/>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={TextStyles.SubHeader2}>Others</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
+              <Text style={TextStyles.GeneralText}>Sodium</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_sodium}g</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
+              <Text style={TextStyles.GeneralText}>Potassium</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_potassium}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={TextStyles.GeneralText}>Unsaturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>0.2g</Text>
+              <Text style={TextStyles.GeneralText}>Cholesterol</Text>
+              <Text style={TextStyles.GeneralText}>{this.state.sum_cholesterol}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
@@ -306,6 +386,12 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    getFoodEntries: (date, fetchListData) =>
+      dispatch(getFoodEntries(date, fetchListData)),
+    deleteFoodEntries: (entryId, fetchData) =>
+      dispatch(deleteFoodEntries(entryId, fetchData)),
+      getNutritionixFoodItem: (itemId, data) =>
+      dispatch(getNutritionixFoodItem(itemId, data)),
   })
 );
 

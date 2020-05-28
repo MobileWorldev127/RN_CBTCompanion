@@ -27,8 +27,7 @@ import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
-import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList} from "../../actions/NutritionixActions"
-import {addFoodEntry} from "../../actions/NutritionixActions"
+import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList, addFoodEntry, getNutritionixFoodItem, deleteFoodEntries, getFoodEntries} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -47,7 +46,9 @@ class FoodAddScreen extends Component {
       queryTxt: '',
       foodList: [],
       addedFoodList: [],
-      isSpeaking: false
+      isSpeaking: false,
+      foodNutritinDetail: {},
+      addedFoodKeyList: []
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -76,47 +77,74 @@ class FoodAddScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  getFoodList = (index) => {
-    if(index == 0){
-      this.props.getNutritionixInstantFoodList(this.state.query, data => {
+  onChangeQuery = query => {
+    if (query) {
+      this.props.getNutritionixInstantFoodList(query, data => {
+        console.log('Success-->')
+        console.log(data)
         this.setState({
           foodList: data.branded
         })
       });
     }
     else {
-      this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
-        console.log("@@")
-        console.log(data.foods)
-        this.setState({
-          foodList: data.foods
-        })
+      this.setState({
+        foodList: []
       });
-    }    
+    }
   }
 
-  addFoodList = (item) => {
-    var arr = this.state.addedFoodList;
-    if(arr.indexOf(item) > -1) {
-      return;
+  addFoodList = item => {
+    let { params } = this.props.navigation.state;
+    let title = params.title;
+    var addedFoodList = this.state.addedFoodList;
+    var foodList = [...this.state.foodList];
+    if (addedFoodList.indexOf(item) > -1) {
+      let date = moment().format("YYYY-MM-DD");
+      this.props.getFoodEntries(date, fetchListData => {
+        fetchListData.map(item1 => {
+          if (item1.details[0].name == item.food_name){
+            this.props.deleteFoodEntries(item1._id, fetchData => {
+              var index = addedFoodList.indexOf(item);
+              if (index !== -1) {
+                addedFoodList.splice(index, 1);
+                this.setState({ addedFoodList: addedFoodList });
+              }
+              else {
+                return;
+              }
+            })
+          }
+        });        
+      });
     }
     else {
-      arr.push(item)
-      this.setState({ addFoodList: arr })
+      this.props.getNutritionixFoodItem(item.nix_item_id, data => {
+        console.log('===>')
+        console.log(data)
+        this.props.addFoodEntry(data.foods[0], title, onAdded => {
+          let date = moment().format("YYYY-MM-DD");
+            console.log('_____')
+          addedFoodList.push(item);
+          var index = foodList.indexOf(item);
+          if (index !== -1) {
+            foodList.splice(index, 1);
+            this.setState({
+              addFoodList: addedFoodList,
+              foodList: foodList,
+            });
+          };
+        });
+      });
     }
   }
 
-  getEntryInputFromRecordFlow = () => {
-    let entry = {};
-    entry.name = "ABC"
-    return entry;
-  };
-
   onClickAdd = () => {
-    // alert('1')
-    this.props. addFoodEntry(this.getEntryInputFromRecordFlow(), data => {
-      console.log('SUUUCCESSS__________-')
-    })
+    this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
+      this.setState({
+        foodList: data.foods
+      })
+    });
     
   }
 
@@ -156,8 +184,9 @@ class FoodAddScreen extends Component {
               <SearchField 
                 iconName="ios-search" 
                 placeholder="Search food..." 
-                onChangeText={query => this.setState({query})}
-                onSubmitEditing={(event) => this.getFoodList(0)}
+                // onChangeText={query => this.setState({query})}
+                onChangeText={query => this.onChangeQuery(query)}
+                // onSubmitEditing={(event) => this.getFoodList(0)}
               />
               <View style={styles.inputView}>
                 <TextInput
@@ -168,7 +197,7 @@ class FoodAddScreen extends Component {
                   underlineColorAndroid="transparent"
                   defaultValue={this.state.queryTxt}
                   onChangeText={queryTxt => this.setState({ queryTxt })}
-                  onSubmitEditing={(event) => this.getFoodList(1)}
+                  // onSubmitEditing={(event) => this.getFoodList(1)}
                 />
                 {/* <TouchableOpacity 
                   style={{
@@ -187,9 +216,12 @@ class FoodAddScreen extends Component {
                   />
                 </TouchableOpacity> */}
               </View>
-              <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
-                <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
-              </TouchableOpacity>
+              {
+                this.state.queryTxt ?
+                <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
+                  <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
+                </TouchableOpacity> : null
+              }              
             </Animatable.View>
           </View>
         </LinearGradient>
@@ -212,7 +244,8 @@ class FoodAddScreen extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('FoodCaloriesDetail', {
                         isBack: true,
-                        title: item.food_name,
+                        foodName: item.food_name,
+                        title: title,
                         itemId: item.nix_item_id
                       })
                     }                    
@@ -261,8 +294,7 @@ class FoodAddScreen extends Component {
               </Animatable.View>
             );
           })}
-
-          {this.state.foodList.length > 0 ? 
+          {this.state.addedFoodList.length > 0 ? 
             <Text style={styles.listedTitleTxt}>Recent</Text> : null}
           {this.state.foodList.map((item, index) => {
             return (
@@ -280,7 +312,8 @@ class FoodAddScreen extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('FoodCaloriesDetail', {
                         isBack: true,
-                        title: item.food_name,
+                        foodName: item.food_name,
+                        title: title,
                         itemId: item.nix_item_id
                       })
                     }                    
@@ -329,6 +362,7 @@ class FoodAddScreen extends Component {
               </Animatable.View>
             );
           })}
+          
         </ScrollView>
       </View>
     );
@@ -348,15 +382,22 @@ export default withSafeAreaActions(
       dispatch(getNutritionixInstantFoodList(query, data)),
     getNutritionixNutrientsFoodList: (formdata, data) => 
       dispatch(getNutritionixNutrientsFoodList(formdata, data)),
-    addFoodEntry: (exerciseInput, onAdded) =>
-      dispatch(addFoodEntry(exerciseInput, onAdded)),
+    addFoodEntry: (exerciseInput, title, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, title, onAdded)),
+    getNutritionixFoodItem: (itemId, data) =>
+      dispatch(getNutritionixFoodItem(itemId, data)),
+    deleteFoodEntries: (entryId, fetchData) =>
+      dispatch(deleteFoodEntries(entryId, fetchData)),
+    getFoodEntries: (date, fetchListData) =>
+      dispatch(getFoodEntries(date, fetchListData)),
   })
 );
 
 const styles = StyleSheet.create({
   headerView: {
     marginTop: -50,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 80,
     borderBottomLeftRadius: 220,
     borderBottomRightRadius: 220,
     transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }],
@@ -421,16 +462,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: "center",
     color: "#000",
-    
   },
   addView: {
     width: "88%",
     height: 50,
     borderRadius: 5,
-    backgroundColor: ThemeStyle.lessonColor,
+    backgroundColor: '#f7992a',
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 50,
+    marginBottom:20,
   },
   listedTitleTxt: {
     fontSize: 20,
