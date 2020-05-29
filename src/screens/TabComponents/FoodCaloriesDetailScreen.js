@@ -28,6 +28,7 @@ import Card from "../../components/Card";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {getNutritionixFoodItem} from "../../actions/NutritionixActions"
 import {addFoodEntry} from "../../actions/NutritionixActions"
+import { showMessage } from "react-native-flash-message";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -58,12 +59,11 @@ class FoodCaloriesDetailScreen extends Component {
     let itemId = params.itemId;
     let item = params.itemEntry;
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
-    if(itemId === 0) {
+    if (itemId === 0) {
       var value = {};
       value.serving_qty = item.details[0].qty;
       value.serving_unit = item.details[0].unit;
       value.nf_calories = JSON.parse(item.details[0].macroNutrients).calories;
-      value.nf_total_carbohydrate = JSON.parse(item.details[0].macroNutrients).total_carbohydrate;
       value.nf_protein = JSON.parse(item.details[0].macroNutrients).protein;
       value.nf_total_carbohydrate = JSON.parse(item.details[0].macroNutrients).total_carbohydrate;
       value.nf_dietary_fiber = JSON.parse(item.details[0].macroNutrients).dietary_fiber;
@@ -78,12 +78,34 @@ class FoodCaloriesDetailScreen extends Component {
         isVisiableAdd: true
       })
     }
+    else if (itemId === 1) {
+      var value = {};
+      value.serving_qty = item.serving_qty;
+      value.serving_unit = item.serving_unit;
+      value.nf_calories = item.nf_calories;
+      value.nf_total_carbohydrate = item.nf_total_carbohydrate;
+      value.nf_protein = item.nf_protein;
+      value.nf_dietary_fiber = item.nf_dietary_fiber;
+      value.nf_sugars = item.nf_sugars;
+      value.nf_total_fat = item.nf_total_fat;
+      value.nf_saturated_fat = item.nf_saturated_fat;
+      value.nf_sodium = item.nf_sodium;
+      value.nf_potassium = item.nf_potassium;
+      value.nf_cholesterol = item.nf_cholesterol;
+      this.setState({
+        foodNutritinDetail: value,
+        isVisiableAdd: true
+      })
+    }
     else {
       this.props.getNutritionixFoodItem(itemId, data => {
         console.log('====>', data)
         if (!data.foods) {
           setTimeout(() => {
-            alert("Something went wrong. Try again.")
+            showMessage({
+              message:'Something went wrong. Try again.',
+              type: "danger"
+            })
           }, 500);
           return;
         }
@@ -122,6 +144,10 @@ class FoodCaloriesDetailScreen extends Component {
     
   // }
 
+  jsUcfirst(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
@@ -139,7 +165,7 @@ class FoodCaloriesDetailScreen extends Component {
           style={styles.headerView}
         >
           <Header
-            title={foodName}
+            title={this.jsUcfirst(foodName)}
             isDrawer={!isBack}
             openDrawer={() => {
               this.props.navigation.openDrawer();

@@ -51,18 +51,25 @@ class LogFoodScreen extends Component {
         {
           title: "Dinner",
           image: require("../../assets/images/redesign/DInner-icon.png")
+        },
+        {
+          title: "Snack",
+          image: require("../../assets/images/redesign/DInner-icon.png")
         }
       ],
       sum_total_cals: 0,
       sum_carbs: 0,
       sum_protein: 0,
       sum_fat: 0,
-      cals_breakfast: 0,
-      cals_lunch: 0,
-      cals_dinner: 0,
+      sum_snack: 0,
+      cals_breakfast: null,
+      cals_lunch: null,
+      cals_dinner: null,
+      cals_snack: null,
       food_breakfast_list: [],
       food_lunch_list: [],
       food_dinner_list: [],
+      food_snack_list: [],
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -117,6 +124,19 @@ class LogFoodScreen extends Component {
     this.getFoodList(date);
   }
 
+  showFoodCaloriesList = meal => {
+    switch (meal) {
+      case "Breakfast":
+        return <Text>{this.state.cals_breakfast}</Text>;
+      case "Lunch":
+        return <Text>{this.state.cals_lunch}</Text>;
+      case "Dinner":
+        return <Text>{this.state.cals_dinner}</Text>;
+      case "Snack":
+        return <Text>{this.state.cals_snack}</Text>;
+    }
+  }
+
   showFoodNamesList = meal => {
     switch (meal) {
       case "Breakfast":
@@ -133,6 +153,12 @@ class LogFoodScreen extends Component {
         });
       case "Dinner":
         return this.state.food_dinner_list.map((item1, index) => {
+          if (index < 3) {
+            return <Text>{item1.details[0].name}</Text>;
+          }
+        });
+      case "Snack":
+        return this.state.food_snack_list.map((item1, index) => {
           if (index < 3) {
             return <Text>{item1.details[0].name}</Text>;
           }
@@ -165,10 +191,12 @@ class LogFoodScreen extends Component {
       var cals_breakfast = 0;
       var cals_lunch = 0;
       var cals_dinner = 0;
+      var cals_snack = 0;
       var food_breakfast_list = [];
       var food_lunch_list = [];
       var food_dinner_list = [];
-      
+      var food_snack_list = [];
+
         fetchListData.map(item => {
         sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;
         sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
@@ -187,18 +215,24 @@ class LogFoodScreen extends Component {
           cals_dinner += JSON.parse(item.details[0].macroNutrients).calories;
           food_dinner_list.push(item);
         }
+        if (item.meal === "Snack") {
+          cals_snack += JSON.parse(item.details[0].macroNutrients).calories;
+          food_snack_list.push(item);
+        }
       });
       this.setState({
         sum_total_cals: sum_total_cals,
         sum_protein: sum_protein,
         sum_carbs: sum_carbs,
         sum_fat: sum_fat,
-        cals_breakfast: cals_breakfast,
-        cals_lunch: cals_lunch,
-        cals_dinner: cals_dinner,
+        cals_breakfast: cals_breakfast + ' cals',
+        cals_lunch: cals_lunch + ' cals',
+        cals_dinner: cals_dinner + ' cals',
+        cals_snack: cals_snack + ' cals',
         food_breakfast_list: food_breakfast_list,
         food_lunch_list: food_lunch_list,
         food_dinner_list: food_dinner_list,
+        food_snack_list: food_snack_list
       });
     });
   }
@@ -339,7 +373,7 @@ class LogFoodScreen extends Component {
                   delay={index * 200}
                   style={{
                     flex: 1,
-                    maxHeight: 160,
+                    maxHeight: 140,
                     overflow: "hidden"
                   }}
                 >
@@ -356,21 +390,22 @@ class LogFoodScreen extends Component {
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          padding: 15,
+                          paddingHorizontal: 20,
+                          paddingVertical: 15,
                         }}
                       >
                         <CachedImage
                           source={item.image}
                           style={{
-                            width: 80,
-                            height: 80
+                            width: 60,
+                            height: 60
                           }}
                           resizeMode="contain"
                         />
                         <View
                           style={{
-                            padding: 15,
-                            flex: 1
+                            paddingHorizontal: 15,
+                            flex: 1,
                           }}
                         >
                           <Text
@@ -383,6 +418,7 @@ class LogFoodScreen extends Component {
                           >
                             {item.title}
                           </Text>
+                          {this.showFoodCaloriesList(item.title)}
                           {this.showFoodNamesList(item.title)}
                         </View>
                         <TouchableOpacity onPress={() => this.onPressAddFood(item.title)}>
@@ -443,7 +479,8 @@ export default withSafeAreaActions(
 const styles = StyleSheet.create({
   headerView: {
     marginTop: -50,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 60,
     borderBottomLeftRadius: 220,
     borderBottomRightRadius: 220,
     transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }],
@@ -452,11 +489,11 @@ const styles = StyleSheet.create({
     transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
   },
   calorieCircleView: {
-    width: screenWidth / 3,
-    height: screenWidth / 3,
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.3,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: screenWidth / 3,
+    marginHorizontal: screenWidth * 0.35,
     borderWidth: 2,
     borderColor: "#3992B6",
     borderRadius: screenWidth / 3,
@@ -469,7 +506,7 @@ const styles = StyleSheet.create({
   },
   nutritionixTabView: {
     width: screenWidth / 3,
-    height: 100,
+    height: 70,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center"

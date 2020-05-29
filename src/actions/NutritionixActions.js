@@ -91,6 +91,8 @@ export function getNutritionixFoodItem(itemId, foodData) {
     })
       .then(res => res.json())
       .then(data => {
+        console.log("@@@@")
+        console.log(data)
         if (foodData) {
           foodData(data);
         }

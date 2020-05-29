@@ -27,6 +27,7 @@ import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
+import { showMessage } from "react-native-flash-message";
 import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList, addFoodEntry, getNutritionixFoodItem, deleteFoodEntries, getFoodEntries} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
@@ -126,7 +127,10 @@ class FoodAddScreen extends Component {
       this.props.getNutritionixFoodItem(item.nix_item_id, data => {
         if (!data.foods) {
           setTimeout(() => {
-            alert("Something went wrong. Try again. Or use the search function")
+            showMessage({
+              message:'Something went wrong. Try again. Or use the search function.',
+              type: "danger"
+            })
           }, 500)
         }
         else {
@@ -157,6 +161,10 @@ class FoodAddScreen extends Component {
         this.setState({ foodList: [] })
       }
     });
+  }
+
+  jsUcfirst(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   render() {
@@ -331,7 +339,7 @@ class FoodAddScreen extends Component {
                         isBack: true,
                         foodName: item.food_name,
                         title: title,
-                        itemId: item.nix_item_id,
+                        itemId: item.nix_item_id ? item.nix_item_id : 1,
                         itemEntry: item
                       })
                     }                    
@@ -355,7 +363,7 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {item.food_name}
+                          {this.jsUcfirst(item.food_name)}
                         </Text>
                         {/* <Text style={TextStyles.GeneralText}>
                           {item.brand_name}
