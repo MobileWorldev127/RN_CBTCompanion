@@ -6,6 +6,8 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Modal,
+  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import LinearGradient from "react-native-linear-gradient";
@@ -24,7 +26,9 @@ import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
-import { getFoodEntries } from "../../actions/NutritionixActions"
+import { addFoodEntry, getFoodEntries } from "../../actions/NutritionixActions"
+import { ScrollView, TextInput } from "react-native-gesture-handler";
+
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -39,6 +43,8 @@ class LogFoodScreen extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: moment(),
+      isWaterModal: false,
+      waterMeasuresList: ['8', '16', '24', '32'],
       items: [
         {
           title: "Breakfast",
@@ -54,7 +60,11 @@ class LogFoodScreen extends Component {
         },
         {
           title: "Snack",
-          image: require("../../assets/images/redesign/DInner-icon.png")
+          image: require("../../assets/images/redesign/snack.png")
+        },
+        {
+          title: "Water",
+          image: require("../../assets/images/redesign/bottle.png")
         }
       ],
       sum_total_cals: 0,
@@ -62,6 +72,7 @@ class LogFoodScreen extends Component {
       sum_protein: 0,
       sum_fat: 0,
       sum_snack: 0,
+      sum_water: 0,
       cals_breakfast: null,
       cals_lunch: null,
       cals_dinner: null,
@@ -70,6 +81,8 @@ class LogFoodScreen extends Component {
       food_lunch_list: [],
       food_dinner_list: [],
       food_snack_list: [],
+      water_custome_measure: 0,
+      water_total_consumed: 0,
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -101,22 +114,32 @@ class LogFoodScreen extends Component {
   }
 
   onPressFoodDetail = title => {
-    this.props.navigation.navigate("FoodDetail", {
-      isBack: true,
-      title: title,
-      date: this.state.currentDate,
-      onGoBack: this.onSelect
-    });
+    if (title === 'Water') {
+      this.setState({ isWaterModal: true });
+    }
+    else {
+      this.props.navigation.navigate("FoodDetail", {
+        isBack: true,
+        title: title,
+        date: this.state.currentDate,
+        onGoBack: this.onSelect
+      });
+    }
   };
 
   onPressAddFood = title => {
-    this.props.navigation.navigate("FoodAdd", {
-      isBack: true,
-      title: title,
-      dateTime: this.state.currentDate,
-      alreadyAddedFoodList: [],
-      onGoBack: this.onSelect
-    });
+    if (title === 'Water') {
+      this.setState({ isWaterModal: true });
+    }
+    else {
+      this.props.navigation.navigate("FoodAdd", {
+        isBack: true,
+        title: title,
+        dateTime: this.state.currentDate,
+        alreadyAddedFoodList: [],
+        onGoBack: this.onSelect
+      });
+    }
   }
 
   onSelect = () => {
@@ -134,6 +157,8 @@ class LogFoodScreen extends Component {
         return <Text>{this.state.cals_dinner}</Text>;
       case "Snack":
         return <Text>{this.state.cals_snack}</Text>;
+      case "Water":
+        return <Text>{this.state.water_total_consumed} oz</Text>;
     }
   }
 
@@ -196,28 +221,34 @@ class LogFoodScreen extends Component {
       var food_lunch_list = [];
       var food_dinner_list = [];
       var food_snack_list = [];
-
-        fetchListData.map(item => {
-        sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;
-        sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
-        sum_carbs += JSON.parse(item.details[0].macroNutrients)
-          .total_carbohydrate;
-        sum_fat += JSON.parse(item.details[0].macroNutrients).total_fat;
-        if (item.meal === "Breakfast") {
-          cals_breakfast += JSON.parse(item.details[0].macroNutrients).calories;
-          food_breakfast_list.push(item);
+      var sum_water = 0;
+      fetchListData.map(item => {
+        if (item.meal === "Water") {
+          sum_water = item.details[0].microNutrients[0].value;
+          
         }
-        if (item.meal === "Lunch") {
-          cals_lunch += JSON.parse(item.details[0].macroNutrients).calories;
-          food_lunch_list.push(item);
-        }
-        if (item.meal === "Dinner") {
-          cals_dinner += JSON.parse(item.details[0].macroNutrients).calories;
-          food_dinner_list.push(item);
-        }
-        if (item.meal === "Snack") {
-          cals_snack += JSON.parse(item.details[0].macroNutrients).calories;
-          food_snack_list.push(item);
+        else {
+          sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;
+          sum_protein += JSON.parse(item.details[0].macroNutrients).protein;
+          sum_carbs += JSON.parse(item.details[0].macroNutrients)
+            .total_carbohydrate;
+          sum_fat += JSON.parse(item.details[0].macroNutrients).total_fat;
+          if (item.meal === "Breakfast") {
+            cals_breakfast += JSON.parse(item.details[0].macroNutrients).calories;
+            food_breakfast_list.push(item);
+          }
+          if (item.meal === "Lunch") {
+            cals_lunch += JSON.parse(item.details[0].macroNutrients).calories;
+            food_lunch_list.push(item);
+          }
+          if (item.meal === "Dinner") {
+            cals_dinner += JSON.parse(item.details[0].macroNutrients).calories;
+            food_dinner_list.push(item);
+          }
+          if (item.meal === "Snack") {
+            cals_snack += JSON.parse(item.details[0].macroNutrients).calories;
+            food_snack_list.push(item);
+          }
         }
       });
       this.setState({
@@ -232,11 +263,117 @@ class LogFoodScreen extends Component {
         food_breakfast_list: food_breakfast_list,
         food_lunch_list: food_lunch_list,
         food_dinner_list: food_dinner_list,
-        food_snack_list: food_snack_list
+        food_snack_list: food_snack_list,
+        water_total_consumed: sum_water
       });
     });
   }
 
+  onWaterMeasureItem = item => {
+    this.setState({ water_custome_measure: item });
+  }
+
+  onWaterAdd = () => {
+    var sum = parseInt(this.state.water_custome_measure) + parseInt(this.state.water_total_consumed);
+    this.setState({water_total_consumed: sum.toString()})
+  }
+
+  onWaterUpdate = () => {
+    var data = {};
+    data.name = 'Water';
+    data.qty = 1;
+    data.unit = 'cup';
+    data.total_water = parseInt(this.state.water_total_consumed);
+    let dateTime = this.state.currentDate.format("YYYY-MM-DD");
+
+    this.props.addFoodEntry(data, 'Water', dateTime, onAdded => {
+      this.setState({isWaterModal: false})
+      
+    });
+  }
+
+  getWaterModal = () => {
+    return(
+      <Modal
+        visible={this.state.isWaterModal}
+        animationType="fade"
+        backgroundColor="#0006"
+        transparent
+      >
+        <View style={styles.modalView}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalTitleView}>
+              <Icon
+                family="Ionicons"
+                name="ios-water"
+                size={22}
+                color="#4191fb"
+                style={styles.pickerIcon}
+              />
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>  Log Water</Text>
+            </View>
+            <View style={styles.commonMeasureView}>
+              <Text style={styles.measureTxt}>Common Measures (tap to add instantl):</Text>
+              <View style={styles.measureView}>
+                {
+                  this.state.waterMeasuresList.map(item => {
+                    return (
+                      <TouchableOpacity onPress={() => this.onWaterMeasureItem(item)}>
+                        <View style={styles.itemMeasureView}>
+                          <Text>{item} oz</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  })
+                }
+              </View>
+              <Text style={styles.measureTxt}>Custome Measure:</Text>
+              <View style={styles.customMeasureView}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TextInput
+                    style={styles.inputBox}
+                    keyboardType="number-pad"
+                    placeholderTextColor="lightgrey"
+                    underlineColorAndroid="transparent"
+                    value={this.state.water_custome_measure}
+                    // onChangeText={value => this.setState({ water_custome_measure: value })}
+                  />
+                  <Text> oz</Text>
+                </View>
+                <TouchableOpacity style={styles.addWaterBtn} onPress={this.onWaterAdd}>
+                  <Text style={styles.addWaterTxt}>Add</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.totalMeasureView}>
+              <Text style={styles.measureTxt}>Total water consumed today:</Text>
+              <View style={styles.customMeasureView}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TextInput
+                    style={styles.inputBox}
+                    keyboardType="number-pad"
+                    placeholderTextColor="lightgrey"
+                    underlineColorAndroid="transparent"
+                    value={this.state.water_total_consumed}
+                    onChangeText={value => this.setState({ water_total_consumed: value })}
+                  />
+                  <Text> oz</Text>
+                </View>
+                <TouchableOpacity style={styles.addWaterBtn} onPress={this.onWaterUpdate}>
+                  <Text style={styles.addWaterTxt}>Update</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Button title="Cancel" onPress={this.toggleModal}/>
+          </View>
+        </View>
+      </Modal>
+    )
+  }
+
+  toggleModal = () => {
+    this.setState({ isWaterModal: false })
+  };
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
@@ -365,15 +502,15 @@ class LogFoodScreen extends Component {
               />
             </TouchableOpacity>
           </View>
-          <View style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
             {this.state.items.map((item, index) => {
               return (
                 <Animatable.View
                   animation="pulse"
                   delay={index * 200}
                   style={{
-                    flex: 1,
-                    maxHeight: 140,
+                    // flex: 1,
+                    // maxHeight: 140,
                     overflow: "hidden"
                   }}
                 >
@@ -437,26 +574,9 @@ class LogFoodScreen extends Component {
                 </Animatable.View>
               );
             })}
-          </View>
+          </ScrollView>
         </View>
-        <DateTimePicker
-          isVisible={this.state.isDatePickerVisible}
-          date={new Date(this.state.currentDate.toISOString())}
-          mode="datetime"
-          onCancel={() => {
-            this.setState({
-              isDatePickerVisible: false
-            });
-          }}
-          onConfirm={date => {
-            console.log(date);
-            this.setState({
-              isDatePickerVisible: false,
-              currentDate: moment(date)
-            });
-          }}
-          maximumDate={new Date()}
-        />
+        {this.getWaterModal()}
       </View>
     );
   }
@@ -471,6 +591,8 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
+      dispatch(addFoodEntry(exerciseInput, title, dateTime, onAdded)),
     getFoodEntries: (date, fetchListData) =>
       dispatch(getFoodEntries(date, fetchListData))
   })
@@ -522,4 +644,81 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     margin: 10,
   },
+  modalView: {
+    flex: 1, 
+    backgroundColor: "rgba(0,0,0,0.42)", 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredView: {
+    width: '80%',
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 150
+  },
+  modalTitleView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  measureTxt: {
+    fontWeight: 'bold', 
+    marginTop: 20
+  },
+  commonMeasureView: {
+    alignItems: 'flex-start', 
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: ThemeStyle.disabledLight
+  },
+  measureView: {
+    width: '100%', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  itemMeasureView: {
+    width: 65,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: ThemeStyle.backgroundColor,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  customMeasureView: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+  inputBox: {
+    width: 120,
+    fontSize: 16,
+    textAlignVertical: "center",
+    color: "#000",
+    backgroundColor: ThemeStyle.backgroundColor,
+    padding: 10,
+    textAlign:'center'
+  },
+  addWaterBtn: {
+    flex: 1,
+    height: 35,
+    marginLeft: 15,
+    backgroundColor: '#4191fb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  addWaterTxt: {
+    fontSize: 18,
+    color: 'white'
+  },
+  totalMeasureView: {
+    alignItems: 'flex-start', 
+    width: '100%',
+    marginBottom: 15,
+  }
 });

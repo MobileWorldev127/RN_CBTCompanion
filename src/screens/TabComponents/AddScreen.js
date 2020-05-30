@@ -78,16 +78,38 @@ class AddScreen extends Component {
                 type: 'exercise',
               });
             });
-            items.push({
-              title: 'Log Food Entry',
-              onPress: () =>
-                this.props.navigation.navigate('LogFood', {
-                  isBack: true,
-                }),
-              color: '#000',
-              isIcon: true,
-              image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
-            });
+            items.push(
+              {
+                title: 'Log Food Entry',
+                onPress: () =>
+                  this.props.navigation.navigate('LogFood', {
+                    isBack: true,
+                  }),
+                color: "#000",
+                isIcon: true,
+                image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
+              },
+              {
+                title: 'Log Exercise',
+                onPress: () =>
+                  this.props.navigation.navigate('LogExercise', {
+                    isBack: true,
+                  }),
+                color: "#000",
+                isIcon: true,
+                image: require('../../assets/images/redesign/workout.png'),
+              },
+              {
+                title: 'Log Sleep',
+                onPress: () =>
+                  this.props.navigation.navigate('MedicationScreen', {
+                    isBack: true,
+                  }),
+                color: "#000",
+                isIcon: true,
+                image: require('../../assets/images/redesign/workout.png'),
+              },
+            );
             this.setState({ items });
           }
         },
@@ -167,8 +189,8 @@ class AddScreen extends Component {
                     <CachedImage
                       source={item.image}
                       style={{
-                        width: 116,
-                        height: 100,
+                        width: 90,
+                        height: 80,
                         position: 'absolute',
                         top: 24,
                         right: 16,

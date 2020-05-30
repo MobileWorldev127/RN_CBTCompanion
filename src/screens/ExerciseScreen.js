@@ -507,7 +507,7 @@ class ExerciseScreen extends Component {
     return (
       <View style={ThemeStyle.pageContainer}>
         <Header
-          title={this.title}
+          title={"this.title"}
           goBack={() => {
             this.props.navigation.goBack(null);
           }}

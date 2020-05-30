@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import LinearGradient from "react-native-linear-gradient";
-import Header from "./../../components/Header";
+import Header from "../../components/Header";
 import Icon from "../../common/icons";
 import ThemeStyle from "../../styles/ThemeStyle";
-import TextStyles from "./../../common/TextStyles";
+import TextStyles from "../../common/TextStyles";
 import { withSafeAreaActions } from "../../utils/StoreUtils";
 import { setMood } from "../../actions/RecordActions";
 import { Moods, asyncStorageConstants } from "../../constants";
@@ -28,11 +28,11 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
 import { showMessage } from "react-native-flash-message";
-import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList, addFoodEntry, getNutritionixFoodItem, deleteFoodEntries, getFoodEntries} from "../../actions/NutritionixActions"
+import {getNutritionixExercise} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
-class FoodAddScreen extends Component {
+class LogExercise extends Component {
   constructor(props) {
     super(props);
     this.moods = Moods;
@@ -46,7 +46,7 @@ class FoodAddScreen extends Component {
       query: '',
       queryTxt: '',
       foodList: [],
-      addedFoodList: props.navigation.state.params.alreadyAddedFoodList,
+      addedFoodList: [],
       isSpeaking: false,
       foodNutritinDetail: {},
       addedFoodKeyList: []
@@ -59,7 +59,8 @@ class FoodAddScreen extends Component {
     });
   }
 
-  async componentDidMount() {this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
+  async componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
     recordScreenEvent(screenNames.record);
     if (!isOnline()) {
       userInfo = JSON.parse(
@@ -77,11 +78,14 @@ class FoodAddScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  onChangeQuery = query => {
-    if (query) {
-      this.props.getNutritionixInstantFoodList(query, data => {
+  onChangeQuery = text => {
+    if (text.length > 2) {
+      let param = {};
+      param.query = text;
+      this.props.getNutritionixExercise(param, data => {
+        console.log('@@@@---', data)
         this.setState({
-          foodList: data.branded
+          foodList: data.exercises
         })
       });
     }
@@ -92,79 +96,12 @@ class FoodAddScreen extends Component {
     }
   }
 
-  addFoodList = item => {
-    let { params } = this.props.navigation.state;
-    let title = params.title;
-    var addedFoodList = this.state.addedFoodList;
-    var foodList = [...this.state.foodList];
-    if (addedFoodList.indexOf(item) > -1) {
-      let date = this.state.currentDate.format("YYYY-MM-DD");
-      this.props.getFoodEntries(date, fetchListData => {
-        fetchListData.map(item1 => {
-          if (item1.details[0].name == (item.food_name? item.food_name : item.details[0].name)){
-            this.props.deleteFoodEntries(item1._id, fetchData => {
-              var index = addedFoodList.indexOf(item);
-              if (index !== -1) {
-                addedFoodList.splice(index, 1);
-                this.setState({ addedFoodList: addedFoodList });
-              }
-              else {
-                return;
-              }
-            })
-          }
-        });
-      });
-    }
-    else {
-      this.props.getNutritionixFoodItem(item.nix_item_id, data => {
-        if (!data.foods) {
-          setTimeout(() => {
-            showMessage({
-              message:'Something went wrong. Try again. Or use the search function.',
-              type: "danger"
-            })
-          }, 500)
-        }
-        else {
-          let dateTime = this.state.currentDate.format("YYYY-MM-DD");
-          this.props.addFoodEntry(data.foods[0], title, dateTime, onAdded => {
-            console.log('~~~~~>>', onAdded)
-            addedFoodList.push(item);
-            var index = foodList.indexOf(item);
-            if (index !== -1) {
-              foodList.splice(index, 1);
-              this.setState({
-                addFoodList: addedFoodList,
-                foodList: foodList,
-              });
-            };
-          });
-        }
-      });
-    }
-  }
-
-  onClickAdd = () => {
-    this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
-      if (data.foods) {
-        this.setState({ foodList: data.foods })
-      }
-      else {
-        this.setState({ foodList: [] })
-      }
-    });
-  }
-
-  jsUcfirst(string){
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  
 
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
-    let title = params.title;
     return (
       <View style={[ThemeStyle.pageContainer, { overflow: "hidden" }]}>
         <LinearGradient
@@ -178,7 +115,7 @@ class FoodAddScreen extends Component {
         >
           <View style={styles.headerMainView}>
             <Header
-              title={title}
+              title={'Log Exercise'}
               isDrawer={!isBack}
               openDrawer={() => {
                 this.props.navigation.openDrawer();
@@ -196,36 +133,9 @@ class FoodAddScreen extends Component {
             >
               <SearchField 
                 iconName="ios-search" 
-                placeholder="Search food..." 
+                placeholder="Search Exercise" 
                 onChangeText={query => this.onChangeQuery(query)}
               />
-              <View style={styles.inputView}>
-                <TextInput
-                  style={[TextStyles.GeneralText, styles.inputBox]}
-                  placeholder="Describe what happened"
-                  multiline={true}
-                  placeholderTextColor="lightgrey"
-                  underlineColorAndroid="transparent"
-                  defaultValue={this.state.queryTxt}
-                  onChangeText={queryTxt => this.setState({ queryTxt })}
-                />
-                {/* <TouchableOpacity 
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                  }}
-                  onPress = {() => this.setState({isSpeaking: !this.state.isSpeaking})}>
-                  <CachedImage
-                    source={
-                      this.state.isSpeaking?
-                      require("../../assets/images/redesign/Finish-icon-active.png") :
-                      require("../../assets/images/redesign/Talk-icon.png")
-                    }
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity> */}
-              </View>
               {
                 this.state.queryTxt ?
                 <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
@@ -280,24 +190,13 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {item.food_name ? item.food_name : item.details[0].name}
+                          {item.name}
                         </Text>
-                        {/* <Text style={TextStyles.GeneralText}>
-                          {item.brand_name}
-                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories ? item.nf_calories : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
+                          - {item.nf_calories} kcal : {item.duration_min} min
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addFoodList(item)}>
-                        {/* <CachedImage
-                          source={require("../../assets/images/redesign/active-icon.png")}
-                          style={{
-                            width: 25,
-                            height: 25
-                          }}
-                          resizeMode="contain"
-                        /> */}
                         <Icon
                           family={"MaterialCommunityIcons"}
                           name={"delete"}
@@ -355,13 +254,10 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {this.jsUcfirst(item.food_name)}
+                          {item.name}
                         </Text>
-                        {/* <Text style={TextStyles.GeneralText}>
-                          {item.brand_name}
-                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
+                        - {item.nf_calories} kcal : {item.duration_min} min
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addFoodList(item)}>
@@ -388,7 +284,7 @@ class FoodAddScreen extends Component {
 }
 
 export default withSafeAreaActions(
-  FoodAddScreen,
+  LogExercise,
   state => ({
     isEdit: state.record.isEdit,
     editEntry: state.record.editEntry,
@@ -396,18 +292,8 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
-    getNutritionixInstantFoodList: (query, data) =>
-      dispatch(getNutritionixInstantFoodList(query, data)),
-    getNutritionixNutrientsFoodList: (formdata, data) => 
-      dispatch(getNutritionixNutrientsFoodList(formdata, data)),
-    addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
-      dispatch(addFoodEntry(exerciseInput, title, dateTime, onAdded)),
-    getNutritionixFoodItem: (itemId, data) =>
-      dispatch(getNutritionixFoodItem(itemId, data)),
-    deleteFoodEntries: (entryId, fetchData) =>
-      dispatch(deleteFoodEntries(entryId, fetchData)),
-    getFoodEntries: (date, fetchListData) =>
-      dispatch(getFoodEntries(date, fetchListData)),
+    getNutritionixExercise: (query, data) =>
+      dispatch(getNutritionixExercise(query, data)),
   })
 );
 

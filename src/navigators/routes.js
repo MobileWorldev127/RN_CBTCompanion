@@ -62,6 +62,7 @@ import LogFoodScreen from "../screens/TabComponents/LogFoodScreen";
 import FoodAddScreen from "../screens/TabComponents/FoodAddScreen";
 import FoodDetailScreen from "../screens/TabComponents/FoodDetailScreen";
 import FoodCaloriesDetailScreen from "../screens/TabComponents/FoodCaloriesDetailScreen";
+import LogExerciseScreen from "../screens/TabComponents/LogExerciseScreen";
 
 const DrawerRoutes = createDrawerNavigator(
   {
@@ -459,6 +460,12 @@ const Routes = {
   },
   ExerciseModules: {
     screen: ExerciseModules,
+    navigationOptions: {
+      header: null
+    }
+  },
+  LogExercise: {
+    screen: LogExerciseScreen,
     navigationOptions: {
       header: null
     }
