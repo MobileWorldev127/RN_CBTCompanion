@@ -47,12 +47,6 @@ class ExerciseAddScreen extends Component {
       queryTxt: '',
       exerciseList: [],
       addedExerciseList: [],
-
-      // foodList: [],
-      // addedFoodList: [],
-      // isSpeaking: false,
-      // foodNutritinDetail: {},
-      // addedFoodKeyList: []
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -109,6 +103,7 @@ class ExerciseAddScreen extends Component {
       this.props.getExerciseEntries(date, fetchListData => {
         fetchListData.map(item1 => {
           if (item1.details[0].name == item.name){
+            console.log('$$$,', item1._id)
             this.props.deleteExerciseEntries(item1._id, fetchData => {
               var index = addedExerciseList.indexOf(item);
               if (index !== -1) {
@@ -126,7 +121,6 @@ class ExerciseAddScreen extends Component {
     else {
       let dateTime = this.state.currentDate.format("YYYY-MM-DD");
       this.props.addExerciseEntry(item, dateTime, onAdded => {
-        console.log('~~~~~>>', onAdded)
         addedExerciseList.push(item);
         var index = exerciseList.indexOf(item);
         if (index !== -1) {

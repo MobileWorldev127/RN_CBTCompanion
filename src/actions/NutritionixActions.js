@@ -316,9 +316,9 @@ export function deleteExerciseEntries(entryId, fetchData) {
       getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
     );
     API.graphql({
-      query: deleteFoodEntryQuery,
+      query: deleteExerciseEntryQuery,
       variables: {
-        entryType: "Manual",
+        entryType: "Exercise",
         entryId: entryId
       }
     })
