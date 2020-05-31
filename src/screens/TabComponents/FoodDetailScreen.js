@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   addBtn: {
-    margin:25,
+    margin: 25,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',

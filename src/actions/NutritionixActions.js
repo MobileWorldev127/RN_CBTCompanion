@@ -1,8 +1,8 @@
 import { setLoading } from "./AppActions";
 import { client, swasthCommonsClient } from "../App";
-import { addFoodEntryMutation } from "../queries/addFoodEntry";
-import { getFoodEntriesquery } from "../queries/getFoodEntries";
-import { deleteFoodEntryQuery } from "../queries/deleteFoodEntry";
+import { addFoodEntryMutation, addExerciseEntryMutation } from "../queries/addEntry";
+import { deleteFoodEntryQuery, deleteExerciseEntryQuery } from "../queries/deleteEntry";
+import { getFoodEntriesquery, getExerciseEntriesquery } from "../queries/getEntries";
 
 import Amplify from "aws-amplify";
 import { getAmplifyConfig, getEnvVars } from "../constants";
@@ -231,7 +231,6 @@ export function deleteFoodEntries(entryId, fetchData) {
         if (fetchData){
           fetchData(data.data.deleteEntry);
         }
-        console.log(data)
       })
       .catch(err => {
         console.log(err);
@@ -244,7 +243,7 @@ export function deleteFoodEntries(entryId, fetchData) {
 
 export function getNutritionixExercise(query, exerciseData) {
   return function(dispatch, state) {
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
     fetch(BASE_URL + EXERCISE, {
       method: "POST",
       headers: {
@@ -266,8 +265,101 @@ export function getNutritionixExercise(query, exerciseData) {
         console.log(err);
       })
       .finally(() => {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
       });
   };
 };
+
+export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
+  return function(dispatch, state) {
+    // dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+
+    let variables = {};
+    variables = {
+      dateTime: dateTime,
+      source: "Manual",
+      details: [
+        {
+          name: entry.name,
+          duration_min: entry.duration_min,
+          calories: entry.nf_calories,
+        }
+      ],
+    };
+    API.graphql({
+      query: addExerciseEntryMutation,
+      variables: {
+        input: variables
+      }
+    })
+      .then(data => {
+        if (exerciseEntryData){
+          exerciseEntryData(data.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        // dispatch(setLoading(false));
+      });
+  };
+};
+
+export function deleteExerciseEntries(entryId, fetchData) {
+  return function(dispatch, state) {
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: deleteFoodEntryQuery,
+      variables: {
+        entryType: "Manual",
+        entryId: entryId
+      }
+    })
+      .then(data => {
+        if (fetchData) {
+          fetchData(data.data.deleteEntry);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+}
+
+export function getExerciseEntries(date, fetchData) {
+  return function(dispatch, state) {
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: getExerciseEntriesquery,
+      variables: {
+        startDate: date,
+        endDate: date
+      }
+    })
+      .then(data => {
+        if (fetchData){
+          fetchData(data.data.getExerciseEntries);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+}
 

@@ -15,3 +15,21 @@ export const deleteEntryQueryByDate = gql`
     }
   }
 `;
+
+export const deleteFoodEntryQuery = gql`
+  mutation deleteEntry($entryType: HealthKitTypes!, $entryId: ID!) {
+    deleteEntry(entryType: $entryType, entryId: $entryId) {
+      success
+      message
+    }
+  }
+`;
+
+export const deleteExerciseEntryQuery = gql`
+  mutation deleteEntry($entryType: HealthKitTypes!, $entryId: ID!) {
+    deleteEntry(entryType: $entryType, entryId: $entryId) {
+      success
+      message
+    }
+  }
+`;

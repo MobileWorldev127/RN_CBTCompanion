@@ -48,3 +48,49 @@ export const getEntriesQuery = gql`
     }
   }
 `;
+
+export const getFoodEntriesquery = gql`
+  query getFoodEntries($startDate: String!, $endDate: String!) {
+    getFoodEntries(startDate: $startDate, endDate: $endDate) {
+      _id
+      userId
+      source
+      dateTime
+      meal
+      details{
+        name
+        brand
+        qty
+        unit
+        weight_grams
+        macroNutrients
+        microNutrients {
+         usda_tag,
+         name,
+         unit,
+         value
+        }
+      }
+    }
+  }
+`;
+
+export const getExerciseEntriesquery = gql`
+  query getExerciseEntries($startDate: String!, $endDate: String!) {
+    getExerciseEntries(startDate: $startDate, endDate: $endDate) {
+      _id
+      userId
+      source
+      dateTime
+      details {
+        name
+        duration_min
+        calories
+        compendium_code
+        met
+        steps
+        distance
+      }
+    }
+  }
+`;

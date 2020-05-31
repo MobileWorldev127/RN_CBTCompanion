@@ -7,3 +7,21 @@ export const addEntryQuery = gql`
     }
   }
 `;
+
+export const addFoodEntryMutation = gql`
+  mutation addFoodEntry($input: FoodInput!) {
+    addFoodEntry(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const addExerciseEntryMutation = gql`
+  mutation addExerciseEntry($input: HealthExerciseInput!) {
+    addExerciseEntry(input: $input) {
+      success
+      message
+    }
+  }
+`;

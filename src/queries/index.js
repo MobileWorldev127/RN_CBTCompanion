@@ -2,7 +2,6 @@ export * from "./defaultItems";
 export * from "./userPreference";
 export * from "./getEntries";
 export * from "./deleteEntry";
-export * from "./deleteFoodEntry"
 export * from "./addSkill";
 export * from "./addEntry";
 export * from "./addTarget";
@@ -22,4 +21,3 @@ export * from "./shareData";
 export * from "./patchEntry";
 export * from "./getUserAssessmentsById";
 export * from "./getUserScheduledAssessments";
-export * from "./addFoodEntry";

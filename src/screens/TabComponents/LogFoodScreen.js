@@ -225,7 +225,6 @@ class LogFoodScreen extends Component {
       fetchListData.map(item => {
         if (item.meal === "Water") {
           sum_water = item.details[0].microNutrients[0].value;
-          
         }
         else {
           sum_total_cals += JSON.parse(item.details[0].macroNutrients).calories;

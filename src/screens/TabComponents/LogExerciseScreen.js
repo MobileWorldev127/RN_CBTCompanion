@@ -26,9 +26,6 @@ import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
-import SearchField from "../../components/SearchField";
-import { showMessage } from "react-native-flash-message";
-import {getNutritionixExercise} from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -43,13 +40,8 @@ class LogExercise extends Component {
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
-      query: '',
-      queryTxt: '',
-      foodList: [],
-      addedFoodList: [],
-      isSpeaking: false,
-      foodNutritinDetail: {},
-      addedFoodKeyList: []
+      exerciseList: [],
+      addedExerciseList: [],
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -78,25 +70,15 @@ class LogExercise extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  onChangeQuery = text => {
-    if (text.length > 2) {
-      let param = {};
-      param.query = text;
-      this.props.getNutritionixExercise(param, data => {
-        console.log('@@@@---', data)
-        this.setState({
-          foodList: data.exercises
-        })
-      });
-    }
-    else {
-      this.setState({
-        foodList: []
-      });
-    }
+  jsUcfirst(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  
+  onClickAddMoreExercuse = () => {
+    this.props.navigation.navigate("ExerciseAdd", {
+      isBack: true,
+    });
+  }
 
   render() {
     console.log("Render home", this.state);
@@ -113,66 +95,43 @@ class LogExercise extends Component {
           end={{ y: 1.4, x: 0.2 }}
           style={styles.headerView}
         >
-          <View style={styles.headerMainView}>
-            <Header
-              title={'Log Exercise'}
-              isDrawer={!isBack}
-              openDrawer={() => {
-                this.props.navigation.openDrawer();
-              }}
-              goBack={() => {
-                this.props.navigation.state.params.onGoBack();
-                this.props.navigation.goBack("");
-              }}
-              navBarStyle={{ backgroundColor: "transparent" }}
-              isLightContent
-            />
-            <Animatable.View
-              animation="fadeInDown"
-              style={{ alignItems: "center" }}
-            >
-              <SearchField 
-                iconName="ios-search" 
-                placeholder="Search Exercise" 
-                onChangeText={query => this.onChangeQuery(query)}
-              />
-              {
-                this.state.queryTxt ?
-                <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
-                  <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
-                </TouchableOpacity> : null
-              }              
-            </Animatable.View>
-          </View>
+          <Header
+            title={'Log Exercise'}
+            isDrawer={!isBack}
+            openDrawer={() => {
+              this.props.navigation.openDrawer();
+            }}
+            goBack={() => {
+              this.props.navigation.goBack("");
+            }}
+            navBarStyle={{ backgroundColor: "transparent" }}
+            isLightContent
+          />
+          <Text style={{color: 'white', fontSize: 18, width: '100%', textAlign: 'center'}}>
+            {this.state.currentDate.format("dddd, DD MMMM")}
+          </Text>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {this.state.addedFoodList.length > 0 ? 
-            <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
-          {this.state.addedFoodList.map((item, index) => {
+          <TouchableOpacity style={styles.addBtn} onPress = {() => this.onClickAddMoreExercuse()}>
+            <Text style={{color: 'white', fontSize: 16}}>ADD MORE EXERCISE</Text>
+          </TouchableOpacity>
+          {this.state.exerciseList.map((item, index) => {
             return (
               <Animatable.View
                 animation="pulse"
                 delay={index * 200}
                 style={{
-                  marginHorizontal: 20,
-                  marginBottom: 10,
-                  borderRadius: 10,
+                  // flex: 1,
+                  // maxHeight: 140,
+                  overflow: "hidden"
                 }}
               >
                 <Card style={{ margin: 5 }}>
                   <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('FoodCaloriesDetail', {
-                        isBack: true,
-                        foodName: item.food_name ? item.food_name : item.details[0].name,
-                        title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 0,
-                        itemEntry: item
-                      })
-                    }                    
+                    onPress={() => this.onPressFoodDetail(item.title)}
                     underlayColor={item.color + "aa"}
                     style={{
-                      backgroundColor: item.color
+                      backgroundColor: item.color,
                     }}
                   >
                     <View
@@ -180,103 +139,41 @@ class LogExercise extends Component {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        padding: 15,
+                        paddingHorizontal: 20,
+                        paddingVertical: 15,
                       }}
                     >
+                      <CachedImage
+                        source={item.image}
+                        style={{
+                          width: 60,
+                          height: 60
+                        }}
+                        resizeMode="contain"
+                      />
                       <View
                         style={{
-                          padding: 5,
-                          flex: 1
+                          paddingHorizontal: 15,
+                          flex: 1,
                         }}
                       >
-                        <Text style={TextStyles.Header2}>
-                          {item.name}
-                        </Text>
-                        <Text style={TextStyles.GeneralText}>
-                          - {item.nf_calories} kcal : {item.duration_min} min
+                        <Text
+                          style={[
+                            TextStyles.Header2,
+                            {
+                              color: item.color
+                            }
+                          ]}
+                        >
+                          {item.title}
                         </Text>
                       </View>
-                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
-                        <Icon
-                          family={"MaterialCommunityIcons"}
-                          name={"delete"}
-                          color="red"
-                          size={25}
-                        />
-                      </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
                 </Card>
               </Animatable.View>
             );
           })}
-          {this.state.foodList.length > 0 ? 
-            <Text style={styles.listedTitleTxt}>Recent</Text> : null}
-          {this.state.foodList.map((item, index) => {
-            return (
-              <Animatable.View
-                animation="pulse"
-                delay={index * 200}
-                style={{
-                  marginHorizontal: 20,
-                  marginBottom: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Card style={{ margin: 5 }}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('FoodCaloriesDetail', {
-                        isBack: true,
-                        foodName: item.food_name,
-                        title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 1,
-                        itemEntry: item
-                      })
-                    }                    
-                    underlayColor={item.color + "aa"}
-                    style={{
-                      backgroundColor: item.color
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15,
-                      }}
-                    >
-                      <View
-                        style={{
-                          padding: 5,
-                          flex: 1
-                        }}
-                      >
-                        <Text style={TextStyles.Header2}>
-                          {item.name}
-                        </Text>
-                        <Text style={TextStyles.GeneralText}>
-                        - {item.nf_calories} kcal : {item.duration_min} min
-                        </Text>
-                      </View>
-                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
-                        <CachedImage
-                          source={require("../../assets/images/redesign/add-food.png")}
-                          style={{
-                            width: 25,
-                            height: 25
-                          }}
-                          resizeMode="contain"
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </TouchableOpacity>
-                </Card>
-              </Animatable.View>
-            );
-          })}
-          
         </ScrollView>
       </View>
     );
@@ -292,29 +189,22 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
-    getNutritionixExercise: (query, data) =>
-      dispatch(getNutritionixExercise(query, data)),
   })
 );
 
 const styles = StyleSheet.create({
   headerView: {
-    marginTop: -50,
-    paddingTop: 50,
-    paddingBottom: 80,
-    borderBottomLeftRadius: 220,
-    borderBottomRightRadius: 220,
-    transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }],
+    paddingVertical: 20
   },
   headerMainView: {
     transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
   },
   calorieCircleView: {
-    width: screenWidth / 3,
-    height: screenWidth / 3,
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.3,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: screenWidth / 3,
+    marginHorizontal: screenWidth * 0.35,
     borderWidth: 2,
     borderColor: "#3992B6",
     borderRadius: screenWidth / 3,
@@ -380,5 +270,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 25,
     marginVertical: 15,
-  }
+  },
+  addBtn: {
+    margin: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ThemeStyle.accentColor,
+    borderRadius: 12
+  },
 });

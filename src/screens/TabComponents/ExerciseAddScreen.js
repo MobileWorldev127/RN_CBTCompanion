@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import LinearGradient from "react-native-linear-gradient";
-import Header from "./../../components/Header";
+import Header from "../../components/Header";
 import Icon from "../../common/icons";
 import ThemeStyle from "../../styles/ThemeStyle";
-import TextStyles from "./../../common/TextStyles";
+import TextStyles from "../../common/TextStyles";
 import { withSafeAreaActions } from "../../utils/StoreUtils";
 import { setMood } from "../../actions/RecordActions";
 import { Moods, asyncStorageConstants } from "../../constants";
@@ -28,11 +28,11 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
 import { showMessage } from "react-native-flash-message";
-import {getNutritionixInstantFoodList, getNutritionixNutrientsFoodList, addFoodEntry, getNutritionixFoodItem, deleteFoodEntries, getFoodEntries} from "../../actions/NutritionixActions"
+import { getNutritionixExercise, addExerciseEntry, deleteExerciseEntries, getExerciseEntries } from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
 
-class FoodAddScreen extends Component {
+class ExerciseAddScreen extends Component {
   constructor(props) {
     super(props);
     this.moods = Moods;
@@ -45,11 +45,14 @@ class FoodAddScreen extends Component {
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
       query: '',
       queryTxt: '',
-      foodList: [],
-      addedFoodList: props.navigation.state.params.alreadyAddedFoodList,
-      isSpeaking: false,
-      foodNutritinDetail: {},
-      addedFoodKeyList: []
+      exerciseList: [],
+      addedExerciseList: [],
+
+      // foodList: [],
+      // addedFoodList: [],
+      // isSpeaking: false,
+      // foodNutritinDetail: {},
+      // addedFoodKeyList: []
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -59,7 +62,8 @@ class FoodAddScreen extends Component {
     });
   }
 
-  async componentDidMount() {this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
+  async componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
     recordScreenEvent(screenNames.record);
     if (!isOnline()) {
       userInfo = JSON.parse(
@@ -77,36 +81,39 @@ class FoodAddScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  onChangeQuery = query => {
-    if (query) {
-      this.props.getNutritionixInstantFoodList(query, data => {
+  onChangeQuery = text => {
+    if (text.length > 2) {
+      let param = {};
+      param.query = text;
+      this.props.getNutritionixExercise(param, data => {
+        console.log('@@@@---', data)
         this.setState({
-          foodList: data.branded
+          exerciseList: data.exercises
         })
       });
     }
     else {
       this.setState({
-        foodList: []
+        exerciseList: []
       });
     }
   }
 
-  addFoodList = item => {
+  addExerciseList = item => {
     let { params } = this.props.navigation.state;
     let title = params.title;
-    var addedFoodList = this.state.addedFoodList;
-    var foodList = [...this.state.foodList];
-    if (addedFoodList.indexOf(item) > -1) {
+    var addedExerciseList = this.state.addedExerciseList;
+    var exerciseList = [...this.state.exerciseList];
+    if (addedExerciseList.indexOf(item) > -1) {
       let date = this.state.currentDate.format("YYYY-MM-DD");
-      this.props.getFoodEntries(date, fetchListData => {
+      this.props.getExerciseEntries(date, fetchListData => {
         fetchListData.map(item1 => {
-          if (item1.details[0].name == (item.food_name? item.food_name : item.details[0].name)){
-            this.props.deleteFoodEntries(item1._id, fetchData => {
-              var index = addedFoodList.indexOf(item);
+          if (item1.details[0].name == item.name){
+            this.props.deleteExerciseEntries(item1._id, fetchData => {
+              var index = addedExerciseList.indexOf(item);
               if (index !== -1) {
-                addedFoodList.splice(index, 1);
-                this.setState({ addedFoodList: addedFoodList });
+                addedExerciseList.splice(index, 1);
+                this.setState({ addedExerciseList: addedExerciseList });
               }
               else {
                 return;
@@ -117,44 +124,22 @@ class FoodAddScreen extends Component {
       });
     }
     else {
-      this.props.getNutritionixFoodItem(item.nix_item_id, data => {
-        if (!data.foods) {
-          setTimeout(() => {
-            showMessage({
-              message:'Something went wrong. Try again. Or use the search function.',
-              type: "danger"
-            })
-          }, 500)
-        }
-        else {
-          let dateTime = this.state.currentDate.format("YYYY-MM-DD");
-          this.props.addFoodEntry(data.foods[0], title, dateTime, onAdded => {
-            console.log('~~~~~>>', onAdded)
-            addedFoodList.push(item);
-            var index = foodList.indexOf(item);
-            if (index !== -1) {
-              foodList.splice(index, 1);
-              this.setState({
-                addedFoodList: addedFoodList,
-                foodList: foodList,
-              });
-            };
+      let dateTime = this.state.currentDate.format("YYYY-MM-DD");
+      this.props.addExerciseEntry(item, dateTime, onAdded => {
+        console.log('~~~~~>>', onAdded)
+        addedExerciseList.push(item);
+        var index = exerciseList.indexOf(item);
+        if (index !== -1) {
+          exerciseList.splice(index, 1);
+          this.setState({
+            addedExerciseList: addedExerciseList,
+            exerciseList: exerciseList,
           });
-        }
+        };
       });
     }
   }
 
-  onClickAdd = () => {
-    this.props.getNutritionixNutrientsFoodList(this.state.queryTxt, data => {
-      if (data.foods) {
-        this.setState({ foodList: data.foods })
-      }
-      else {
-        this.setState({ foodList: [] })
-      }
-    });
-  }
 
   jsUcfirst(string){
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -164,7 +149,6 @@ class FoodAddScreen extends Component {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
-    let title = params.title;
     return (
       <View style={[ThemeStyle.pageContainer, { overflow: "hidden" }]}>
         <LinearGradient
@@ -176,69 +160,34 @@ class FoodAddScreen extends Component {
           end={{ y: 1.4, x: 0.2 }}
           style={styles.headerView}
         >
-          <View style={styles.headerMainView}>
-            <Header
-              title={title}
-              isDrawer={!isBack}
-              openDrawer={() => {
-                this.props.navigation.openDrawer();
-              }}
-              goBack={() => {
-                this.props.navigation.state.params.onGoBack();
-                this.props.navigation.goBack("");
-              }}
-              navBarStyle={{ backgroundColor: "transparent" }}
-              isLightContent
+          <Header
+            title={'Add Exercise'}
+            isDrawer={!isBack}
+            openDrawer={() => {
+              this.props.navigation.openDrawer();
+            }}
+            goBack={() => {
+              // this.props.navigation.state.params.onGoBack();
+              this.props.navigation.goBack("");
+            }}
+            navBarStyle={{ backgroundColor: "transparent" }}
+            isLightContent
+          />
+          <Animatable.View
+            animation="fadeInDown"
+            style={{ alignItems: "center" }}
+          >
+            <SearchField 
+              iconName="ios-search" 
+              placeholder="Search Exercise" 
+              onChangeText={query => this.onChangeQuery(query)}
             />
-            <Animatable.View
-              animation="fadeInDown"
-              style={{ alignItems: "center" }}
-            >
-              <SearchField 
-                iconName="ios-search" 
-                placeholder="Search food..." 
-                onChangeText={query => this.onChangeQuery(query)}
-              />
-              <View style={styles.inputView}>
-                <TextInput
-                  style={[TextStyles.GeneralText, styles.inputBox]}
-                  placeholder="Describe what happened"
-                  multiline={true}
-                  placeholderTextColor="lightgrey"
-                  underlineColorAndroid="transparent"
-                  defaultValue={this.state.queryTxt}
-                  onChangeText={queryTxt => this.setState({ queryTxt })}
-                />
-                {/* <TouchableOpacity 
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                  }}
-                  onPress = {() => this.setState({isSpeaking: !this.state.isSpeaking})}>
-                  <CachedImage
-                    source={
-                      this.state.isSpeaking?
-                      require("../../assets/images/redesign/Finish-icon-active.png") :
-                      require("../../assets/images/redesign/Talk-icon.png")
-                    }
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity> */}
-              </View>
-              {
-                this.state.queryTxt ?
-                <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
-                  <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
-                </TouchableOpacity> : null
-              }              
-            </Animatable.View>
-          </View>
+          </Animatable.View>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {this.state.addedFoodList.length > 0 ? 
+          {this.state.addedExerciseList.length > 0 ? 
             <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
-          {this.state.addedFoodList.map((item, index) => {
+          {this.state.addedExerciseList.map((item, index) => {
             return (
               <Animatable.View
                 animation="pulse"
@@ -280,24 +229,13 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {item.food_name ? item.food_name : item.details[0].name}
+                          {this.jsUcfirst(item.name)}
                         </Text>
-                        {/* <Text style={TextStyles.GeneralText}>
-                          {item.brand_name}
-                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories ? item.nf_calories : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
+                          - {item.nf_calories} kcal : {item.duration_min} min
                         </Text>
                       </View>
-                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
-                        {/* <CachedImage
-                          source={require("../../assets/images/redesign/active-icon.png")}
-                          style={{
-                            width: 25,
-                            height: 25
-                          }}
-                          resizeMode="contain"
-                        /> */}
+                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
                         <Icon
                           family={"MaterialCommunityIcons"}
                           name={"delete"}
@@ -311,9 +249,9 @@ class FoodAddScreen extends Component {
               </Animatable.View>
             );
           })}
-          {this.state.foodList.length > 0 ? 
+          {this.state.exerciseList.length > 0 ? 
             <Text style={styles.listedTitleTxt}>Recent</Text> : null}
-          {this.state.foodList.map((item, index) => {
+          {this.state.exerciseList.map((item, index) => {
             return (
               <Animatable.View
                 animation="pulse"
@@ -355,16 +293,13 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {this.jsUcfirst(item.food_name)}
+                          {this.jsUcfirst(item.name)}
                         </Text>
-                        {/* <Text style={TextStyles.GeneralText}>
-                          {item.brand_name}
-                        </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
+                        - {item.nf_calories} kcal : {item.duration_min} min
                         </Text>
                       </View>
-                      <TouchableOpacity onPress={() => this.addFoodList(item)}>
+                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
                         <CachedImage
                           source={require("../../assets/images/redesign/add-food.png")}
                           style={{
@@ -388,7 +323,7 @@ class FoodAddScreen extends Component {
 }
 
 export default withSafeAreaActions(
-  FoodAddScreen,
+  ExerciseAddScreen,
   state => ({
     isEdit: state.record.isEdit,
     editEntry: state.record.editEntry,
@@ -396,29 +331,20 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
-    getNutritionixInstantFoodList: (query, data) =>
-      dispatch(getNutritionixInstantFoodList(query, data)),
-    getNutritionixNutrientsFoodList: (formdata, data) => 
-      dispatch(getNutritionixNutrientsFoodList(formdata, data)),
-    addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
-      dispatch(addFoodEntry(exerciseInput, title, dateTime, onAdded)),
-    getNutritionixFoodItem: (itemId, data) =>
-      dispatch(getNutritionixFoodItem(itemId, data)),
-    deleteFoodEntries: (entryId, fetchData) =>
-      dispatch(deleteFoodEntries(entryId, fetchData)),
-    getFoodEntries: (date, fetchListData) =>
-      dispatch(getFoodEntries(date, fetchListData)),
+    getNutritionixExercise: (query, data) =>
+      dispatch(getNutritionixExercise(query, data)),
+    addExerciseEntry: (query, date, data) =>
+      dispatch(addExerciseEntry(query, date, data)),
+    deleteExerciseEntries: (entryId, data) =>
+      dispatch(deleteExerciseEntries(entryId, data)),
+    getExerciseEntries: (date, fetchListData) =>
+      dispatch(getExerciseEntries(date, fetchListData)),
   })
 );
 
 const styles = StyleSheet.create({
   headerView: {
-    marginTop: -50,
-    paddingTop: 50,
-    paddingBottom: 80,
-    borderBottomLeftRadius: 220,
-    borderBottomRightRadius: 220,
-    transform: [{ scaleX: 1.8 }, { scaleY: 0.8 }],
+    paddingVertical: 20
   },
   headerMainView: {
     transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
