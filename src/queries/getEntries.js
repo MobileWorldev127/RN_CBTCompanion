@@ -94,3 +94,28 @@ export const getExerciseEntriesquery = gql`
     }
   }
 `;
+
+
+export const getSleepEntriesquery = gql`
+  query getSleepEntries($startDate: String!, $endDate: String!) {
+    getSleepEntries(startDate: $startDate, endDate: $endDate) {
+      _id
+      userId
+      source
+      dateTime
+      bed_time
+      wake_time
+      duration_min
+      sleep_analysis {
+        start_time
+        end_time
+        asleep
+        rating
+        energy_threshold
+        deep_sleep
+        average_hr
+        recharge
+      }
+    }
+  }
+`;

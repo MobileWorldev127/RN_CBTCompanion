@@ -25,3 +25,12 @@ export const addExerciseEntryMutation = gql`
     }
   }
 `;
+
+export const addSleepMutation = gql`
+  mutation addSleepEntry($input: SleepInput!) {
+    addSleepEntry(input: $input) {
+      success
+      message
+    }
+  }
+`;

@@ -27,6 +27,8 @@ import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 
+import { getExerciseEntries } from "../../actions/NutritionixActions";
+
 const screenWidth = Dimensions.get("window").width;
 
 class LogExercise extends Component {
@@ -42,6 +44,7 @@ class LogExercise extends Component {
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
       exerciseList: [],
       addedExerciseList: [],
+      sum_cals: 0,
     };
     Auth.currentUserInfo().then(info => {
       console.log("user info", info);
@@ -64,10 +67,24 @@ class LogExercise extends Component {
         });
       }
     }
+    this.fetchExerciseList(this.state.currentDate.format("YYYY-MM-DD"));
   }
 
   componentWillUnmount() {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  fetchExerciseList = date => {
+    var sum_cals = 0;
+    this.props.getExerciseEntries(date, fetchListData => {
+      fetchListData.map(item => {
+        sum_cals += item.details[0].calories;
+      })
+      this.setState({ 
+        exerciseList: fetchListData,
+        sum_cals: sum_cals
+       })
+    });
   }
 
   jsUcfirst(string){
@@ -77,7 +94,29 @@ class LogExercise extends Component {
   onClickAddMoreExercuse = () => {
     this.props.navigation.navigate("ExerciseAdd", {
       isBack: true,
+      onGoBack: this.onSelect
     });
+  }
+
+  onSelect = () => {
+    var date = this.state.currentDate.format("YYYY-MM-DD");
+    this.fetchExerciseList(date);
+  }
+
+  onClickBeforeDay = () => {
+    var prev_date = new Date(this.state.currentDate - 864e5);
+    this.setState({
+      currentDate: moment(prev_date)
+    });
+    this.fetchExerciseList(moment(prev_date).format("YYYY-MM-DD"));
+  }
+
+  onClickAfterDay = () => {
+    var after_date = new Date(this.state.currentDate + 864e5);
+    this.setState({
+      currentDate: moment(after_date)
+    });
+    this.fetchExerciseList(moment(after_date).format("YYYY-MM-DD"));
   }
 
   render() {
@@ -107,9 +146,29 @@ class LogExercise extends Component {
             navBarStyle={{ backgroundColor: "transparent" }}
             isLightContent
           />
-          <Text style={{color: 'white', fontSize: 18, width: '100%', textAlign: 'center'}}>
-            {this.state.currentDate.format("dddd, DD MMMM")}
-          </Text>
+          <View style={styles.dateView}>
+            <TouchableOpacity onPress={this.onClickBeforeDay}>
+              <Icon
+                name="ios-arrow-back"
+                size={22}
+                color="white"
+                style={styles.pickerIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onClickDay}>
+              <Text style={[TextStyles.Header2, {color: 'white'}]}>
+                {this.state.currentDate.format("dddd, DD MMMM")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onClickAfterDay}>
+              <Icon
+                name="ios-arrow-forward"
+                size={22}
+                color="white"
+                style={styles.pickerIcon}
+              />
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
           <TouchableOpacity style={styles.addBtn} onPress = {() => this.onClickAddMoreExercuse()}>
@@ -121,17 +180,25 @@ class LogExercise extends Component {
                 animation="pulse"
                 delay={index * 200}
                 style={{
-                  // flex: 1,
-                  // maxHeight: 140,
-                  overflow: "hidden"
+                  marginHorizontal: 20,
+                  marginBottom: 10,
+                  borderRadius: 10,
                 }}
               >
                 <Card style={{ margin: 5 }}>
                   <TouchableOpacity
-                    onPress={() => this.onPressFoodDetail(item.title)}
+                    onPress={() =>
+                      this.props.navigation.navigate('FoodCaloriesDetail', {
+                        isBack: true,
+                        foodName: item.food_name ? item.food_name : item.details[0].name,
+                        title: title,
+                        itemId: item.nix_item_id ? item.nix_item_id : 0,
+                        itemEntry: item
+                      })
+                    }                    
                     underlayColor={item.color + "aa"}
                     style={{
-                      backgroundColor: item.color,
+                      backgroundColor: item.color
                     }}
                   >
                     <View
@@ -139,41 +206,50 @@ class LogExercise extends Component {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        paddingHorizontal: 20,
-                        paddingVertical: 15,
+                        padding: 15,
                       }}
                     >
-                      <CachedImage
-                        source={item.image}
-                        style={{
-                          width: 60,
-                          height: 60
-                        }}
-                        resizeMode="contain"
-                      />
                       <View
                         style={{
-                          paddingHorizontal: 15,
-                          flex: 1,
+                          padding: 5,
+                          flex: 1
                         }}
                       >
-                        <Text
-                          style={[
-                            TextStyles.Header2,
-                            {
-                              color: item.color
-                            }
-                          ]}
-                        >
-                          {item.title}
+                        <Text style={TextStyles.Header2}>
+                          {this.jsUcfirst(item.details[0].name)}
+                        </Text>
+                        <Text style={TextStyles.GeneralText}>
+                          - {item.details[0].calories} kcal : {item.details[0].duration_min} min
                         </Text>
                       </View>
+                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
+                        <Icon
+                          family={"MaterialCommunityIcons"}
+                          name={"delete"}
+                          color="red"
+                          size={25}
+                        />
+                      </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
                 </Card>
               </Animatable.View>
             );
           })}
+          <View style={styles.calsView}>
+            <Text style={{color: '#f7992a', fontSize: 25}}> {this.state.sum_cals}
+              <Text style={{fontSize: 25, color:'black'}}> cals
+              </Text>
+            </Text>
+            <CachedImage
+              source={require("../../assets/images/redesign/Calories-icon.png")}
+              style={{
+                width: 60,
+                height: 60
+              }}
+              resizeMode="contain"
+            />
+          </View>
         </ScrollView>
       </View>
     );
@@ -189,6 +265,8 @@ export default withSafeAreaActions(
   dispatch => ({
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
+    getExerciseEntries: (date, fetchListData) =>
+      dispatch(getExerciseEntries(date, fetchListData)),
   })
 );
 
@@ -199,77 +277,11 @@ const styles = StyleSheet.create({
   headerMainView: {
     transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
   },
-  calorieCircleView: {
-    width: screenWidth * 0.3,
-    height: screenWidth * 0.3,
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: screenWidth * 0.35,
-    borderWidth: 2,
-    borderColor: "#3992B6",
-    borderRadius: screenWidth / 3,
-    backgroundColor: "white",
-  },
-  calorieCircleTxt: {
-    fontSize: 24,
-    color: "#3992B6",
-    fontWeight: "bold",
-  },
-  nutritionixTabView: {
-    width: screenWidth / 3,
-    height: 100,
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  mainContainerView: {
-    flex: 1,
-    padding: 15,
-    marginTop: -30,
-  },
   dateView: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    margin: 10,
-  },
-  searchView: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    width: "90%",
-    height: 50,
-    borderRadius: 25,
-    alignItems: "center",
-    padding: 10,
-    paddingLeft: 20
-  },
-  inputView: {
-    width: "90%",
-    height: 100,
-    marginVertical: 16,
-    borderRadius: 15,
-    backgroundColor: "white",
-    padding: 20,
-  },
-  inputBox: {
-    flex: 1,
-    fontSize: 16,
-    textAlignVertical: "center",
-    color: "#000",
-  },
-  addView: {
-    width: "88%",
-    height: 50,
-    borderRadius: 5,
-    backgroundColor: '#f7992a',
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom:20,
-  },
-  listedTitleTxt: {
-    fontSize: 20,
-    marginLeft: 25,
-    marginVertical: 15,
+    marginHorizontal: 50,
   },
   addBtn: {
     margin: 25,
@@ -278,5 +290,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: ThemeStyle.accentColor,
     borderRadius: 12
+  },
+  calsView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 25,
+    height: 60,
+    marginVertical: 15
   },
 });

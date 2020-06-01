@@ -102,7 +102,7 @@ class AddScreen extends Component {
               {
                 title: 'Log Sleep',
                 onPress: () =>
-                  this.props.navigation.navigate('MedicationScreen', {
+                  this.props.navigation.navigate('SleepAdd', {
                     isBack: true,
                   }),
                 color: "#000",

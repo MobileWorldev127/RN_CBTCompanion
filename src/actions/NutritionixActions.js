@@ -1,8 +1,8 @@
 import { setLoading } from "./AppActions";
 import { client, swasthCommonsClient } from "../App";
-import { addFoodEntryMutation, addExerciseEntryMutation } from "../queries/addEntry";
-import { deleteFoodEntryQuery, deleteExerciseEntryQuery } from "../queries/deleteEntry";
-import { getFoodEntriesquery, getExerciseEntriesquery } from "../queries/getEntries";
+import { addFoodEntryMutation, addExerciseEntryMutation, addSleepMutation } from "../queries/addEntry";
+import { deleteFoodEntryQuery, deleteExerciseEntryQuery, deleteSleepEntryQuery } from "../queries/deleteEntry";
+import { getFoodEntriesquery, getExerciseEntriesquery, getSleepEntriesquery } from "../queries/getEntries";
 
 import Amplify from "aws-amplify";
 import { getAmplifyConfig, getEnvVars } from "../constants";
@@ -363,3 +363,93 @@ export function getExerciseEntries(date, fetchData) {
   };
 }
 
+export function addSleepEntry(entry, dateTime, sleepEntryData) {
+  return function(dispatch, state) {
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+
+    let variables = {};
+    variables = {
+      dateTime: dateTime,
+      source: "Manual",
+      bed_time: entry.bed_time,
+      wake_time: entry.wake_time,
+      duration: entry.duration,
+      duration_min: entry.duration_min,
+      sleep_analysis: [],
+    };
+    API.graphql({
+      query: addSleepMutation,
+      variables: {
+        input: variables
+      }
+    })
+      .then(data => {
+        if (sleepEntryData){
+          sleepEntryData(data.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
+
+export function deleteSleepEntries(entryId, fetchData) {
+  return function(dispatch, state) {
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: deleteSleepEntryQuery,
+      variables: {
+        entryType: "Sleep",
+        entryId: entryId
+      }
+    })
+      .then(data => {
+        if (fetchData) {
+          fetchData(data.data.deleteEntry);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+}
+
+export function getSleepEntries(date, fetchData) {
+  return function(dispatch, state) {
+    dispatch(setLoading(true));
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: getSleepEntriesquery,
+      variables: {
+        startDate: date,
+        endDate: date
+      }
+    })
+      .then(data => {
+        if (fetchData){
+          fetchData(data.data.getExerciseEntries);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+}

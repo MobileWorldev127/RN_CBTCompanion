@@ -33,3 +33,12 @@ export const deleteExerciseEntryQuery = gql`
     }
   }
 `;
+
+export const deleteSleepEntryQuery = gql`
+  mutation deleteEntry($entryType: HealthKitTypes!, $entryId: ID!) {
+    deleteEntry(entryType: $entryType, entryId: $entryId) {
+      success
+      message
+    }
+  }
+`;

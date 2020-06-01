@@ -161,7 +161,7 @@ class ExerciseAddScreen extends Component {
               this.props.navigation.openDrawer();
             }}
             goBack={() => {
-              // this.props.navigation.state.params.onGoBack();
+              this.props.navigation.state.params.onGoBack();
               this.props.navigation.goBack("");
             }}
             navBarStyle={{ backgroundColor: "transparent" }}
