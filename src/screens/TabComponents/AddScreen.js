@@ -41,6 +41,19 @@ class AddScreen extends Component {
           isIcon: true,
           image: require('../../assets/images/redesign/cbt-recordentry-graphic.png'),
         },
+        {
+          title: "Breathing Excercise",
+          onPress: () =>
+            this.props.navigation.navigate("ExcerciseBreathingScreen", {
+              isBack: true,
+              title: 'AAAA=======+>',
+            }),
+          color: ThemeStyle.communityColor,
+          iconName: "chart-arc",
+          iconFamily: "MaterialCommunityIcons",
+          isIcon: true,
+          image: require("../../assets/images/breathing_exercise_ico.png")
+        }
       ],
     };
   }
@@ -173,7 +186,7 @@ class AddScreen extends Component {
             navBarStyle={{ backgroundColor: 'transparent' }}
             title={''}
           />
-          <View style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
             {this.state.items.map((item, index) => {
               return (
                 <Animatable.View
@@ -181,7 +194,7 @@ class AddScreen extends Component {
                   delay={index * 200}
                   style={{
                     flex: 1,
-                    maxHeight: 160,
+                    maxHeight: 130,
                     overflow: 'hidden',
                   }}
                 >
@@ -225,7 +238,7 @@ class AddScreen extends Component {
                 </Animatable.View>
               );
             })}
-          </View>
+          </ScrollView>
         </LinearGradient>
       </View>
     );

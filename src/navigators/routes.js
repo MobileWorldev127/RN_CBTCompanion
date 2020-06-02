@@ -65,6 +65,7 @@ import FoodCaloriesDetailScreen from "../screens/TabComponents/FoodCaloriesDetai
 import LogExerciseScreen from "../screens/TabComponents/LogExerciseScreen";
 import ExerciseAddScreen from "../screens/TabComponents/ExerciseAddScreen";
 import SleepAddScreen from "../screens/TabComponents/SleepAddScreen";
+import { App } from "./../screens/BreathingExcercise/components/App/App";
 
 const DrawerRoutes = createDrawerNavigator(
   {
@@ -480,6 +481,12 @@ const Routes = {
   },
   SleepAdd: {
     screen: SleepAddScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ExcerciseBreathingScreen: {
+    screen: App,
     navigationOptions: {
       header: null
     }
