@@ -18,7 +18,7 @@ const AppReducer = {
   quiz,
   shareSettings,
   homework,
-  nutritionix
+  nutritionix,
 };
 
 export default AppReducer;

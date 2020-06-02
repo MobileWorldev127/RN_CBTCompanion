@@ -12,11 +12,8 @@ import { AppRouter } from "./AppRouter";
 // the AppRouter
 
 export const AppMain: FC<Props> = ({
-  props,
   navigation
 }) => {
-  console.log('###====>', navigation.state.params.title)
-// export const AppMain = () => {
   const { ready, initialize, setSystemColorScheme } = useAppContext();
 
   useOnMount(() => {

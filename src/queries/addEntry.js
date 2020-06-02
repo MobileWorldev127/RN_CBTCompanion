@@ -34,3 +34,12 @@ export const addSleepMutation = gql`
     }
   }
 `;
+
+export const addMindfulnessMinutesMutation = gql`
+  mutation addMindfulnessMinutes($input: MindfulnessMinutesInput!) {
+    addMindfulnessMinutes(input: $input) {
+      success
+      message
+    }
+  }
+`;

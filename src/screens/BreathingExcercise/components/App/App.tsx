@@ -18,8 +18,6 @@ export const App: FC<Props> = ({
   props,
   navigation
 }) => {
-  // let isBack = props.params.title;
-  console.log('#####%%%%%%%%>', navigation.state.params.title)
   return (
     <AppContextProvider>
       <AppMain navigation={navigation}/>

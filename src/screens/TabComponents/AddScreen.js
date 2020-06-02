@@ -46,7 +46,7 @@ class AddScreen extends Component {
           onPress: () =>
             this.props.navigation.navigate("ExcerciseBreathingScreen", {
               isBack: true,
-              title: 'AAAA=======+>',
+              title: 'AAAAAA====='
             }),
           color: ThemeStyle.communityColor,
           iconName: "chart-arc",

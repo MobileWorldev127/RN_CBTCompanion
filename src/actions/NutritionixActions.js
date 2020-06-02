@@ -1,5 +1,4 @@
 import { setLoading } from "./AppActions";
-import { client, swasthCommonsClient } from "../App";
 import { addFoodEntryMutation, addExerciseEntryMutation, addSleepMutation } from "../queries/addEntry";
 import { deleteFoodEntryQuery, deleteExerciseEntryQuery, deleteSleepEntryQuery } from "../queries/deleteEntry";
 import { getFoodEntriesquery, getExerciseEntriesquery, getSleepEntriesquery } from "../queries/getEntries";

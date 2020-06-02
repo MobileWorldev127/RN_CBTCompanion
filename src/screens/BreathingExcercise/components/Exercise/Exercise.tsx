@@ -11,6 +11,11 @@ import { ExerciseInterlude } from "./ExerciseInterlude";
 import { ExerciseTimer } from "./ExerciseTimer";
 import { useOnMount } from "../../hooks/useOnMount";
 import { initializeAudio, releaseAudio, playSound } from "../../services/sound";
+import { addBreathingEntry } from "../../../../actions/BreathingActions"
+import { withSafeAreaActions } from "../../../../utils/StoreUtils";
+import { connect } from 'react-redux'
+let moment = require("moment");
+
 
 type Status = "interlude" | "running" | "completed";
 
@@ -18,7 +23,10 @@ type Props = {};
 
 const unmountAnimDuration = 300;
 
-export const Exercise: FC<Props> = () => {
+export const Exercise: FC<Props> = ({
+  navigation
+}) => {
+
   const {
     technique,
     timerDuration,
@@ -46,11 +54,19 @@ export const Exercise: FC<Props> = () => {
     setStatus("running");
   };
 
-  const handleTimeLimitReached = () => {
+  const handleTimeLimitReached = (limit) => {
     unmountContentAnimation.start(({ finished }) => {
       if (finished) {
         if (guidedBreathingMode !== "disabled") playSound("endingBell");
         setStatus("completed");
+        var entry = {
+          title: "Breathing",
+          totalMinutes: limit/1000/60
+        }
+        let dateTime = moment().format("YYYY-MM-DD");
+        addBreathingEntry(entry, dateTime, onAdded => {
+          console.log('Success', onAdded)
+        })
       }
     });
   };
@@ -58,6 +74,8 @@ export const Exercise: FC<Props> = () => {
   const contentAnimatedStyle = {
     opacity: unmountContentAnimVal
   };
+
+  
 
   return (
     <View style={styles.container}>

@@ -103,7 +103,7 @@ export const Settings: FC<Props> = ({ visible, onHide, onBackButtonPress }) => {
           /> */}
         </SettingsSection>
 
-        <SettingsSection label={"Guided Breathing"}>
+        {/* <SettingsSection label={"Guided Breathing"}>
           {guidedBreathingItems.map(({ label, value }, index) => (
             <SettingsItemRadio
               key={value}
@@ -114,7 +114,7 @@ export const Settings: FC<Props> = ({ visible, onHide, onBackButtonPress }) => {
               onPress={() => setGuidedBreathingMode(value)}
             />
           ))}
-        </SettingsSection>
+        </SettingsSection> */}
         <SettingsSection label={"Timer"}>
           <SettingsItemPicker
             label="Timer duration"

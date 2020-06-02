@@ -64,10 +64,6 @@ export const AppRouter: FC<Props> = ({
   navigation
 }) => {
 
-  // let isBack = props.state.params.title;
- 
-  console.log('###&>', navigation.state.params.title)
-// export const AppRouter: FC = () => {
   const { theme } = useAppContext();
   const [currentScreen, setCurrentScreen] = useState<Screen>("main");
   const [currentMenuPage, setCurrentMenuPage] = useState<MenuPage>(null);
@@ -192,7 +188,7 @@ export const AppRouter: FC<Props> = ({
               onSettingsPress={handleSettingsButtonPress}
             />
           }
-          back={<Exercise />}
+          back={<Exercise navigation={navigation}/>}
         />
       )}
 

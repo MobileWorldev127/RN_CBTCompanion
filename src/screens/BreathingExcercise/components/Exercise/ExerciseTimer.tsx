@@ -35,7 +35,7 @@ export const ExerciseTimer: FC<Props> = ({ limit, onLimitReached }) => {
 
   useEffect(() => {
     if (limit && elapsedTime * 1000 >= limit) {
-      onLimitReached();
+      onLimitReached(limit);
     }
     // TODO: Check this
     // eslint-disable-next-line react-app/react-hooks/exhaustive-deps
