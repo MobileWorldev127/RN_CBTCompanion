@@ -29,6 +29,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {getNutritionixFoodItem} from "../../actions/NutritionixActions"
 import {addFoodEntry} from "../../actions/NutritionixActions"
 import { showMessage } from "react-native-flash-message";
+import { setTopSafeAreaView } from "../../actions/AppActions";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -148,8 +149,17 @@ class FoodCaloriesDetailScreen extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  convertFloat(value) {
+    return value.indexOf(".")>0?
+             value.split(".").length>=2?
+             value.split(".")[0]+"."+value.split(".")[1].substring(-1,2)
+               : value
+               : value
+  }
+
   render() {
     console.log("Render home", this.state);
+    // console.log("##++++++++++", Math.round10(this.state.foodNutritinDetail.nf_total_carbohydrate,2))
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     let foodName = params.foodName;
@@ -192,7 +202,7 @@ class FoodCaloriesDetailScreen extends Component {
           </TouchableOpacity> */}
           
           <View style={styles.calsView}>
-            <Text style={{color: '#f7992a', fontSize: 25}}> {this.state.foodNutritinDetail.nf_calories}
+            <Text style={{color: '#f7992a', fontSize: 25}}> {Math.round(this.state.foodNutritinDetail.nf_calories)}
               <Text style={{fontSize: 25, color:'black'}}> cals
               </Text>
             </Text>
@@ -219,7 +229,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_carbohydrate}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.foodNutritinDetail.nf_total_carbohydrate)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -237,7 +247,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_protein}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.foodNutritinDetail.nf_protein)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -254,7 +264,7 @@ class FoodCaloriesDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.foodNutritinDetail.nf_total_fat}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.foodNutritinDetail.nf_total_fat)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -265,31 +275,31 @@ class FoodCaloriesDetailScreen extends Component {
             <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Protein</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_protein}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.foodNutritinDetail.nf_protein)}g</Text>
             </View>
 
             <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Carbs</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_carbohydrate}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.foodNutritinDetail.nf_total_carbohydrate)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Fiber</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_dietary_fiber}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_dietary_fiber)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Sugar</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_sugars}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_sugars)}g</Text>
             </View>
 
             <View style={styles.viewLine} />
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Fat</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.foodNutritinDetail.nf_total_fat}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.foodNutritinDetail.nf_total_fat)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Saturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_saturated_fat}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_saturated_fat)}g</Text>
             </View>
 
             <View style={styles.viewLine} />
@@ -299,15 +309,15 @@ class FoodCaloriesDetailScreen extends Component {
             
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Sodium</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_sodium}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_sodium)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Potassium</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_potassium}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_potassium)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Cholesterol</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.foodNutritinDetail.nf_cholesterol}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.foodNutritinDetail.nf_cholesterol)}g</Text>
             </View>
           </View>
 
@@ -324,6 +334,7 @@ export default withSafeAreaActions(
     editEntry: state.record.editEntry,
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getNutritionixFoodItem: (itemId, data) =>

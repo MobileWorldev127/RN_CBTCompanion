@@ -29,6 +29,7 @@ import { showMessage } from "react-native-flash-message";
 import { errorMessage } from "../../utils";
 import { isOnline } from "../../utils/NetworkUtils";
 import * as Animatable from "react-native-animatable";
+import { setTopSafeAreaView } from "../../actions/AppActions";
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -346,6 +347,7 @@ export default withSafeAreaActions(
     editEntry: state.record.editEntry
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID))
   })

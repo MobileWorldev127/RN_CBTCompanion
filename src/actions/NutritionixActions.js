@@ -15,8 +15,8 @@ const INSTANT = 'search/instant';
 const ITEM = 'search/item';
 const NUTIENTS = 'natural/nutrients'
 const EXERCISE = 'natural/exercise';
-const nutritionix_id = '57e669fc';
-const nutritionix_key = '0826d9bbad26f5448beada63a3a59f7c';
+const nutritionix_id = 'd794dc87';
+const nutritionix_key = '46f56da4bf658b1dfa9c2ce9e0f45cb1';
 
 
 export function getNutritionixInstantFoodListSuccess(response) {

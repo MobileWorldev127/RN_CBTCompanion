@@ -28,6 +28,7 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import SearchField from "../../components/SearchField";
 import { showMessage } from "react-native-flash-message";
+import { setTopSafeAreaView } from "../../actions/AppActions";
 import { getNutritionixExercise, addExerciseEntry, deleteExerciseEntries, getExerciseEntries } from "../../actions/NutritionixActions"
 
 const screenWidth = Dimensions.get("window").width;
@@ -336,6 +337,7 @@ export default withSafeAreaActions(
     editEntry: state.record.editEntry,
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getNutritionixExercise: (query, data) =>

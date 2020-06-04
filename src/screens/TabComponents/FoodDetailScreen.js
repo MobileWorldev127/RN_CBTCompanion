@@ -28,7 +28,7 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { getFoodEntries, deleteFoodEntries } from "../../actions/NutritionixActions"
-
+import { setTopSafeAreaView } from "../../actions/AppActions";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -170,6 +170,14 @@ class FoodDetailScreen extends Component {
   //   })
   // }
 
+  convertFloat(value) {
+    return value.indexOf(".")>0?
+             value.split(".").length>=2?
+             value.split(".")[0]+"."+value.split(".")[1].substring(-1,2)
+               : value
+               : value
+  }
+
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
@@ -287,7 +295,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.sum_carbs}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.sum_carbs)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -305,7 +313,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.sum_protein}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.sum_protein)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -323,7 +331,7 @@ class FoodDetailScreen extends Component {
                   backgroundColor="#C9CFDF">
                   {
                     (fill) => (
-                      <Text style={styles.processTxt}>{this.state.sum_fat}g</Text>
+                      <Text style={styles.processTxt}>{Math.round(this.state.sum_fat)}g</Text>
                     )
                   }
                 </AnimatedCircularProgress>
@@ -334,31 +342,31 @@ class FoodDetailScreen extends Component {
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Protein</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.sum_protein}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.sum_protein)}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Carbs</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.sum_carbs}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.sum_carbs)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Fiber</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_fiber}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_fiber)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Sugar</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_sugar}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_sugar)}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.SubHeader2}>Fat</Text>
-              <Text style={TextStyles.SubHeader2}>{this.state.sum_fat}g</Text>
+              <Text style={TextStyles.SubHeader2}>{Math.round(this.state.sum_fat)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Saturated Fat</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_saturated_fat}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_saturated_fat)}g</Text>
             </View>
             
             <View style={styles.viewLine}/>
@@ -367,15 +375,15 @@ class FoodDetailScreen extends Component {
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10,}}>
               <Text style={TextStyles.GeneralText}>Sodium</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_sodium}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_sodium)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
               <Text style={TextStyles.GeneralText}>Potassium</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_potassium}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_potassium)}g</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={TextStyles.GeneralText}>Cholesterol</Text>
-              <Text style={TextStyles.GeneralText}>{this.state.sum_cholesterol}g</Text>
+              <Text style={TextStyles.GeneralText}>{Math.round(this.state.sum_cholesterol)}g</Text>
             </View>
 
             <View style={styles.viewLine}/>
@@ -394,6 +402,7 @@ export default withSafeAreaActions(
     editEntry: state.record.editEntry,
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getFoodEntries: (date, fetchListData) =>

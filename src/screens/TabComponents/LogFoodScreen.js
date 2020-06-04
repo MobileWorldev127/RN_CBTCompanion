@@ -28,7 +28,7 @@ import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { addFoodEntry, getFoodEntries } from "../../actions/NutritionixActions"
 import { ScrollView, TextInput } from "react-native-gesture-handler";
-
+import { setTopSafeAreaView } from "../../actions/AppActions";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -428,7 +428,7 @@ class LogFoodScreen extends Component {
                     />
                   </View>
                   <Text style={{ color: "white" }}>
-                    {this.state.sum_carbs}g
+                    {Math.round(this.state.sum_carbs)}g
                   </Text>
                 </View>
                 <View style={styles.nutritionixTabView}>
@@ -450,7 +450,7 @@ class LogFoodScreen extends Component {
                     />
                   </View>
                   <Text style={{ color: "white" }}>
-                    {this.state.sum_protein}g
+                    {Math.round(this.state.sum_protein)}g
                   </Text>
                 </View>
                 <View style={styles.nutritionixTabView}>
@@ -471,7 +471,7 @@ class LogFoodScreen extends Component {
                       }}
                     />
                   </View>
-                  <Text style={{ color: "white" }}>{this.state.sum_fat}g</Text>
+                  <Text style={{ color: "white" }}>{Math.round(this.state.sum_fat)}g</Text>
                 </View>
               </View>
             </Animatable.View>
@@ -588,6 +588,7 @@ export default withSafeAreaActions(
     editEntry: state.record.editEntry,
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setMood: (mood, timestamp, isEdit, entryID) =>
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     addFoodEntry: (exerciseInput, title, dateTime, onAdded) =>
