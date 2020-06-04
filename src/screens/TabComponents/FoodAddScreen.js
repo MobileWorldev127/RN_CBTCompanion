@@ -361,7 +361,7 @@ class FoodAddScreen extends Component {
                           {item.brand_name}
                         </Text> */}
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories} cals - {item.serving_qty} {item.serving_unit}
+                          {item.nf_calories ? item.nf_calories : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addFoodList(item)}>

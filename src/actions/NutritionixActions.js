@@ -15,8 +15,8 @@ const INSTANT = 'search/instant';
 const ITEM = 'search/item';
 const NUTIENTS = 'natural/nutrients'
 const EXERCISE = 'natural/exercise';
-const nutritionix_id = '7ff2fd49';
-const nutritionix_key = '884a94b05d6044a0e241747c7496dc2a';
+const nutritionix_id = '57e669fc';
+const nutritionix_key = '0826d9bbad26f5448beada63a3a59f7c';
 
 
 export function getNutritionixInstantFoodListSuccess(response) {
@@ -144,9 +144,9 @@ export function addFoodEntry(entry, title, dateTime, foodEntryData) {
             name: entry.food_name,
             qty: entry.serving_qty,
             unit: entry.serving_unit,
-            weight_grams: entry.serving_weight_grams,
+            weight_grams: Math.round(entry.serving_weight_grams),
             macroNutrients: JSON.stringify({
-              calories: entry.nf_calories,
+              calories: Math.round(entry.nf_calories),
               total_fat: entry.nf_total_fat,
               saturated_fat: entry.nf_saturated_fat,
               cholesterol: entry.nf_cholesterol,
@@ -270,6 +270,7 @@ export function getNutritionixExercise(query, exerciseData) {
 };
 
 export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
+  console.log(entry)
   return function(dispatch, state) {
     // dispatch(setLoading(true));
     Amplify.configure(
@@ -284,7 +285,7 @@ export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
         {
           name: entry.name,
           duration_min: entry.duration_min,
-          calories: entry.nf_calories,
+          calories: Math.round(entry.nf_calories),
         }
       ],
     };
@@ -295,8 +296,8 @@ export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
       }
     })
       .then(data => {
-        if (exerciseEntryData){
-          exerciseEntryData(data.data);
+        if (exerciseEntryData) {
+          exerciseEntryData(data.data.addExerciseEntry);
         }
       })
       .catch(err => {

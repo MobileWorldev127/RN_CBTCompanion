@@ -80,10 +80,19 @@ class ExerciseAddScreen extends Component {
       let param = {};
       param.query = text;
       this.props.getNutritionixExercise(param, data => {
-        console.log('@@@@---', data)
-        this.setState({
-          exerciseList: data.exercises
-        })
+        if (data.exercises) {
+          this.setState({
+            exerciseList: data.exercises
+          })
+        }
+        else {
+          setTimeout(() => {
+            showMessage({
+              message:'Something went wrong. Try again. Or use the search function.',
+              type: "danger"
+            })
+          }, 500)
+        }        
       });
     }
     else {
@@ -98,48 +107,52 @@ class ExerciseAddScreen extends Component {
     let title = params.title;
     var addedExerciseList = this.state.addedExerciseList;
     var exerciseList = [...this.state.exerciseList];
-    if (addedExerciseList.indexOf(item) > -1) {
-      let date = this.state.currentDate.format("YYYY-MM-DD");
-      this.props.getExerciseEntries(date, fetchListData => {
-        fetchListData.map(item1 => {
-          if (item1.details[0].name == item.name){
-            console.log('$$$,', item1._id)
-            this.props.deleteExerciseEntries(item1._id, fetchData => {
-              var index = addedExerciseList.indexOf(item);
-              if (index !== -1) {
-                addedExerciseList.splice(index, 1);
-                this.setState({ addedExerciseList: addedExerciseList });
-              }
-              else {
-                return;
-              }
-            })
-          }
-        });
-      });
-    }
-    else {
-      let dateTime = this.state.currentDate.format("YYYY-MM-DD");
-      this.props.addExerciseEntry(item, dateTime, onAdded => {
-        addedExerciseList.push(item);
-        var index = exerciseList.indexOf(item);
-        if (index !== -1) {
-          exerciseList.splice(index, 1);
-          this.setState({
-            addedExerciseList: addedExerciseList,
-            exerciseList: exerciseList,
-          });
-        };
-      });
-    }
+    // if (addedExerciseList.indexOf(item) > -1) {
+    //   let date = this.state.currentDate.format("YYYY-MM-DD");
+    //   this.props.getExerciseEntries(date, fetchListData => {
+    //     fetchListData.map(item1 => {
+    //       if (item1.details[0].name == item.name){
+    //         console.log('$$$,', item1._id)
+    //         this.props.deleteExerciseEntries(item1._id, fetchData => {
+    //           var index = addedExerciseList.indexOf(item);
+    //           if (index !== -1) {
+    //             addedExerciseList.splice(index, 1);
+    //             this.setState({ addedExerciseList: addedExerciseList });
+    //           }
+    //           else {
+    //             return;
+    //           }
+    //         })
+    //       }
+    //     });
+    //   });
+    // }
+    // else {
+    let dateTime = this.state.currentDate.format("YYYY-MM-DD");
+    this.props.addExerciseEntry(item, dateTime, onAdded => {
+      if (onAdded.success) {
+        this.props.navigation.state.params.onGoBack();
+        this.props.navigation.goBack("");
+      }
+      else {
+        setTimeout(() => {
+          showMessage({
+            message:'Something went wrong. Try again. Or use the search function.',
+            type: "danger"
+          })
+        }, 500);
+      }
+      
+    });
+    // }
   }
-
 
   jsUcfirst(string){
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   render() {
+    console.log('###+++++>', this.state.exerciseList)
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
