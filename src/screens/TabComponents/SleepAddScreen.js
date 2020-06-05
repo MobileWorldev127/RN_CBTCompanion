@@ -118,35 +118,6 @@ class SleepAddScreen extends Component {
             this.props.navigation.goBack(null);
           }}
         />
-        <Animatable.View animation="slideInLeft">
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 24,
-              alignItems: "center",
-              backgroundColor: "#fff",
-              borderRadius: 10,
-              ...ThemeStyle.shadow()
-            }}
-          >
-            <Text style={[textStyles.GeneralTextBold, { marginRight: 12 }]}>
-              {"Did you take your \n medications?"}
-            </Text>
-            <TouchableOpacity style={[]}>
-              <Switch
-                value={this.state.switch}
-                disabled={false}
-                onValueChange={value => {
-                  this.setState({
-                    switch: !this.state.switch
-                  });
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Animatable.View>
         <Animatable.View animation="fadeInUp">
           <LinearGradient
             style={{ marginTop: 12, borderRadius: 10 }}
@@ -301,52 +272,15 @@ class SleepAddScreen extends Component {
           style={{
             position: "absolute",
             bottom: 0,
-            // right: 24,
             marginBottom: 50,
             alignSelf: "center"
           }}
           name={"Log Sleep"}
           onPress={this.onClickAddSleep}
-          // onPress={async () => {
-          //   this.props.setLoading(true);
-          //   this.props.setSleepData(this.getSleepData());
-          //   if (getScreens().indexOf("measures") != -1 && !this.props.isEdit) {
-          //     const isWeeklyAdded = JSON.parse(
-          //       await AsyncStorage.getItem(
-          //         asyncStorageConstants.weeklyMeasures()
-          //       )
-          //     );
-          //     const isDailyAdded = JSON.parse(
-          //       await AsyncStorage.getItem(
-          //         asyncStorageConstants.dailyMeasures()
-          //       )
-          //     );
-          //     console.log(
-          //       `---ACT WEEKLY AND DAILY-- ${isDailyAdded} ${isWeeklyAdded}`
-          //     );
-          //     if (isWeeklyAdded && isDailyAdded) {
-          //       this.props.navigation.navigate("JournalScreen");
-          //     } else {
-          //       this.props.navigation.navigate("ACTMeasuresScreen");
-          //     }
-          //   } else {
-          //     this.props.navigation.navigate("JournalScreen");
-          //   }
-          //   this.props.setLoading(false);
-          // }}
         />
       </View>
     );
   }
-
-  getSleepData = () => {
-    return {
-      medication: !!this.state.switch,
-      bedTime: this.state.sleepTime.toISOString(),
-      wakeTime: this.state.wakeTime.toISOString(),
-      sleepTime: this.state.duration
-    };
-  };
 }
 
 export default withStore(
@@ -368,7 +302,6 @@ export default withStore(
 
 var styles = StyleSheet.create({
   inputBox: {
-    //flex:3,
     height: 300,
     borderColor: "#fff",
     borderWidth: 1,
@@ -379,33 +312,4 @@ var styles = StyleSheet.create({
     color: "#000",
     backgroundColor: "#fff"
   },
-  addMedia: {
-    paddingTop: 20,
-    paddingHorizontal: 24,
-    backgroundColor: "#fff",
-    flexDirection: "row"
-  },
-  listContainer: {
-    backgroundColor: "#fff",
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "lightgrey",
-    height: width / 4
-  },
-  modalContainer: {
-    backgroundColor: "#fff",
-    height: null,
-    width: width - 40,
-    borderRadius: 10,
-    overflow: "hidden"
-  },
-  modalHeader: {
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 0.5,
-    borderColor: "lightgrey"
-  }
 });

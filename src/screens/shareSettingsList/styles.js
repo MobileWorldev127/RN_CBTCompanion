@@ -20,12 +20,17 @@ export default {
   label: {
     fontFamily: TextStyles.SubHeaderBold.fontFamily,
     fontSize: 20,
-    paddingVertical: 4
+    paddingVertical: 4,
+    color: '#4191fb'
+  },
+  label2: {
+    fontFamily: TextStyles.SubHeaderBold.fontFamily,
+    fontSize: 18,
   },
   checkboxText: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: TextStyles.GeneralText.fontFamily,
-    marginLeft: 2,
+    marginLeft: 10,
     color: TextStyles.GeneralText.color,
     position: "relative"
   },
@@ -52,5 +57,18 @@ export default {
     color: "#aaa",
     fontSize: 20,
     marginTop: 15
+  },
+  addBtn: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#4191fb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    borderRadius: 25,
+  },
+  addTxt: {
+    color: 'white',
+    fontSize: 20,
   }
 };

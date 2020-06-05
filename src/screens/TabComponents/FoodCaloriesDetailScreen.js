@@ -40,7 +40,6 @@ class FoodCaloriesDetailScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
@@ -100,7 +99,6 @@ class FoodCaloriesDetailScreen extends Component {
     }
     else {
       this.props.getNutritionixFoodItem(itemId, data => {
-        console.log('====>', data)
         if (!data.foods) {
           setTimeout(() => {
             showMessage({
@@ -149,17 +147,8 @@ class FoodCaloriesDetailScreen extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  convertFloat(value) {
-    return value.indexOf(".")>0?
-             value.split(".").length>=2?
-             value.split(".")[0]+"."+value.split(".")[1].substring(-1,2)
-               : value
-               : value
-  }
-
   render() {
     console.log("Render home", this.state);
-    // console.log("##++++++++++", Math.round10(this.state.foodNutritinDetail.nf_total_carbohydrate,2))
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     let foodName = params.foodName;

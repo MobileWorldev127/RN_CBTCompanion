@@ -37,7 +37,7 @@ export const Settings: FC<Props> = ({ visible, onHide, onBackButtonPress }) => {
     toggleFollowSystemDarkMode,
     setGuidedBreathingMode,
     toggleStepVibration,
-    toogleGuidedBreathing
+    toggleGuidedBreathing
   } = useAppContext();
 
   const guidedBreathingItems: {
@@ -95,11 +95,11 @@ export const Settings: FC<Props> = ({ visible, onHide, onBackButtonPress }) => {
             label="Use Voice Assistance"
             color={ThemeStyle.accentColor}
             value={guidedBreathingFlag}
-            onValueChange={toogleGuidedBreathing}
+            onValueChange={toggleGuidedBreathing}
           />
           {/* <Switch
             value={guidedBreathingFlag}
-            onValueChange={toogleGuidedBreathing}
+            onValueChange={toggleGuidedBreathing}
           /> */}
         </SettingsSection>
 

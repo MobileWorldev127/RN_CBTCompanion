@@ -40,7 +40,6 @@ class FoodAddScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
@@ -94,7 +93,6 @@ class FoodAddScreen extends Component {
   }
 
   addFoodList = item => {
-    console.log(item)
     let { params } = this.props.navigation.state;
     let title = params.title;
     var addedFoodList = this.state.addedFoodList;
@@ -214,13 +212,13 @@ class FoodAddScreen extends Component {
             >
               <SearchField 
                 iconName="ios-search" 
-                placeholder="Search food..." 
+                placeholder="Search food or brand" 
                 onChangeText={query => this.onChangeQuery(query)}
               />
               <View style={styles.inputView}>
                 <TextInput
                   style={[TextStyles.GeneralText, styles.inputBox]}
-                  placeholder="Describe what happened"
+                  placeholder="I ate 3 eggs and bacon for breakfast"
                   multiline={true}
                   placeholderTextColor="lightgrey"
                   underlineColorAndroid="transparent"

@@ -39,7 +39,6 @@ class LogFoodScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: moment(),
@@ -85,7 +84,6 @@ class LogFoodScreen extends Component {
       water_total_consumed: 0,
     };
     Auth.currentUserInfo().then(info => {
-      console.log("user info", info);
       this.setState({
         userName: info && info.attributes && info.attributes.name,
       });
@@ -200,11 +198,17 @@ class LogFoodScreen extends Component {
   }
 
   onClickAfterDay = () => {
-    var after_date = new Date(this.state.currentDate + 864e5);
-    this.setState({
-      currentDate: moment(after_date)
-    });
-    this.getFoodList(moment(after_date).format("YYYY-MM-DD"));
+    let afterDay = new Date(this.state.currentDate);
+    let today = new Date();
+    if (afterDay.getTime() > today.getTime() - 84e5) {
+      return;
+    } else {
+      var after_date = new Date(this.state.currentDate + 864e5);
+      this.setState({
+        currentDate: moment(after_date)
+      });
+      this.getFoodList(moment(after_date).format("YYYY-MM-DD"));
+    }
   }
 
   getFoodList(date) {

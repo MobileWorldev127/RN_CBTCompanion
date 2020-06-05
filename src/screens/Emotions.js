@@ -241,7 +241,7 @@ class Emotions extends Component {
               this.props.setEmotion(this.getSelectedEmotions());
               console.log("GET SCREENS", getScreens());
               if (getScreens().indexOf("medication") != -1) {
-                this.props.navigation.navigate("MedicationScreen");
+                this.props.navigation.navigate("JournalScreen");
               } else if (
                 getScreens().indexOf("measures") != -1 &&
                 !this.props.isEdit

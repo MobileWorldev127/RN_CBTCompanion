@@ -40,17 +40,14 @@ class ExerciseAddScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
       query: '',
       queryTxt: '',
       exerciseList: [],
-      addedExerciseList: [],
     };
     Auth.currentUserInfo().then(info => {
-      console.log("user info", info);
       this.setState({
         userName: info && info.attributes && info.attributes.name,
       });
@@ -76,10 +73,10 @@ class ExerciseAddScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  onChangeQuery = text => {
-    if (text.length > 2) {
+  onClickAdd = () => {
+    if (this.state.queryTxt.length > 2) {
       let param = {};
-      param.query = text;
+      param.query = this.state.queryTxt;
       this.props.getNutritionixExercise(param, data => {
         if (data.exercises) {
           this.setState({
@@ -92,8 +89,8 @@ class ExerciseAddScreen extends Component {
               message:'Something went wrong. Try again. Or use the search function.',
               type: "danger"
             })
-          }, 500)
-        }        
+          }, 500);
+        }
       });
     }
     else {
@@ -106,29 +103,7 @@ class ExerciseAddScreen extends Component {
   addExerciseList = item => {
     let { params } = this.props.navigation.state;
     let title = params.title;
-    var addedExerciseList = this.state.addedExerciseList;
     var exerciseList = [...this.state.exerciseList];
-    // if (addedExerciseList.indexOf(item) > -1) {
-    //   let date = this.state.currentDate.format("YYYY-MM-DD");
-    //   this.props.getExerciseEntries(date, fetchListData => {
-    //     fetchListData.map(item1 => {
-    //       if (item1.details[0].name == item.name){
-    //         console.log('$$$,', item1._id)
-    //         this.props.deleteExerciseEntries(item1._id, fetchData => {
-    //           var index = addedExerciseList.indexOf(item);
-    //           if (index !== -1) {
-    //             addedExerciseList.splice(index, 1);
-    //             this.setState({ addedExerciseList: addedExerciseList });
-    //           }
-    //           else {
-    //             return;
-    //           }
-    //         })
-    //       }
-    //     });
-    //   });
-    // }
-    // else {
     let dateTime = this.state.currentDate.format("YYYY-MM-DD");
     this.props.addExerciseEntry(item, dateTime, onAdded => {
       if (onAdded.success) {
@@ -143,7 +118,6 @@ class ExerciseAddScreen extends Component {
           })
         }, 500);
       }
-      
     });
     // }
   }
@@ -153,8 +127,6 @@ class ExerciseAddScreen extends Component {
   }
 
   render() {
-    console.log('###+++++>', this.state.exerciseList)
-    console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     return (
@@ -185,80 +157,29 @@ class ExerciseAddScreen extends Component {
             animation="fadeInDown"
             style={{ alignItems: "center" }}
           >
-            <SearchField 
+            {/* <SearchField 
               iconName="ios-search" 
               placeholder="Search Exercise" 
               onChangeText={query => this.onChangeQuery(query)}
-            />
+            /> */}
+            <View style={styles.inputView}>
+              <TextInput
+                style={[TextStyles.GeneralText, styles.inputBox]}
+                placeholder="I ran miles and did yoga"
+                multiline={true}
+                placeholderTextColor="lightgrey"
+                underlineColorAndroid="transparent"
+                defaultValue={this.state.queryTxt}
+                onChangeText={queryTxt => this.setState({ queryTxt })}
+              />
+            </View>
+            <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
+              <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
+            </TouchableOpacity>
+            
           </Animatable.View>
         </LinearGradient>
-        <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {this.state.addedExerciseList.length > 0 ? 
-            <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
-          {this.state.addedExerciseList.map((item, index) => {
-            return (
-              <Animatable.View
-                animation="pulse"
-                delay={index * 200}
-                style={{
-                  marginHorizontal: 20,
-                  marginBottom: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Card style={{ margin: 5 }}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('FoodCaloriesDetail', {
-                        isBack: true,
-                        foodName: item.food_name ? item.food_name : item.details[0].name,
-                        title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 0,
-                        itemEntry: item
-                      })
-                    }                    
-                    underlayColor={item.color + "aa"}
-                    style={{
-                      backgroundColor: item.color
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15,
-                      }}
-                    >
-                      <View
-                        style={{
-                          padding: 5,
-                          flex: 1
-                        }}
-                      >
-                        <Text style={TextStyles.Header2}>
-                          {this.jsUcfirst(item.name)}
-                        </Text>
-                        <Text style={TextStyles.GeneralText}>
-                          - {item.nf_calories} kcal : {item.duration_min} min
-                        </Text>
-                      </View>
-                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
-                        <Icon
-                          family={"MaterialCommunityIcons"}
-                          name={"delete"}
-                          color="red"
-                          size={25}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </TouchableOpacity>
-                </Card>
-              </Animatable.View>
-            );
-          })}
-          {this.state.exerciseList.length > 0 ? 
-            <Text style={styles.listedTitleTxt}>Recent</Text> : null}
+        <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
           {this.state.exerciseList.map((item, index) => {
             return (
               <Animatable.View
@@ -271,16 +192,7 @@ class ExerciseAddScreen extends Component {
                 }}
               >
                 <Card style={{ margin: 5 }}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('FoodCaloriesDetail', {
-                        isBack: true,
-                        foodName: item.food_name,
-                        title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 1,
-                        itemEntry: item
-                      })
-                    }                    
+                  <TouchableOpacity                  
                     underlayColor={item.color + "aa"}
                     style={{
                       backgroundColor: item.color
@@ -304,7 +216,7 @@ class ExerciseAddScreen extends Component {
                           {this.jsUcfirst(item.name)}
                         </Text>
                         <Text style={TextStyles.GeneralText}>
-                        - {item.nf_calories} kcal : {item.duration_min} min
+                          - {Math.round(item.nf_calories)} kcal : {Math.round(item.duration_min)} min
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addExerciseList(item)}>
@@ -358,50 +270,6 @@ const styles = StyleSheet.create({
   headerMainView: {
     transform: [{ scaleX: 1 / 1.8 }, { scaleY: 1 / 0.8 }],
   },
-  calorieCircleView: {
-    width: screenWidth / 3,
-    height: screenWidth / 3,
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: screenWidth / 3,
-    borderWidth: 2,
-    borderColor: "#3992B6",
-    borderRadius: screenWidth / 3,
-    backgroundColor: "white",
-  },
-  calorieCircleTxt: {
-    fontSize: 24,
-    color: "#3992B6",
-    fontWeight: "bold",
-  },
-  nutritionixTabView: {
-    width: screenWidth / 3,
-    height: 100,
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  mainContainerView: {
-    flex: 1,
-    padding: 15,
-    marginTop: -30,
-  },
-  dateView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    margin: 10,
-  },
-  searchView: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    width: "90%",
-    height: 50,
-    borderRadius: 25,
-    alignItems: "center",
-    padding: 10,
-    paddingLeft: 20
-  },
   inputView: {
     width: "90%",
     height: 100,
@@ -422,8 +290,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#f7992a',
     alignItems: "center",
-    justifyContent: "center",
-    marginBottom:20,
+    justifyContent: "center"
   },
   listedTitleTxt: {
     fontSize: 20,

@@ -8,6 +8,7 @@ import quiz from "./quizReducer";
 import shareSettings from "./shareSettings";
 import homework from "./homeworkReducer";
 import nutritionix from './nutritionixReducer';
+import sourceSettings from "./sourceSettings";
 
 const AppReducer = {
   nav: nav,
@@ -19,6 +20,7 @@ const AppReducer = {
   shareSettings,
   homework,
   nutritionix,
+  sourceSettings
 };
 
 export default AppReducer;

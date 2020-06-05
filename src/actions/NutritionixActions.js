@@ -284,7 +284,7 @@ export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
       details: [
         {
           name: entry.name,
-          duration_min: entry.duration_min,
+          duration_min: Math.round(entry.duration_min),
           calories: Math.round(entry.nf_calories),
         }
       ],

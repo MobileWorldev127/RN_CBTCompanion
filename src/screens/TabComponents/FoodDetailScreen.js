@@ -39,7 +39,6 @@ class FoodDetailScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.navigation.state.params.date ? props.navigation.state.params.date : moment(),
@@ -170,14 +169,6 @@ class FoodDetailScreen extends Component {
   //   })
   // }
 
-  convertFloat(value) {
-    return value.indexOf(".")>0?
-             value.split(".").length>=2?
-             value.split(".")[0]+"."+value.split(".")[1].substring(-1,2)
-               : value
-               : value
-  }
-
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;
@@ -242,19 +233,8 @@ class FoodDetailScreen extends Component {
                       <Text style={TextStyles.GeneralText}>
                         {JSON.parse(item.details[0].macroNutrients).calories} cals - {item.details[0].qty} {item.details[0].unit}
                       </Text>
-                      {/* <Text style={TextStyles.GeneralText}>
-                        {item.details[0].qty} {item.details[0].unit}
-                      </Text> */}
                     </View>
                     <TouchableOpacity onPress={() => this.deleteFood(item._id)}>
-                      {/* <CachedImage
-                          source={require("../../assets/images/redesign/active-icon.png")}
-                          style={{
-                            width: 25,
-                            height: 25
-                          }}
-                          resizeMode="contain"
-                        /> */}
                         <Icon
                           family={"MaterialCommunityIcons"}
                           name={"delete"}

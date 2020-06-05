@@ -40,25 +40,27 @@ class AddScreen extends Component {
           color: '#000',
           isIcon: true,
           image: require('../../assets/images/redesign/cbt-recordentry-graphic.png'),
+          isShow: true
         },
         {
           title: "Breathing Excercise",
           onPress: () =>
             this.props.navigation.navigate("ExcerciseBreathingScreen", {
               isBack: true,
-              title: 'AAAAAA====='
             }),
           color: ThemeStyle.communityColor,
           iconName: "chart-arc",
           iconFamily: "MaterialCommunityIcons",
           isIcon: true,
-          image: require("../../assets/images/breathing_exercise_ico.png")
+          image: require("../../assets/images/breathing_exercise_ico.png"),
+          isShow: props.sourceSettingsList.mindfulnessSetting === 'Manual' ? true : false
         }
       ],
     };
   }
 
   componentDidMount() {
+    const { sourceSettingsList } = this.props;
     recordScreenEvent(screenNames.add);
     this.props.setLoading(true);
     client
@@ -89,6 +91,7 @@ class AddScreen extends Component {
                 color: isPrediction ? ThemeStyle.mainColor : '#39F',
                 onPress: () => this.navigateToExercise(exercise),
                 type: 'exercise',
+                isShow: true
               });
             });
             items.push(
@@ -101,6 +104,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
+                isShow: sourceSettingsList.nutritionSetting === 'Manual' ? true : false
               },
               {
                 title: 'Log Exercise',
@@ -111,6 +115,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/workout.png'),
+                isShow: sourceSettingsList.activitySetting === 'Manual' ? true : false
               },
               {
                 title: 'Log Sleep',
@@ -121,6 +126,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/workout.png'),
+                isShow: sourceSettingsList.sleepSetting === 'Manual' ? true : false
               },
             );
             this.setState({ items });
@@ -175,6 +181,7 @@ class AddScreen extends Component {
 
   render() {
     console.log('RENDER', this.state.items);
+    const { sourceSettingsList } = this.props;
     return (
       <View style={ThemeStyle.pageContainer}>
         <LinearGradient style={{ flex: 1 }} colors={ThemeStyle.gradientColor}>
@@ -188,55 +195,57 @@ class AddScreen extends Component {
           />
           <ScrollView style={{ flex: 1 }}>
             {this.state.items.map((item, index) => {
-              return (
-                <Animatable.View
-                  animation="pulse"
-                  delay={index * 200}
-                  style={{
-                    flex: 1,
-                    maxHeight: 130,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Card style={{ marginHorizontal: 20, marginVertical: 12 }}>
-                    <CachedImage
-                      source={item.image}
-                      style={{
-                        width: 90,
-                        height: 80,
-                        position: 'absolute',
-                        top: 24,
-                        right: 16,
-                      }}
-                      resizeMode="contain"
-                    />
-                    <TouchableOpacity onPress={item.onPress}>
-                      <View
+              if (item.isShow) {
+                return (
+                  <Animatable.View
+                    animation="pulse"
+                    delay={index * 200}
+                    style={{
+                      flex: 1,
+                      maxHeight: 130,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Card style={{ marginHorizontal: 20, marginVertical: 12 }}>
+                      <CachedImage
+                        source={item.image}
                         style={{
-                          height: '100%',
-                          flexDirection: 'row',
-                          padding: 16,
-                          alignItems: 'center',
-                          overflow: 'hidden',
+                          width: 90,
+                          height: 80,
+                          position: 'absolute',
+                          top: 24,
+                          right: 16,
                         }}
-                      >
-                        <Text
-                          style={[
-                            TextStyles.SubHeader2,
-                            {
-                              width: '50%',
-                              color: item.color,
-                              marginHorizontal: 12,
-                            },
-                          ]}
+                        resizeMode="contain"
+                      />
+                      <TouchableOpacity onPress={item.onPress}>
+                        <View
+                          style={{
+                            height: '100%',
+                            flexDirection: 'row',
+                            padding: 16,
+                            alignItems: 'center',
+                            overflow: 'hidden',
+                          }}
                         >
-                          {item.title}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </Card>
-                </Animatable.View>
-              );
+                          <Text
+                            style={[
+                              TextStyles.SubHeader2,
+                              {
+                                width: '50%',
+                                color: item.color,
+                                marginHorizontal: 12,
+                              },
+                            ]}
+                          >
+                            {item.title}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </Card>
+                  </Animatable.View>
+                );
+              }
             })}
           </ScrollView>
         </LinearGradient>
@@ -247,6 +256,7 @@ class AddScreen extends Component {
 
 const mapStateToProps = state => ({
   completedExercise: state.record.completedExercise,
+  sourceSettingsList: state.sourceSettings.sourceSettingsList
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -219,6 +219,38 @@ class SettingScreen extends Component {
                 />
               </TouchableOpacity>
             </View>
+            <View style={styles.borderContainer}>
+              <TouchableOpacity
+                style={styles.inerContainer}
+                onPress={() =>
+                  this.props.navigation.navigate("DeviceList")
+                }
+              >
+                <Text style={styles.textContent}>Devices</Text>
+                <Icon
+                  name="arrow-right"
+                  family="SimpleLineIcons"
+                  style={styles.iconStyle}
+                  size={14}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.borderContainer}>
+              <TouchableOpacity
+                style={styles.inerContainer}
+                onPress={() =>
+                  this.props.navigation.navigate("SourceSettings")
+                }
+              >
+                <Text style={styles.textContent}>Source Settings</Text>
+                <Icon
+                  name="arrow-right"
+                  family="SimpleLineIcons"
+                  style={styles.iconStyle}
+                  size={14}
+                />
+              </TouchableOpacity>
+            </View>
             {/* <View style={styles.borderContainer}>
               <TouchableOpacity
                 style={styles.inerContainer}

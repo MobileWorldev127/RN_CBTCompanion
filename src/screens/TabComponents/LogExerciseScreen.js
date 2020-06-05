@@ -27,7 +27,7 @@ import * as Animatable from "react-native-animatable";
 import CachedImage from "react-native-image-cache-wrapper";
 import Card from "../../components/Card";
 import { setTopSafeAreaView } from "../../actions/AppActions";
-import { getExerciseEntries } from "../../actions/NutritionixActions";
+import { getExerciseEntries, deleteExerciseEntries } from "../../actions/NutritionixActions";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -38,16 +38,13 @@ class LogExercise extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.navigation.state.params.dateTime ? props.navigation.state.params.dateTime : moment(),
       exerciseList: [],
-      addedExerciseList: [],
       sum_cals: 0,
     };
     Auth.currentUserInfo().then(info => {
-      console.log("user info", info);
       this.setState({
         userName: info && info.attributes && info.attributes.name,
       });
@@ -94,6 +91,7 @@ class LogExercise extends Component {
   onClickAddMoreExercuse = () => {
     this.props.navigation.navigate("ExerciseAdd", {
       isBack: true,
+      dateTime: this.state.currentDate,
       onGoBack: this.onSelect
     });
   }
@@ -112,11 +110,25 @@ class LogExercise extends Component {
   }
 
   onClickAfterDay = () => {
-    var after_date = new Date(this.state.currentDate + 864e5);
-    this.setState({
-      currentDate: moment(after_date)
-    });
-    this.fetchExerciseList(moment(after_date).format("YYYY-MM-DD"));
+    let afterDay = new Date(this.state.currentDate);
+    let today = new Date();
+    if (afterDay.getTime() > today.getTime() - 84e5) {
+      return;
+    } else {
+      var after_date = new Date(this.state.currentDate + 864e5);
+      this.setState({
+        currentDate: moment(after_date)
+      });
+      this.fetchExerciseList(moment(after_date).format("YYYY-MM-DD"));
+    }
+  }
+
+  removeExerciseList = item => {
+    let date = this.state.currentDate.format("YYYY-MM-DD");
+    var exerciseList = this.state.exerciseList;
+    this.props.deleteExerciseEntries(item._id, fetchData => {
+      this.fetchExerciseList(this.state.currentDate.format("YYYY-MM-DD"));
+    })
   }
 
   render() {
@@ -172,7 +184,9 @@ class LogExercise extends Component {
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
           <TouchableOpacity style={styles.addBtn} onPress = {() => this.onClickAddMoreExercuse()}>
-            <Text style={{color: 'white', fontSize: 16}}>ADD MORE EXERCISE</Text>
+            <Text style={{color: 'white', fontSize: 16}}>
+              {this.state.exerciseList.length > 0 ? "ADD MORE EXERCISE" : "ADD EXERCISE"}
+            </Text>
           </TouchableOpacity>
           {this.state.exerciseList.map((item, index) => {
             return (
@@ -187,15 +201,6 @@ class LogExercise extends Component {
               >
                 <Card style={{ margin: 5 }}>
                   <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('FoodCaloriesDetail', {
-                        isBack: true,
-                        foodName: item.food_name ? item.food_name : item.details[0].name,
-                        title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 0,
-                        itemEntry: item
-                      })
-                    }                    
                     underlayColor={item.color + "aa"}
                     style={{
                       backgroundColor: item.color
@@ -222,7 +227,7 @@ class LogExercise extends Component {
                           - {item.details[0].calories} kcal : {item.details[0].duration_min} min
                         </Text>
                       </View>
-                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
+                      <TouchableOpacity onPress={() => this.removeExerciseList(item)}>
                         <Icon
                           family={"MaterialCommunityIcons"}
                           name={"delete"}
@@ -238,7 +243,7 @@ class LogExercise extends Component {
           })}
           <View style={styles.calsView}>
             <Text style={{color: '#f7992a', fontSize: 25}}> {this.state.sum_cals}
-              <Text style={{fontSize: 25, color:'black'}}> cals
+              <Text style={{fontSize: 25, color:'black'}}> kcals
               </Text>
             </Text>
             <CachedImage
@@ -268,6 +273,8 @@ export default withSafeAreaActions(
       dispatch(setMood(mood, timestamp, isEdit, entryID)),
     getExerciseEntries: (date, fetchListData) =>
       dispatch(getExerciseEntries(date, fetchListData)),
+    deleteExerciseEntries: (entry, fetchData) =>
+      dispatch(deleteExerciseEntries(entry, fetchData))
   })
 );
 

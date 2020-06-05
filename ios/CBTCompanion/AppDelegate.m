@@ -12,6 +12,7 @@
 #import <RNCPushNotificationIOS.h>
 #import "RNSplashScreen.h"
 #import "Orientation.h"
+#import "RCTLinkingManager.h"
 
 @implementation AppDelegate
 
@@ -74,5 +75,16 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
   return [Orientation getOrientation];
 }
+
+- (BOOL)application:(UIApplication *)application
+      openURL:(NSURL *)url
+      sourceApplication:(NSString *)sourceApplication
+      annotation:(id)annotation {
+        return [RCTLinkingManager
+                application:application
+                openURL:url
+                sourceApplication:sourceApplication
+                annotation:annotation];
+      }
 
 @end

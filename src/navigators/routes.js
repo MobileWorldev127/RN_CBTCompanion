@@ -66,7 +66,8 @@ import LogExerciseScreen from "../screens/TabComponents/LogExerciseScreen";
 import ExerciseAddScreen from "../screens/TabComponents/ExerciseAddScreen";
 import SleepAddScreen from "../screens/TabComponents/SleepAddScreen";
 import { App } from "./../screens/BreathingExcercise/components/App/App";
-
+import DeviceListSceen from "../screens/settings/DeviceListSceen";
+import SourceSettingsScreen from "../screens/settings/SourceSettingsScreen";
 const DrawerRoutes = createDrawerNavigator(
   {
     TabNav: { screen: TabNav }
@@ -487,6 +488,18 @@ const Routes = {
   },
   ExcerciseBreathingScreen: {
     screen: App,
+    navigationOptions: {
+      header: null
+    }
+  },
+  DeviceList: {
+    screen: DeviceListSceen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  SourceSettings: {
+    screen: SourceSettingsScreen,
     navigationOptions: {
       header: null
     }

@@ -12,7 +12,7 @@ import {
 import AsyncStorage from "@react-native-community/async-storage";
 import styles from "./styles";
 import Header from "../../components/Header";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "../../common/icons";
 import { NavigationActions } from "react-navigation";
 import CheckBox from "react-native-check-box";
 import Amplify, { API, graphqlOperation, Auth } from "aws-amplify";
@@ -25,6 +25,7 @@ import Button from "./../../components/Button";
 import TextStyles from "../../common/TextStyles";
 import { errorMessage } from "../../utils";
 import DeviceUiInfo from "../../utils/DeviceUIInfo";
+import CachedImage from "react-native-image-cache-wrapper";
 import qs from "qs";
 import { recordScreenEvent, screenNames } from "../../utils/AnalyticsUtils";
 const { screenSize } = DeviceUiInfo;
@@ -294,7 +295,12 @@ const ListItem = props => {
               });
             }}
           >
-            <Icon name="edit" size={20} color="#52575B" />
+            <Icon
+              family={"MaterialCommunityIcons"}
+              name={"pencil-circle"}
+              color="blue"
+              size={35}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -305,7 +311,13 @@ const ListItem = props => {
               deleteProvider(provider.id);
             }}
           >
-            <Icon name="trash" size={20} color="#52575B" />
+            <CachedImage
+              source={
+                require("../../assets/images/redesign/delete.png")
+              }
+              resizeMode="contain"
+              style={{width: 32, height: 32}}
+            />
           </TouchableOpacity>
         </View>
         <View
@@ -314,83 +326,153 @@ const ListItem = props => {
             justifyContent: "space-between",
             marginTop: 8,
             flex: 1,
-            flexWrap: "wrap"
+            flexWrap: "wrap",
+            borderWidth: 1,
+            borderColor: 'darkgray',
+            padding: 15,
+            paddingBottom: 20,
+            borderRadius: 10,
           }}
         >
-          {/* <CheckBox
-            style={{ width: screenSize.width / 3 }}
+          <CheckBox
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
             onClick={() => {}}
             isChecked={metaData.diaryCard}
             rightText="Diary Card"
             rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.accentColor}
+            checkBoxColor={metaData.diaryCard? "#f7992a" : "#C9CFDF"}
+            leftTextStyle={{width: 40, height:10}}
             disabled={true}
-          /> */}
-          {/* <CheckBox
-            style={{ width: screenSize.width / 3 }}
+          />
+          <CheckBox
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
             onClick={() => {}}
             isChecked={metaData.meditation}
             rightText="Meditation"
             rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.accentColor}
-            disabled={true}
-          /> */}
-          <CheckBox
-            style={{ width: screenSize.width / 3 }}
-            onClick={() => {}}
-            isChecked={metaData.emotion}
-            rightText="Emotion"
-            rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
+            checkBoxColor={metaData.meditation? "#f7992a" : "#C9CFDF"}
             disabled={true}
           />
           <CheckBox
-            style={{ width: screenSize.width / 3 }}
-            onClick={() => {}}
-            isChecked={metaData.sleep}
-            rightText="Sleep"
-            rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
-            disabled={true}
-          />
-          <CheckBox
-            style={{ width: screenSize.width / 3 }}
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
             onClick={() => {}}
             isChecked={metaData.exercise}
             rightText="Exercise"
             rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
+            checkBoxColor={metaData.exercise? "#f7992a" : "#C9CFDF"}
             disabled={true}
           />
-          {/* <CheckBox
-            style={{ width: screenSize.width / 3 }}
-            onClick={() => {}}
-            isChecked={metaData.actMeasure}
-            rightText="ACT Measure"
-            rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
-            disabled={true}
-          /> */}
           <CheckBox
-            style={{ width: screenSize.width / 3 }}
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
             onClick={() => {}}
             isChecked={metaData.journal}
             rightText="Journal"
             rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
+            checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
             disabled={true}
           />
-          {/* <CheckBox
-            style={{ width: screenSize.width / 3 }}
+          <CheckBox
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
             onClick={() => {}}
             isChecked={metaData.practiceidea}
             rightText="Practice Idea"
             rightTextStyle={styles.checkboxText}
-            checkBoxColor={ThemeStyle.text1}
+            checkBoxColor={metaData.practiceidea? "#f7992a" : "#C9CFDF"}
+            disabled={true}
+          />
+          {/* <CheckBox
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
+            onClick={() => {}}
+            isChecked={metaData.journal}
+            rightText="D"
+            rightTextStyle={styles.checkboxText}
+            checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
             disabled={true}
           /> */}
         </View>
-        <View
+
+        <View 
+          style={{
+            marginTop: 15,
+            flex: 1,
+            borderWidth: 1,
+            borderColor: 'darkgray',
+            padding: 15,
+            paddingBottom: 20,
+            borderRadius: 10,
+          }}>
+
+          <Text style={styles.label2}>Health Data</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 8,
+              flex: 1,
+              flexWrap: "wrap",
+            }}
+          >
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.diaryCard}
+              rightText="Activity"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.diaryCard? "#f7992a" : "#C9CFDF"}
+              leftTextStyle={{width: 40, height:10}}
+              disabled={true}
+            />
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.meditation}
+              rightText="Mindfulness"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.meditation? "#f7992a" : "#C9CFDF"}
+              disabled={true}
+            />
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.exercise}
+              rightText="Sleep"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.exercise? "#f7992a" : "#C9CFDF"}
+              disabled={true}
+            />
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.journal}
+              rightText="Nutrition"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
+              disabled={true}
+            />
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.practiceidea}
+              rightText="Heart Rate"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.practiceidea? "#f7992a" : "#C9CFDF"}
+              disabled={true}
+            />
+            <CheckBox
+              style={{ width: screenSize.width / 3, marginTop: 5 }}
+              onClick={() => {}}
+              isChecked={metaData.journal}
+              rightText="Physical"
+              rightTextStyle={styles.checkboxText}
+              checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
+              disabled={true}
+            />
+          </View>
+        </View>
+        <TouchableOpacity style={styles.addBtn}>
+          <Text style={styles.addTxt}>Add Coach</Text>
+        </TouchableOpacity>
+        {/* <View
           style={{
             borderRadius: 32,
             borderWidth: 1,
@@ -411,7 +493,7 @@ const ListItem = props => {
             checkBoxColor={ThemeStyle.text1}
             disabled={true}
           />
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
