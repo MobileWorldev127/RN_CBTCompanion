@@ -63,6 +63,10 @@ class SourceSettingsScreen extends Component {
   }
 
   addSourceSettings = () => {
+    showMessage({
+      message:'Source settings have been saved sucessfully.',
+      type: "success"
+    })
     let data = {};
     data.activitySetting = this.state.activity_value;
     data.sleepSetting = this.state.sleep_value;
@@ -269,13 +273,13 @@ class SourceSettingsScreen extends Component {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
-            <TouchableOpacity style={styles.addBtn} onPress={this.addSourceSettings}>
-              <Text style={styles.addTxt}>ADD</Text>
-            </TouchableOpacity>
+            </View>            
           </View>
         </ScrollView>
-      </View>
+        <TouchableOpacity style={styles.addBtn} onPress={this.addSourceSettings}>
+          <Text style={styles.addTxt}>+</Text>
+        </TouchableOpacity>
+  </View>
       
     );
   }
@@ -329,17 +333,20 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   addBtn: {
-    width: '100%',
-    height: 40,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#f7992a',
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
-    borderRadius: 5,
+    position: 'absolute',
+    right: 40,
+    bottom: 40
   },
   addTxt: {
     color: 'white',
-    fontSize: 18
+    fontSize: 30
   }
 })
 

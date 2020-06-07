@@ -58,17 +58,4 @@ export default {
     fontSize: 20,
     marginTop: 15
   },
-  addBtn: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#4191fb',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    borderRadius: 25,
-  },
-  addTxt: {
-    color: 'white',
-    fontSize: 20,
-  }
 };

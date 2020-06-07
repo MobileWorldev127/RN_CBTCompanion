@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const getTimeLineViewQuery = gql`
   query getTimeLineView($startDate: String!, $endDate: String!) {
@@ -115,6 +115,57 @@ export const getTimeLineViewQuery = gql`
         id
         totalMinutes
         title
+      }
+    }
+  }
+`;
+
+export const getSummaryTimeLineViewQuery = gql`
+  query getSummary($startDate: String!, $endDate: String!) {
+    getSummary(startDate: $startDate, endDate: $endDate) {
+      date
+      nutrition {
+        carbs {
+          value
+          unit
+        }
+        protein {
+          value
+          unit
+        }
+        fat {
+          value
+          unit
+        }
+      }
+      healthExercise {
+        calories {
+          value
+          unit
+        }
+        duration {
+          value
+          unit
+        }
+        distance {
+          value
+          unit
+        }
+      }
+      sleep {
+        totalMinutes
+        sleep {
+          bed_time
+          wake_time
+          duration
+        }
+      }
+      heartRate {
+        state
+        value
+      }
+      mindfulnessMinutes {
+        totalMinutes
       }
     }
   }

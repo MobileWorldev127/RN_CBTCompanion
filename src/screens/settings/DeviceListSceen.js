@@ -43,6 +43,7 @@ function OAuth(client_id, cb) {
     const query = qs.parse(query_string);
     console.log(`query: ${JSON.stringify(query)}`);
     cb(query.access_token);
+    
   }
   const oauthurl = `https://www.fitbit.com/oauth2/authorize?${qs.stringify({
     client_id,
@@ -57,30 +58,15 @@ function OAuth(client_id, cb) {
   );
 }
 
-function getData(access_token) {
-  fetch("https://api.fitbit.com/1.2/user/-/sleep/date/2017-06-27.json", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    }
-    // body: `root=auto&path=${Math.random()}`
-  })
-    .then(res => res.json())
-    .then(res => {
-      console.log(`res: ${JSON.stringify(res)}`);
-    })
-    .catch(err => {
-      console.error("Error: ", err);
-    });
-}
-
 class DeviceListSceen extends Component {
   constructor(props) {
     super(props);
+    this.OAuth;
     this.state = {
       isApple: false,
       isFitbit: false,
       isGoogleFit: false,
+      token: ''
     };
   }
 
@@ -94,12 +80,28 @@ class DeviceListSceen extends Component {
         isGoogleFit: true,
       });
     } else if (val === "fitbit") {
-      OAuth(config.client_id, getData);
-      this.setState({
-        isApple: false,
-        isFitbit: true,
-        isGoogleFit: false,
-      });
+      OAuth(config.client_id, (access_token) => {
+        fetch("https://api.fitbit.com/1.2/user/-/sleep/date/2017-06-27.json", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          }
+          // body: `root=auto&path=${Math.random()}`
+        })
+          .then(res => res.json())
+          .then(res => {
+            console.log(`res: ${JSON.stringify(res)}`);
+            this.setState({
+              isApple: false,
+              isFitbit: true,
+              isGoogleFit: false,
+              token: access_token
+            })
+          })
+          .catch(err => {
+            console.error("Error: ", err);
+          });
+      })
     } else {
       this.setState({
         isApple: true,
@@ -142,23 +144,13 @@ class DeviceListSceen extends Component {
         <View style={styles.mainView}>
           <TouchableOpacity onPress={() => this.clickedDevice("health")}>
             <View style={isApple ? styles.clickedView:styles.unClickedView}>
-              <Icon
-                family={'FontAwesome'}
-                name={'heart'}
-                color="red"
-                size={30}
-              />
+              <Image source={require('../../assets/images/redesign/applehealth_logo.png')} style={styles.iconImg}/>
               <Text style={isApple ? styles.clickedTxt : styles.unClickedTxt}>Apple Health</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => this.clickedDevice("fitbit")}>
             <View style={isFitbit ? styles.clickedView:styles.unClickedView}>
-              <Icon
-                family={'MaterialIcons'}
-                name={'fitness-center'}
-                color="red"
-                size={30}
-              />
+              <Image source={require('../../assets/images/redesign/fitbit_logo.png')} style={styles.iconImg}/>
               <Text style={isFitbit ? styles.clickedTxt : styles.unClickedTxt}>Fitbit</Text>
             </View>
           </TouchableOpacity>
@@ -166,12 +158,7 @@ class DeviceListSceen extends Component {
             <View
               style={isGoogleFit ? styles.clickedView : styles.unClickedView}
             >
-              <Icon
-                family={'MaterialCommunityIcons'}
-                name={'google-fit'}
-                color="red"
-                size={30}
-              />
+              <Image source={require('../../assets/images/redesign/googlefit_logo.png')} style={styles.iconImg}/>
               <Text
                 style={isGoogleFit ? styles.clickedTxt : styles.unClickedTxt}
               >
@@ -179,8 +166,16 @@ class DeviceListSceen extends Component {
               </Text>
             </View>
           </TouchableOpacity>
-
         </View>
+        
+        <Text 
+          style={{
+            marginTop: 50,
+            marginHorizontal: 25
+          }}
+        >
+        token: {this.state.token}
+        </Text>
       </View>
     );
   }
@@ -220,6 +215,11 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
   },
+  iconImg: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain'
+  }
 });
 
 export default withStore(DeviceListSceen);

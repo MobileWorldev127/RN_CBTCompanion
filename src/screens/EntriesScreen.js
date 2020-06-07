@@ -28,7 +28,7 @@ import EntryItem from "./entries/EntryItem";
 import { ScrollView } from "react-native-gesture-handler";
 import { client } from "../App";
 import { errorMessage, showApiError } from "../utils";
-import { getTimeLineViewQuery } from "../queries/getTimeLineView";
+import { getTimeLineViewQuery, getSummaryTimeLineViewQuery } from "../queries/getTimeLineView";
 import { timeLineItemTypes, followUpTypes } from "../constants";
 import TimeLineItem from "./entries/TimeLineItem";
 import DateGroup from "./entries/DateGroup";
@@ -38,6 +38,9 @@ import FollowUpItem from "./entries/FollowUpItem";
 import { performNetworkTask } from "../utils/NetworkUtils";
 import { tabRoutes } from "./TabComponents/routes";
 import { scheduleDefaultReminder } from "../utils/NotificationUtils";
+import Amplify from "aws-amplify";
+import { getAmplifyConfig, getEnvVars } from "../constants";
+import { API } from "aws-amplify";
 
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -48,7 +51,8 @@ class EntriesScreen extends Component {
       visible: false,
       extraData: false,
       currentMonth: moment(),
-      shareDialogVisible: false
+      shareDialogVisible: false,
+      summaryList: [],
     };
   }
 
@@ -80,24 +84,43 @@ class EntriesScreen extends Component {
       })
       .subscribe({
         next: data => {
-          console.log(data);
-          if (data.loading && !data.data) {
-            return;
-          }
-          this.props.setLoading(false);
-          this.setState({
-            entries: data.data.getTimeLineView,
-            loading: false
-          });
-          // this.setState({
-          //   entries: getEntriesWithDate(data.data)
-          // });
+          console.log('----------.',data);
+          
+
+          Amplify.configure(
+            getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+          );
+          API.graphql({
+            query: getSummaryTimeLineViewQuery,
+            variables: {
+              startDate: "2020-06-01",
+              endDate: "2020-06-06"
+            }
+          })
+            .then(summarydata => {
+              console.log('============>', summarydata.data.getSummary);
+              if (data.loading && !data.data) {
+                return;
+              }
+              this.props.setLoading(false);
+              data.data.getTimeLineView.map(entry => {
+                console.log('@@-->', entry)
+              })
+              this.setState({
+                summaryList: summarydata.data.getSummary,
+                entries: data.data.getTimeLineView,
+                loading: false
+              });
+            })
+            .catch(err => {
+              console.log(err);
+            })
+            .finally(() => {
+              // dispatch(setLoading(false));
+            });
         },
         error: err => {
           this.props.setLoading(false);
-          // this.setState({
-          //   loading: false
-          // });
           this.setState({
             entries: []
           });
@@ -214,34 +237,6 @@ class EntriesScreen extends Component {
           </View>
         </View>
         <View style={styles.container}>
-          {/* <LinearGradient
-            style={{ marginBottom: 12 }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0.9, y: 1 }}
-            colors={ThemeStyle.gradientColor}
-          >
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("ACTMeasuresHistoryScreen", {
-                  currentMonth: this.state.currentMonth
-                })
-              }
-            >
-              <Text
-                style={[
-                  TextStyles.SubHeaderBold,
-                  {
-                    color: "#fff",
-                    paddingVertical: 24,
-                    paddingHorizontal: 15,
-                    textAlign: "center"
-                  }
-                ]}
-              >
-                {"View ACT Measures"}
-              </Text>
-            </TouchableOpacity>
-          </LinearGradient> */}
           {this.state.entries && this.state.entries.length > 0 ? (
             <ScrollView>
               {this.state.entries.map((entry, i) => {

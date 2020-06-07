@@ -380,15 +380,6 @@ const ListItem = props => {
             checkBoxColor={metaData.practiceidea? "#f7992a" : "#C9CFDF"}
             disabled={true}
           />
-          {/* <CheckBox
-            style={{ width: screenSize.width / 3, marginTop: 5 }}
-            onClick={() => {}}
-            isChecked={metaData.journal}
-            rightText="D"
-            rightTextStyle={styles.checkboxText}
-            checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
-            disabled={true}
-          /> */}
         </View>
 
         <View 
@@ -469,31 +460,6 @@ const ListItem = props => {
             />
           </View>
         </View>
-        <TouchableOpacity style={styles.addBtn}>
-          <Text style={styles.addTxt}>Add Coach</Text>
-        </TouchableOpacity>
-        {/* <View
-          style={{
-            borderRadius: 32,
-            borderWidth: 1,
-            marginTop: 12,
-            borderColor: ThemeStyle.disabledLight,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingVertical: 6,
-            paddingHorizontal: 16
-          }}
-        >
-          <CheckBox
-            style={{ width: screenSize.width / 1.5 }}
-            onClick={() => {}}
-            isChecked={provider.shareWithOrg}
-            rightText="Share with all clinicians who are part of this clinician's organization"
-            rightTextStyle={[styles.checkboxText, TextStyles.ContentText]}
-            checkBoxColor={ThemeStyle.text1}
-            disabled={true}
-          />
-        </View> */}
       </View>
     </TouchableOpacity>
   );
