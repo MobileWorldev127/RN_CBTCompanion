@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1CB9C4DC23B39E0500B17ACA /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB9C4DB23B39E0500B17ACA /* RNPlaceholder.swift */; };
 		1CC72EE2231A5E56008ED0DD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CC72E9A231A5E56008ED0DD /* JavaScriptCore.framework */; };
+		22BBED432498F0BA00524203 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BBED422498F0BA00524203 /* HealthKit.framework */; };
 		294B42898B3F4F248797CD8D /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3B8028612D34F40B26C096E /* Nunito-SemiBold.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -93,6 +94,7 @@
 		1D1D3CCCE8584513803DA102 /* AirbnbCerealApp-Book.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AirbnbCerealApp-Book.ttf"; path = "../MainApp_Animationflow/fonts/AirbnbCerealApp-Book.ttf"; sourceTree = "<group>"; };
 		1E139AFCDA514DFEB5F26AF7 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../src/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		1F204A941DD64A17AAC34982 /* AirbnbCerealApp-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AirbnbCerealApp-Medium.ttf"; path = "../src/fonts/AirbnbCerealApp-Medium.ttf"; sourceTree = "<group>"; };
+		22BBED422498F0BA00524203 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		264C36E57009414191C38202 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* CBTCompanion-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBTCompanion-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* CBTCompanion-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CBTCompanion-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CC72EE2231A5E56008ED0DD /* JavaScriptCore.framework in Frameworks */,
+				22BBED432498F0BA00524203 /* HealthKit.framework in Frameworks */,
 				D0F22495228178B900E59CF8 /* StoreKit.framework in Frameworks */,
 				AF01832576648FC8AC53DD08 /* libPods-CBTCompanion.a in Frameworks */,
 			);
@@ -282,6 +285,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				22BBED422498F0BA00524203 /* HealthKit.framework */,
 				1CC72E9A231A5E56008ED0DD /* JavaScriptCore.framework */,
 				D0F22494228178B900E59CF8 /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,

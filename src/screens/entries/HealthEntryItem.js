@@ -390,14 +390,29 @@ export default class HealthEntryItem extends Component<{}, {}> {
                       justifyContent: "space-between"
                     }}
                   >
-                    <Image
-                      source={require("../../assets/images/redesign/snack.png")}
-                      style={{ height: 64, width: 64, resizeMode: "contain" }}
-                    />
-                    <Image
-                      source={require("../../assets/images/redesign/Mood-graphic.png")}
-                      style={{ position: "absolute", right: -12, top: -12 }}
-                    />
+                    {
+                      <Image
+                        source={
+                          type == 'Nutrition' ? require("../../assets/images/redesign/timeline_nutrition.png") : 
+                          type == 'Exercise' ? require("../../assets/images/redesign/timeline_exercise.png") : 
+                          type == 'Heart Rate' ? require("../../assets/images/redesign/timeline_heart_rate.png") : 
+                          type == 'Sleep' ? require("../../assets/images/redesign/timeline_sleep.png") : null
+                          
+                        }
+                        style={{ height: 60, width: 60, resizeMode: "contain" }}
+                      />
+                    }
+                    {
+                      <Image
+                        source={
+                          type == 'Nutrition' ? require("../../assets/images/redesign/timeline_nutrition_background.png") : 
+                          type == 'Exercise' ? require("../../assets/images/redesign/timeline_exercise_background.png") : 
+                          type == 'Heart Rate' ? require("../../assets/images/redesign/timeline_heart_rate_background.png") : 
+                          type == 'Sleep' ? require("../../assets/images/redesign/timeline_sleep_background.png") : null
+                        }
+                        style={{ position: "absolute", right: -12, top: 0, width: 100, height: 80 }}
+                      />
+                    }
                     <View
                       style={{
                         flex: 1,

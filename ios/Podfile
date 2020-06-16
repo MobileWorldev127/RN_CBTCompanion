@@ -45,6 +45,8 @@ target 'CBTCompanion' do
   target 'CBTCompanion-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'RCTAppleHealthKit', :path => '../node_modules/rn-apple-healthkit'
+
   end
 
   target 'CBTCompanionTests' do

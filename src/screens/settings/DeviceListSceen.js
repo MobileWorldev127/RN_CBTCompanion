@@ -30,8 +30,11 @@ import { Alert } from 'react-native';
 import TextStyles from '../../common/TextStyles';
 import qs from "qs";
 import config from "./config.js";
+import AppleHealthKit from 'rn-apple-healthkit'
 
 const screenWidth = Dimensions.get('window').width;
+
+
 
 function OAuth(client_id, cb) {
   Linking.addEventListener("url", handleUrl);
@@ -95,18 +98,44 @@ class DeviceListSceen extends Component {
               isApple: false,
               isFitbit: true,
               isGoogleFit: false,
-              token: access_token
-            })
+              token: access_token,
+            });
           })
           .catch(err => {
             console.error("Error: ", err);
           });
       })
     } else {
-      this.setState({
-        isApple: true,
-        isFitbit: false,
-        isGoogleFit: false,
+      // let options = {
+      //   permissions: {
+      //     read: ["Height", "Weight"],
+      //     write: ["Height", "Weight"]
+      //   }
+      // };
+
+      let options = {
+        permissions: {
+          read: ["Height", "Weight", "StepCount", "DateOfBirth", "BodyMassIndex", "ActiveEnergyBurned"],
+          write: ["Height", "Weight", "StepCount", "BodyMassIndex", "Biotin", "Caffeine", "Calcium", "Carbohydrates", "Chloride", "Cholesterol", "Copper", "EnergyConsumed", "FatMonounsaturated", "FatPolyunsaturated", "FatSaturated", "FatTotal", "Fiber", "Folate", "Iodine", "Iron", "Magnesium", "Manganese", "Molybdenum", "Niacin", "PantothenicAcid", "Phosphorus", "Potassium", "Protein", "Riboflavin", "Selenium", "Sodium", "Sugar", "Thiamin", "VitaminA", "VitaminB12", "VitaminB6", "VitaminC", "VitaminD", "VitaminE", "VitaminK", "Zinc", "Water"]
+        }
+      };
+
+      AppleHealthKit.initHealthKit(options, (err, results) => {
+        if (err) {
+          console.log("error initializing Healthkit: ", err);
+          return;
+        }
+
+        // Height Example
+        AppleHealthKit.getDateOfBirth(null, (err, results) => {
+          console.log('=======>')
+          console.log(results)
+          this.setState({
+            isApple: true,
+            isFitbit: false,
+            isGoogleFit: false
+          });
+        });
       });
     }
   }
@@ -161,9 +190,7 @@ class DeviceListSceen extends Component {
               <Image source={require('../../assets/images/redesign/googlefit_logo.png')} style={styles.iconImg}/>
               <Text
                 style={isGoogleFit ? styles.clickedTxt : styles.unClickedTxt}
-              >
-                Google Fit
-              </Text>
+              > Google Fit</Text>
             </View>
           </TouchableOpacity>
         </View>
