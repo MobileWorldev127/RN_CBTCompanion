@@ -156,19 +156,6 @@ class FoodDetailScreen extends Component {
     })
   }
 
-  // onClickDetailFood = item => {
-  //   console.log(item)
-  //   let { params } = this.props.navigation.state;
-  //   let isBack = params && params.isBack;
-  //   let title = params.title;
-  //   this.props.navigation.navigate('FoodCaloriesDetail', {
-  //     isBack: true,
-  //     foodName: item.details[0].name,
-  //     title: title,
-  //     itemId: item._id
-  //   })
-  // }
-
   render() {
     console.log("Render home", this.state);
     let { params } = this.props.navigation.state;

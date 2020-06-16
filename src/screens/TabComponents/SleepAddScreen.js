@@ -82,7 +82,7 @@ class SleepAddScreen extends Component {
     const durationHours = Math.floor(hours);
     const minutes = hours - durationHours;
     const durationMins = Math.floor(minutes * 60);
-    return durationHours + " Hours " + durationMins + " Mins";
+    return durationHours + ":" + durationMins;
   }
 
   calculateDurationMin(sleepTime, wakeTime) {

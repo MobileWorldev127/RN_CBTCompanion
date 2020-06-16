@@ -12,7 +12,9 @@ import { timeLineItemTypes, followUpTypes } from "../../constants";
 let moment = require("moment");
 import * as Animatable from "react-native-animatable";
 import LinearGradient from "react-native-linear-gradient";
+import HealthEntryItem from "./HealthEntryItem";
 import EntryItem from "./EntryItem";
+
 import TimeLineItem from "./TimeLineItem";
 import { formatDateString } from "../../utils/DateTimeUtils";
 import Card from "../../components/Card";
@@ -53,6 +55,22 @@ export default class DateGroup extends Component<{}, {}> {
     );
   }
 
+  HealthHealthEntryItem(entry, date, type) {
+    return (
+      <HealthEntryItem
+        entryItem={entry}
+        entryDate={date}
+        entryType={type}
+        navigation={this.props.navigation}
+        setLoading={this.props.setLoading}
+        onDelete={this.props.onDelete}
+        setModeAndData={this.props.setModeAndData}
+        setEditEntry={this.props.setEditEntry}
+        onChangeSelectedTab={this.props.onChangeSelectedTab}
+      />
+    );
+  }
+
   renderTimelineItem(items, type) {
     return (
       <TimeLineItem
@@ -82,35 +100,49 @@ export default class DateGroup extends Component<{}, {}> {
     if (rowData.entries && rowData.entries.length) {
       return this.renderEntry(rowData.entries[0], rowData.date);
     }
-    if (rowData.predictions && rowData.predictions.length > 0) {
+    else if (rowData.predictions && rowData.predictions.length > 0) {
       return this.renderFollowUpItem(
         rowData.predictions[0],
         followUpTypes.PREDICTION
       );
     }
-    if (rowData.challengeExercises && rowData.challengeExercises.length > 0) {
+    else if (rowData.challengeExercises && rowData.challengeExercises.length > 0) {
       return this.renderFollowUpItem(
         rowData.challengeExercises[0],
         followUpTypes.THOUGHT
       );
     }
-    if (rowData.exercises && rowData.exercises.length > 0) {
+    else if (rowData.exercises && rowData.exercises.length > 0) {
       return this.renderTimelineItem(
         rowData.exercises,
         timeLineItemTypes.EXERCISE
       );
     }
-    if (rowData.meditations && rowData.meditations.length > 0) {
+    else if (rowData.meditations && rowData.meditations.length > 0) {
       return this.renderTimelineItem(
         rowData.meditations,
         timeLineItemTypes.MEDITATION
       );
     }
-    if (rowData.practiceIdeas && rowData.practiceIdeas.length > 0) {
+    else if (rowData.practiceIdeas && rowData.practiceIdeas.length > 0) {
       this.renderTimelineItem(
         rowData.practiceIdeas,
         timeLineItemTypes.PRACTICE_IDEAS
       );
+    }
+    else if (rowData.nutrition && rowData.nutrition.carbs.value > 0) {
+      return this.HealthHealthEntryItem( rowData, rowData.date, "Nutrition" );
+    }
+    else if (rowData.healthExercise && rowData.healthExercise.calories.value > 0) {
+      return this.HealthHealthEntryItem( rowData, rowData.date, "Exercise" );
+    }    
+
+    else if (rowData.heartRate) {
+      return this.HealthHealthEntryItem( rowData, rowData.date, "Heart Rate" );
+    }
+    
+    else if (rowData.sleep && rowData.sleep.totalMinutes > 0) {
+      return this.HealthHealthEntryItem( rowData, rowData.date, "Sleep" );
     }
     return null;
   }
@@ -167,6 +199,25 @@ export default class DateGroup extends Component<{}, {}> {
                 this.renderTimelineItem(
                   rowData.practiceIdeas,
                   timeLineItemTypes.PRACTICE_IDEAS
+                )}
+              {rowData.nutrition &&
+                rowData.nutrition.carbs.value > 0 &&
+                this.HealthHealthEntryItem(
+                  rowData, rowData.date, "Nutrition"
+                )}
+              {rowData.healthExercise && 
+                rowData.healthExercise.calories.value > 0 &&
+                this.HealthHealthEntryItem(
+                  rowData, rowData.date, "Exercise"
+                )}
+              {rowData.heartRate > 0 &&
+                this.HealthHealthEntryItem(
+                  rowData, rowData.date, "Heart Rate"
+                )}
+              {rowData.sleep && 
+                rowData.sleep.totalMinutes > 0 &&
+                this.HealthHealthEntryItem(
+                  rowData, rowData.date, "Sleep"
                 )}
             </View>
           ) : (

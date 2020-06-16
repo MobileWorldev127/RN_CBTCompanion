@@ -52,7 +52,6 @@ class EntriesScreen extends Component {
       extraData: false,
       currentMonth: moment(),
       shareDialogVisible: false,
-      summaryList: [],
     };
   }
 
@@ -84,31 +83,47 @@ class EntriesScreen extends Component {
       })
       .subscribe({
         next: data => {
-          console.log('----------.',data);
-          
 
           Amplify.configure(
             getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
           );
           API.graphql({
             query: getSummaryTimeLineViewQuery,
-            variables: {
-              startDate: "2020-06-01",
-              endDate: "2020-06-06"
-            }
+            variables: getMonthRange(this.state.currentMonth),
           })
             .then(summarydata => {
-              console.log('============>', summarydata.data.getSummary);
+              let entries = data.data.getTimeLineView;
               if (data.loading && !data.data) {
                 return;
               }
               this.props.setLoading(false);
-              data.data.getTimeLineView.map(entry => {
-                console.log('@@-->', entry)
-              })
+              let summaryList = []
+              summarydata.data.getSummary.map((item, index) => {
+                if(item.nutrition.carbs.value > 0 || item.healthExercise.calories.value>0 || item.sleep.totalMinutes >0 || item.heartRate || item.mindfulnessMinutes.totalMinutes > 0) {
+                  summaryList.push(item)
+                }
+              });
+              let sumArr = entries.concat(summaryList);
+              let unique = sumArr
+                .map(e => e.date)
+                .map((e, i, final) => final.indexOf(e) === i && i)
+                .filter(obj => sumArr[obj])
+                .map(e => sumArr[e]);
+
+              let orderlist = unique.map(u => {
+                console.log(u);
+                let b = sumArr.filter(t => t.date === u.date);
+                for (var i = 1; i < b.length; i++) {
+                  Object.assign(u, b[i]);
+                }
+                return u;
+              });
+
+              let sortList = orderlist.sort((a,b) => new Date(b.date) - new Date(a.date))
+
               this.setState({
-                summaryList: summarydata.data.getSummary,
-                entries: data.data.getTimeLineView,
+                entries: sortList,
+                // entries: data.data.getTimeLineView,
                 loading: false
               });
             })

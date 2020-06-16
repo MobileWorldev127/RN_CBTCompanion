@@ -119,7 +119,6 @@ class FoodAddScreen extends Component {
     else {
       if (item.nix_item_id) {
         this.props.getNutritionixFoodItem(item.nix_item_id, data => {
-          console.log('~~~', data)
           if (!data.foods) {
             setTimeout(() => {
               showMessage({

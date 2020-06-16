@@ -43,6 +43,9 @@ export default class TimeLineItem extends Component<{}, {}> {
     let borderColor = TextStyles.GeneralText.color;
     let textColor = TextStyles.GeneralText.color;
     let backgroundColor = "#fff";
+
+
+
     this.state.items.map(data => {
       switch (this.state.type) {
         case timeLineItemTypes.EXERCISE:
@@ -128,9 +131,6 @@ export default class TimeLineItem extends Component<{}, {}> {
   }
 
   render() {
-    // LayoutAnimation.configureNext(
-    //   LayoutAnimation.create(300, "easeIn", "opacity")
-    // );
     let imagePath = require("../../assets/images/redesign/exercise-graphic-bg.png");
     let imageBackground = ThemeStyle.pageContainer.backgroundColor;
     let color = ThemeStyle.textColor;

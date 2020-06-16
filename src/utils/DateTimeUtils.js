@@ -6,7 +6,16 @@ export const getMonthRange = (currentDate = new Date(), range = "month") => {
   let month = currentDate.get("month") + 1;
   month = month < 10 ? `0${month}` : month;
   let startDate = `${year}-${month}-01`;
-  let endDate = `${year}-${month}-31`;
+  let endDate = '';
+  if (month === '01' || month === '03' || month === '05' || month === '07' || month === '08' || month === '10' || month === '12') {
+    endDate = `${year}-${month}-31`;
+  }
+  else if(month === '02') {
+    endDate = `${year}-${month}-28`;
+  }
+  else {
+    endDate = `${year}-${month}-30`;
+  }
   if (range == "year") {
     startDate = `${year}-01-01`;
     endDate = `${year}-12-31`;

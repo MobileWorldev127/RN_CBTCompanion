@@ -17,7 +17,7 @@ export default class QuizAlertScreen extends Component{
   }
 
   onPressed = () => {
-    console.log('-------');
+    
   }
 
   onPressedYes = () => {

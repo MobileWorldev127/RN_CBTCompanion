@@ -197,7 +197,13 @@ export const timeLineItemTypes = {
   ENTRY: "Entry",
   EXERCISE: "Exercise",
   MEDITATION: "Meditations",
-  PRACTICE_IDEAS: "Practice Ideas"
+  PRACTICE_IDEAS: "Practice Ideas",
+  ////
+  HEALTHEXERCISE: "healthExercise",
+  HEARTRATE: "heartRate",
+  MINDFULNESSMINUTES: "mindfulnessMinutes",
+  NUTRITION: "nutrition",
+  SLEEP: "sleep"
 };
 
 export const preferenceTypes = {

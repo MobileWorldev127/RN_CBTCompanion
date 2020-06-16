@@ -128,7 +128,6 @@ class ExerciseScreen extends Component {
 
   renderItem = (element, isPadded) => {
     let data = element ? element : this.data;
-    // console.log(data.type);
     return (
       <Card
         cardRadius={6}
