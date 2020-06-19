@@ -8363,6 +8363,11 @@ react-native-gesture-handler@1.5.2:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-google-fit@^0.9.17:
+  version "0.9.17"
+  resolved "https://registry.yarnpkg.com/react-native-google-fit/-/react-native-google-fit-0.9.17.tgz#122de8cb86c5ce9f576cc29649d912238f0f479e"
+  integrity sha512-4Wvyy2VUVQ99jCKJ0i9AQ3VcOVcyoHEE66ZvD95IPT88Bvr6Ju52O5QkdQ9ykgxKUhnaEFntF6XcRyNXajol9w==
+
 react-native-haptic@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-native-haptic/-/react-native-haptic-1.0.1.tgz#5ecedb6049c1b0cdeca5e31e4fbde16a622675f3"
@@ -8689,10 +8694,10 @@ react-native-video@5.1.0-alpha1:
     prop-types "^15.5.10"
     shaka-player "^2.4.4"
 
-react-native-webview@^10.2.3:
-  version "10.2.3"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.2.3.tgz#78aef542deaa8f97f581743c205e6a6ada73559c"
-  integrity sha512-nGAw3S/Pjy3m3Jlymr1Zrk+Cy+Vdq+jRe3wqJ68NJDUlKhQHDXK2NsQnre4HwcRtRYoJqcfqR93VXZOoU1Uoeg==
+react-native-webview@^7.5.2:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-7.6.0.tgz#6bae76430200be5e5ead7d986af2fa341b650186"
+  integrity sha512-IQWtIpCTYb4dTshAJO3hMM9Ms5T6KRpk6qWqgBTGMdmgeEvSxWz9l7Og1ALhb7T7NoAnPy8w/dQmD9LlbGGs5g==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
@@ -9261,10 +9266,9 @@ rimraf@~2.2.6:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
-rn-apple-healthkit@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/rn-apple-healthkit/-/rn-apple-healthkit-0.8.0.tgz#83a23e71fc54d6d929cd6a55d5c590072bab4c64"
-  integrity sha512-LymIWk9lwIkcGIACveCxvp2jKXTTrDbdUYgcac+wuaSLPPpLfZqrQ0fz+QACYx5cSwAn6Uj6NcJ5+QkwPjY+5g==
+"rn-apple-healthkit@git+https://github.com/mimacom/rn-apple-healthkit.git#feature/get-nutrition-samples":
+  version "0.6.5"
+  resolved "git+https://github.com/mimacom/rn-apple-healthkit.git#6a1ee5cb624023f3913485f65de04b055df4186e"
 
 rn-fetch-blob@0.11.2:
   version "0.11.2"

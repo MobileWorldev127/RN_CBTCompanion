@@ -286,7 +286,7 @@ PODS:
     - react-native-video/Video (= 5.1.0-alpha1)
   - react-native-video/Video (5.1.0-alpha1):
     - React
-  - react-native-webview (10.2.3):
+  - react-native-webview (7.6.0):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -587,7 +587,7 @@ SPEC CHECKSUMS:
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-version-check: 40245490503879ff64f020b285ebc4075abd40c7
   react-native-video: 2a13be56b84904ce1be3487e2fe61b73e30b6a00
-  react-native-webview: 0bacc79175bc44869e4c1a015b9bc21df8cf4feb
+  react-native-webview: db4682f1698ab4b17a5e88f951031d203ff8aea8
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -613,6 +613,6 @@ SPEC CHECKSUMS:
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YoutubePlayer-in-WKWebView: af2f5929fc78882d94bfdfeea999b661b78d9717
 
-PODFILE CHECKSUM: 0c8a59d5041d01877049e4b4b04ef19c95e8173d
+PODFILE CHECKSUM: c1fd5a0c478083caa45ab6cd8b514c63ee463d66
 
 COCOAPODS: 1.8.4

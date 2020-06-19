@@ -39,11 +39,12 @@ export default class DateGroup extends Component<{}, {}> {
     });
   }
 
-  renderEntry(entry, date) {
+  renderEntry(entryItem, entryTotal, date) {
     return (
       <EntryItem
-        key={entry.timestamp}
-        entryItem={entry}
+        key={entryItem.timestamp}
+        entryItem={entryItem}
+        entryTotal={entryTotal}
         entryDate={date}
         navigation={this.props.navigation}
         setLoading={this.props.setLoading}
@@ -98,7 +99,7 @@ export default class DateGroup extends Component<{}, {}> {
   renderFirstItem() {
     let rowData = this.state.dateGroup;
     if (rowData.entries && rowData.entries.length) {
-      return this.renderEntry(rowData.entries[0], rowData.date);
+      return this.renderEntry(rowData.entries[0], rowData, rowData.date);
     }
     else if (rowData.predictions && rowData.predictions.length > 0) {
       return this.renderFollowUpItem(

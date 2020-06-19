@@ -53,7 +53,7 @@ class AddScreen extends Component {
           iconFamily: "MaterialCommunityIcons",
           isIcon: true,
           image: require("../../assets/images/breathing_exercise_ico.png"),
-          isShow: props.sourceSettingsList.mindfulnessSetting === 'Manual' ? true : false
+          isShow: props.sourceSettingsList ? true : props.sourceSettingsList.mindfulnessSetting === 'Manual' ? true : false
         }
       ],
     };
@@ -104,7 +104,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
-                isShow: sourceSettingsList.nutritionSetting === 'Manual' ? true : false
+                isShow: sourceSettingsList ? true : sourceSettingsList.nutritionSetting === 'Manual' ? true : false
               },
               {
                 title: 'Log Exercise',
@@ -115,7 +115,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/workout.png'),
-                isShow: sourceSettingsList.activitySetting === 'Manual' ? true : false
+                isShow: sourceSettingsList ? true : sourceSettingsList.activitySetting === 'Manual' ? true : false
               },
               {
                 title: 'Log Sleep',
@@ -126,7 +126,7 @@ class AddScreen extends Component {
                 color: "#000",
                 isIcon: true,
                 image: require('../../assets/images/redesign/workout.png'),
-                isShow: sourceSettingsList.sleepSetting === 'Manual' ? true : false
+                isShow: sourceSettingsList ? true : sourceSettingsList.sleepSetting === 'Manual' ? true : false
               },
             );
             this.setState({ items });

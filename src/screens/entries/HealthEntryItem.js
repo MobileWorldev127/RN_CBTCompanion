@@ -248,7 +248,7 @@ export default class HealthEntryItem extends Component<{}, {}> {
 
   showNutririon(nutrition) {
     return (
-      <View style={{ flexDirection: "row", marginTop: 8 }}>
+      <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around'  }}>
         <View style={{alignItems: 'center'}}>
           <AnimatedCircularProgress
                   size={60}
@@ -306,41 +306,56 @@ export default class HealthEntryItem extends Component<{}, {}> {
 
   showExercise(exercise) {
     return (
-      <View style={{ flexDirection: "row", marginTop: 8 }}>
+      <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around' }}>
         <View style={{alignItems: 'center'}}>
           <Text style={{color: '#ff6a63'}}>Calories</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{exercise.calories.value}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.calories.value}</Text>
         </View>
         <View style={{marginLeft: 15}}>
-          <Text style={{color: '#f1ce50'}}>Calories</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{exercise.duration.value} <Text style={{fontSize: 13, fontWeight: '300'}}>Min</Text></Text>
+          <Text style={{color: '#f1ce50'}}>Time</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.duration.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Min</Text></Text>
         </View>
         <View style={{marginLeft: 15}}>
-          <Text style={{color: '#4191fb'}}>Calories</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{exercise.distance.value} <Text style={{fontSize: 13, fontWeight: '300'}}>Miile</Text></Text>
+          <Text style={{color: '#4191fb'}}>Distance</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.distance.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Miile</Text></Text>
         </View>
       </View>
     )
   }
 
   showHeartRate(heartRate) {
-
+    return (
+      <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around'  }}>
+        <View style={{alignItems: 'center'}}>
+          <Text style={{color: '#ff6a63'}}>Heart Rate</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.heartRate}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+        </View>
+        <View style={{marginLeft: 15}}>
+          <Text style={{color: '#ff6a63'}}>Resting</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.resting}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+        </View>
+        <View style={{marginLeft: 15}}>
+          <Text style={{color: '#ff6a63'}}>Variaility</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.variability}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+        </View>
+      </View>
+    )
   }
 
   showSleep(sleep){
     return (
-      <View style={{ flexDirection: "row", marginTop: 8 }}>
+      <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around'  }}>
         <View style={{alignItems: 'center'}}>
           <Text style={{color: '#ff6a63'}}>Duration</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{sleep.sleep[0].duration}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{sleep.sleep[0].duration}</Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#00cc51'}}>Bedtime</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].bed_time).format("hh:mm")} <Text style={{fontSize: 13, fontWeight: '300'}}>PM</Text></Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].bed_time).format("hh:mm")}<Text style={{fontSize: 12, fontWeight: '300'}}>PM</Text></Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#4191fb'}}>Wakeup</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].wake_time).format("hh:mm")} <Text style={{fontSize: 13, fontWeight: '300'}}>AM</Text></Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].wake_time).format("hh:mm")}<Text style={{fontSize: 12, fontWeight: '300'}}>AM</Text></Text>
         </View>
       </View>
     )

@@ -66,7 +66,7 @@ class SourceSettingsScreen extends Component {
     showMessage({
       message:'Source settings have been saved sucessfully.',
       type: "success"
-    })
+    });
     let data = {};
     data.activitySetting = this.state.activity_value;
     data.sleepSetting = this.state.sleep_value;
@@ -87,6 +87,7 @@ class SourceSettingsScreen extends Component {
     } = this.state;
     return (
       <View style={ThemeStyle.pageContainer}>
+      <View style={{flex: 1}}>
         <Header
           title="Source Settings"
           rightIcon={() => (
@@ -113,6 +114,7 @@ class SourceSettingsScreen extends Component {
           )}
           goBack={() => this.props.navigation.goBack(null)}
         />
+        
         <ScrollView>
           <View style={styles.mainView}>
             <View style={styles.itemView}>
@@ -273,13 +275,14 @@ class SourceSettingsScreen extends Component {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>            
+            </View>
           </View>
         </ScrollView>
+        </View>
         <TouchableOpacity style={styles.addBtn} onPress={this.addSourceSettings}>
-          <Text style={styles.addTxt}>+</Text>
+          <Text style={styles.addTxt}>Save</Text>
         </TouchableOpacity>
-  </View>
+      </View>
       
     );
   }
@@ -291,6 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 15,
     padding:20,
+    paddingBottom: 60,
   },
   itemView: {
     width: '100%',
@@ -333,7 +337,7 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   addBtn: {
-    width: 50,
+    width: 300,
     height: 50,
     borderRadius: 25,
     backgroundColor: '#f7992a',
@@ -341,12 +345,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 10,
     position: 'absolute',
-    right: 40,
-    bottom: 40
+    left: (screenWidth-300)/2,
+    bottom: 25
   },
   addTxt: {
     color: 'white',
-    fontSize: 30
+    fontSize: 20
   }
 })
 

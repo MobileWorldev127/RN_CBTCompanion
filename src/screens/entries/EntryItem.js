@@ -271,30 +271,46 @@ export default class EntryItem extends Component<{}, {}> {
   renderIconWithBadge(image, count) {
     return (
       <View style={{ marginRight: 12 }}>
-        <Image
-          style={{ height: 26, width: 26 }}
-          source={image}
-          resizeMode="contain"
-        />
-        <Text
-          style={[
-            TextStyles.FooterText,
-            {
-              backgroundColor: ThemeStyle.red,
-              borderRadius: 7,
-              width: 14,
-              height: 14,
-              color: "#fff",
-              position: "absolute",
-              top: -2,
-              right: -4,
-              overflow: "hidden",
-              textAlign: "center"
-            }
-          ]}
-        >
-          {count}
-        </Text>
+        <View>
+          <Image
+            style={{ height: 26, width: 26 }}
+            source={image}
+            resizeMode="contain"
+          />
+          <Text
+            style={[
+              TextStyles.FooterText,
+              {
+                backgroundColor: ThemeStyle.red,
+                borderRadius: 7,
+                width: 14,
+                height: 14,
+                color: "#fff",
+                position: "absolute",
+                top: -2,
+                right: -4,
+                overflow: "hidden",
+                textAlign: "center"
+              }
+            ]}
+          >
+            {count}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderIconWithBadge1(image) {
+    return (
+      <View style={{ marginRight: 12 }}>
+        <View>
+          <Image
+            style={{ height: 26, width: 26 }}
+            source={image}
+            resizeMode="contain"
+          />
+        </View>
       </View>
     );
   }
@@ -323,6 +339,11 @@ export default class EntryItem extends Component<{}, {}> {
 
   render() {
     let rowData = this.state.entryItem;
+    let rowExerciseData = this.state.entryTotal.healthExercise && this.state.entryTotal.healthExercise.calories.value > 0 && this.state.entryTotal.healthExercise;
+    let rowHeartRateData = this.state.entryTotal.heartRate && this.state.entryTotal.heartRate;
+    let rowSleepData = this.state.entryTotal.sleep && this.state.entryTotal.sleep.totalMinutes > 0 && this.state.entryTotal.sleep;
+    let rowNutritionData = this.state.entryTotal.nutrition && this.state.entryTotal.nutrition.carbs.value > 0 && this.state.entryTotal.nutrition;
+
     return (
       <View>
         <Mutation
@@ -356,7 +377,7 @@ export default class EntryItem extends Component<{}, {}> {
                   this.setState({ isExpanded: !this.state.isExpanded });
                 }}
               >
-                <View style={{ padding: 20 }}>
+                <View style={{ padding: 20}}>
                   <View
                     style={{
                       flexDirection: "row",
@@ -505,10 +526,18 @@ export default class EntryItem extends Component<{}, {}> {
                             require("../../assets/images/redesign/emotion-badge.png"),
                             rowData.emotions && rowData.emotions.length
                           )}
-                          {/* {this.renderIconWithBadge(
-                            require("../../assets/images/redesign/Target-home.png"),
-                            rowData.targets && rowData.targets.length
-                          )} */}
+                          {rowExerciseData && this.renderIconWithBadge1(
+                            require("../../assets/images/redesign/timeline_exercise.png"),
+                          )}
+                          {rowHeartRateData && this.renderIconWithBadge1(
+                            require("../../assets/images/redesign/timeline_heart_rate.png"),
+                          )}
+                          {rowSleepData && this.renderIconWithBadge1(
+                            require("../../assets/images/redesign/timeline_sleep.png"),
+                          )}
+                          {rowNutritionData && this.renderIconWithBadge1(
+                            require("../../assets/images/redesign/timeline_nutrition.png"),
+                          )}
                           {/* {this.renderIconWithBadge(
                             require("../../assets/images/redesign/activities-home.png"),
                             rowData.exercise && rowData.exercise.length

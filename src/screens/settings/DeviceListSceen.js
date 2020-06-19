@@ -19,7 +19,7 @@ import PhoneInput from 'react-native-phone-input';
 import validator from 'validator';
 import Header from '../../components/Header';
 import ImagePicker from 'react-native-image-picker';
-import { withStore } from '../../utils/StoreUtils';
+import { withSubscriptionActions } from '../../utils/StoreUtils';
 import { showMessage } from 'react-native-flash-message';
 import { errorMessage } from '../../utils';
 import { recordScreenEvent, screenNames } from '../../utils/AnalyticsUtils';
@@ -31,6 +31,7 @@ import TextStyles from '../../common/TextStyles';
 import qs from "qs";
 import config from "./config.js";
 import AppleHealthKit from 'rn-apple-healthkit'
+import GoogleFit, { Scopes } from 'react-native-google-fit'
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -77,6 +78,30 @@ class DeviceListSceen extends Component {
 
   clickedDevice(val) {
     if (val === "google_fit") {
+      GoogleFit.checkIsAuthorized()
+      const options = {
+        scopes: [
+          Scopes.FITNESS_ACTIVITY_READ_WRITE,
+          Scopes.FITNESS_BODY_READ_WRITE,
+        ],
+      }
+      GoogleFit.authorize(options)
+        .then(authResult => {
+          if (authResult.success) {
+            console.log(authResult);
+          } else {
+            // dispatch("AUTH_DENIED", authResult.message);
+            console.log(authResult);
+          }
+        })
+        .catch(() => {
+          // dispatch("AUTH_ERROR");
+        })
+
+
+
+
+
       this.setState({
         isApple: false,
         isFitbit: false,
@@ -106,39 +131,138 @@ class DeviceListSceen extends Component {
           });
       })
     } else {
-      // let options = {
-      //   permissions: {
-      //     read: ["Height", "Weight"],
-      //     write: ["Height", "Weight"]
-      //   }
-      // };
-
-      let options = {
-        permissions: {
-          read: ["Height", "Weight", "StepCount", "DateOfBirth", "BodyMassIndex", "ActiveEnergyBurned"],
-          write: ["Height", "Weight", "StepCount", "BodyMassIndex", "Biotin", "Caffeine", "Calcium", "Carbohydrates", "Chloride", "Cholesterol", "Copper", "EnergyConsumed", "FatMonounsaturated", "FatPolyunsaturated", "FatSaturated", "FatTotal", "Fiber", "Folate", "Iodine", "Iron", "Magnesium", "Manganese", "Molybdenum", "Niacin", "PantothenicAcid", "Phosphorus", "Potassium", "Protein", "Riboflavin", "Selenium", "Sodium", "Sugar", "Thiamin", "VitaminA", "VitaminB12", "VitaminB6", "VitaminC", "VitaminD", "VitaminE", "VitaminK", "Zinc", "Water"]
+      if (Platform.OS === 'ios'){
+        const { sourceSettingsList } = this.props;
+        // let arr = ['ActiveEnergyBurned', 'SleepAnalysis', 'HeartRate', 'MindfulSession', 'Fiber'];
+        let arr = ["MindfulSession", "HeartRate", "RestingHeartRate", "HeartRateVariability", "StepCount", "BodyMassIndex", "Biotin", "Caffeine", "Calcium", "Carbohydrates", "Chloride", "Cholesterol", "Copper", "EnergyConsumed", "FatMonounsaturated", "FatPolyunsaturated", "FatSaturated", "FatTotal", "Fiber", "Folate", "Iodine", "Iron", "Magnesium", "Manganese", "Molybdenum", "Niacin", "PantothenicAcid", "Phosphorus", "Potassium", "Protein", "Riboflavin", "Selenium", "Sodium", "Sugar", "Thiamin", "VitaminA", "VitaminB12", "VitaminB6", "VitaminC", "VitaminD", "VitaminE", "VitaminK", "Zinc", "Workout"]
+        if (sourceSettingsList && sourceSettingsList.activitySetting == 'Apple') {
+          arr.push('ActiveEnergyBurned')
         }
-      };
-
-      AppleHealthKit.initHealthKit(options, (err, results) => {
-        if (err) {
-          console.log("error initializing Healthkit: ", err);
-          return;
+        if (sourceSettingsList && sourceSettingsList.sleepSetting == 'Apple') {
+          arr.push('SleepAnalysis')
         }
+        if (sourceSettingsList && sourceSettingsList.heartSetting == 'Apple') {
+          arr.push('HeartRate')
+        }
+        if (sourceSettingsList && sourceSettingsList.mindfulnessSetting == 'Apple') {
+          arr.push('MindfulSession')
+        }
+        if (sourceSettingsList && sourceSettingsList.nutritionSetting == 'Apple') {
+          arr.push('BasalEnergyBurned')
+        }
+        let options = {
+          permissions: {
+            read: arr,
+          }
+        };
+  
+        AppleHealthKit.initHealthKit(options, (err, results) => {
+          if (err) {
+            console.log("error initializing Healthkit: ", err);
+            return;
+          }
+  
+          let d = new Date(2016,1,1);
+          let options = {
+              startDate: (new Date(2020,5,1)).toISOString(), // required
+              endDate: (new Date()).toISOString(), // optional; default now
+          };
+          console.log('->', options)
+          AppleHealthKit.getActiveEnergyBurned(options, (err: Object, results: Array<Object>) => {
+              if (err) {
+                  return;
+              }
+              console.log('Active==>')
+              console.log(results)
+          });
 
-        // Height Example
-        AppleHealthKit.getDateOfBirth(null, (err, results) => {
-          console.log('=======>')
-          console.log(results)
+          AppleHealthKit.getSleepSamples(options, (err: Object, results: Array<Object>) => {
+            if (err) {
+              return;
+            }
+            console.log('Sleep==>')
+            console.log(results)
+          });
+
+          let options2 = {
+            startDate: (new Date(2020,5,1)).toISOString(), // required
+            endDate: (new Date()).toISOString(),
+            limit: 10
+          };
+          AppleHealthKit.getMindfulSession(options2, (err: string, results: Object) => {
+            if (err) {
+              console.log("error getting mindful session: ", err);
+              return;
+            }
+            console.log('Mindfulness==>')
+            console.log(results)
+          });
+
+          let options1 = {
+            unit: 'bpm', 
+            startDate: (new Date(2020,5,1)).toISOString(), 
+            endDate: (new Date()).toISOString(), 
+            ascending: false, 
+            limit:10, 
+          };
+          
+          AppleHealthKit.getHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
+            if (err) {
+              return;
+            }
+            console.log('Heart Rate==>')
+            console.log(results)
+          });
+
+          AppleHealthKit.getRestingHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
+            if (err) {
+              return;
+            }
+            console.log('Resting Heart Rate==>')
+            console.log(results)
+          });
+
+          AppleHealthKit.getHeartRateVariabilitySamples(options1, (err: Object, results: Array<Object>) => {
+            if (err) {
+              return;
+            }
+            console.log('Heart Rate Variability==>')
+            console.log(results)
+          });
+
+          let options3 = {
+            startDate: (new Date(2020,5,1)).toISOString(), 
+            endDate: (new Date()).toISOString(),
+            unit: 'gram' ,
+            // type: 'Fiber'
+          };
+
+          AppleHealthKit.getNutritionSamples(options3, (err: Object, results: Object) => {
+            if (err) {
+              console.log('Nutrition==>!!', err)
+              return;
+            }
+            console.log('Nutrition==>')
+            console.log(results)
+          });
+
           this.setState({
             isApple: true,
             isFitbit: false,
             isGoogleFit: false
           });
-        });
+      })
+      
+        
+    }
+    else {
+      showMessage({
+        message:'You have to click Apple Health button on iPhone device',
+        type: "warning"
       });
     }
   }
+}
 
   render() {
     const { isApple, isFitbit, isGoogleFit } = this.state;
@@ -249,4 +373,16 @@ const styles = StyleSheet.create({
   }
 });
 
-export default withStore(DeviceListSceen);
+
+const mapStateToProps = state => ({
+  sourceSettingsList: state.sourceSettings.sourceSettingsList
+});
+
+const mapDispatchToProps = dispatch => ({
+});
+
+export default withSubscriptionActions(
+  DeviceListSceen,
+  mapStateToProps,
+  mapDispatchToProps
+);
