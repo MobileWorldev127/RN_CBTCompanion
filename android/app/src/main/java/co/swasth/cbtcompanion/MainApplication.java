@@ -27,8 +27,8 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             @SuppressWarnings("UnnecessaryLocalVariable")
             List<ReactPackage> packages = new PackageList(this).getPackages();
-            // new GoogleFitPackage(BuildConfig.APPLICATION_ID);
-            packages.add(new GoogleFitPackage(BuildConfig.APPLICATION_ID));
+            new GoogleFitPackage(BuildConfig.APPLICATION_ID);
+            // packages.add(new GoogleFitPackage(BuildConfig.APPLICATION_ID));
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
             return packages;

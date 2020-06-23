@@ -88,18 +88,18 @@ class DeviceListSceen extends Component {
       GoogleFit.authorize(options)
         .then(authResult => {
           if (authResult.success) {
+            console.log('1---')
             console.log(authResult);
           } else {
             // dispatch("AUTH_DENIED", authResult.message);
+            console.log('2---')
             console.log(authResult);
           }
         })
         .catch(() => {
+          console.log('3---')
           // dispatch("AUTH_ERROR");
         })
-
-
-
 
 
       this.setState({
@@ -172,79 +172,112 @@ class DeviceListSceen extends Component {
               if (err) {
                   return;
               }
-              console.log('Active==>')
+              console.log('Active Energy Burned==>')
               console.log(results)
           });
 
-          AppleHealthKit.getSleepSamples(options, (err: Object, results: Array<Object>) => {
+          let options5 = {
+            unit: 'mile', // optional; default 'meter'
+            date: (new Date(2016,5,1)).toISOString(), // optional; default now
+          };
+          AppleHealthKit.getDistanceWalkingRunning(options5, (err: Object, results: Array<Object>) => {
             if (err) {
-              return;
+                return;
             }
-            console.log('Sleep==>')
+            console.log('Active DistanceWalkingRunning==>')
+            console.log(results)
+          });
+          AppleHealthKit.getActiveEnergyBurned(options, (err: Object, results: Array<Object>) => {
+            if (err) {
+                return;
+            }
+            console.log('Active Steps==>')
             console.log(results)
           });
 
-          let options2 = {
-            startDate: (new Date(2020,5,1)).toISOString(), // required
-            endDate: (new Date()).toISOString(),
-            limit: 10
-          };
-          AppleHealthKit.getMindfulSession(options2, (err: string, results: Object) => {
-            if (err) {
-              console.log("error getting mindful session: ", err);
-              return;
-            }
-            console.log('Mindfulness==>')
-            console.log(results)
-          });
+          // AppleHealthKit.getSleepSamples(options, (err: Object, results: Array<Object>) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Sleep==>')
+          //   console.log(results)
+          // });
 
-          let options1 = {
-            unit: 'bpm', 
-            startDate: (new Date(2020,5,1)).toISOString(), 
-            endDate: (new Date()).toISOString(), 
-            ascending: false, 
-            limit:10, 
-          };
+          // let options2 = {
+          //   startDate: (new Date(2020,5,1)).toISOString(), // required
+          //   endDate: (new Date()).toISOString(),
+          //   limit: 10
+          // };
+          // AppleHealthKit.getMindfulSession(options2, (err: string, results: Object) => {
+          //   if (err) {
+          //     console.log("error getting mindful session: ", err);
+          //     return;
+          //   }
+          //   console.log('Mindfulness==>')
+          //   console.log(results)
+          // });
+
+          // let options1 = {
+          //   unit: 'bpm', 
+          //   startDate: (new Date(2020,5,1)).toISOString(), 
+          //   endDate: (new Date()).toISOString(), 
+          //   ascending: false, 
+          //   limit:10, 
+          // };
           
-          AppleHealthKit.getHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
-            if (err) {
-              return;
-            }
-            console.log('Heart Rate==>')
-            console.log(results)
-          });
+          // AppleHealthKit.getHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Heart Rate==>')
+          //   console.log(results)
+          // });
 
-          AppleHealthKit.getRestingHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
-            if (err) {
-              return;
-            }
-            console.log('Resting Heart Rate==>')
-            console.log(results)
-          });
+          // AppleHealthKit.getRestingHeartRateSamples(options1, (err: Object, results: Array<Object>) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Resting Heart Rate==>')
+          //   console.log(results)
+          // });
 
-          AppleHealthKit.getHeartRateVariabilitySamples(options1, (err: Object, results: Array<Object>) => {
-            if (err) {
-              return;
-            }
-            console.log('Heart Rate Variability==>')
-            console.log(results)
-          });
+          // AppleHealthKit.getHeartRateVariabilitySamples(options1, (err: Object, results: Array<Object>) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Heart Rate Variability==>')
+          //   console.log(results)
+          // });
 
-          let options3 = {
-            startDate: (new Date(2020,5,1)).toISOString(), 
-            endDate: (new Date()).toISOString(),
-            unit: 'gram' ,
-            // type: 'Fiber'
-          };
+          // let options3 = {
+          //   startDate: (new Date(2020,5,1)).toISOString(), 
+          //   endDate: (new Date()).toISOString(),
+          //   unit: 'gram' ,
+          //   type: 'Fiber'
+          // };
 
-          AppleHealthKit.getNutritionSamples(options3, (err: Object, results: Object) => {
-            if (err) {
-              console.log('Nutrition==>!!', err)
-              return;
-            }
-            console.log('Nutrition==>')
-            console.log(results)
-          });
+          // AppleHealthKit.getNutritionSamples(options3, (err: Object, results: Object) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Nutrition Fiber==>')
+          //   console.log(results)
+          // });
+
+          // let options4 = {
+          //   startDate: (new Date(2020,5,1)).toISOString(), 
+          //   endDate: (new Date()).toISOString(),
+          //   unit: 'gram' ,
+          //   type: 'Calcium'
+          // };
+
+          // AppleHealthKit.getNutritionSamples(options4, (err: Object, results: Object) => {
+          //   if (err) {
+          //     return;
+          //   }
+          //   console.log('Nutrition Calcium==>')
+          //   console.log(results)
+          // });
 
           this.setState({
             isApple: true,

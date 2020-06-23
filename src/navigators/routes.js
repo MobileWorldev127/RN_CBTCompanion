@@ -7,6 +7,7 @@ import SignUpScreen from "../screens/SignUpScreen";
 import Record from "./../screens/TabComponents/Record";
 import Emotions from "../screens/Emotions";
 import Summary from "./../screens/TabComponents/Summary";
+import Graph from "./../screens/TabComponents/Graph";
 import ActivitiesScreen from "../screens/ActivitiesScreen";
 import JournalScreen from "../screens/JournalScreen";
 import SettingScreen from "../screens/SettingScreen";
@@ -337,6 +338,12 @@ const Routes = {
   },
   Summary: {
     screen: Summary,
+    navigationOptions: {
+      header: null
+    }
+  },
+  GraphScreen: {
+    screen: Graph,
     navigationOptions: {
       header: null
     }

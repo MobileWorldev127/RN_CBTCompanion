@@ -1032,7 +1032,37 @@ class Summary extends Component {
                   showSubscription={this.props.showSubscription}
                 />
               )}
+              
             </View>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('GraphScreen', {isBack: true})}>
+              <View style={styles.innerContainer}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 16,
+                    paddingBottom: 12
+                  }}
+                >
+                  <Text style={[TextStyles.Header2, { paddingTop: 20 }]}>
+                    Physical Health and Nutrition
+                  </Text>
+                  {this.props.isSubscribed && (
+                    <Dropdown
+                      containerStyle={{ width: 82, height: 40, marginTop: -16 }}
+                      data={this.rangeOptions}
+                      value={this.state.moodCorrelationRange}
+                      rippleOpacity={0.0}
+                      onChangeText={value =>
+                        this.setState({
+                          moodCorrelationRange: value
+                        })
+                      }
+                    />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         {this.getSharing()}
@@ -1179,12 +1209,6 @@ const styles = StyleSheet.create({
     backgroundColor: ThemeStyle.backgroundColor,
     height: Platform.OS === "ios" ? 64 : 54,
     flexDirection: "row"
-  },
-  listContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    marginVertical: 5,
-    backgroundColor: "#BDBDBD"
   },
   container: {
     flex: 1,
