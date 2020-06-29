@@ -36,7 +36,9 @@ class ShareSettingsPreferences extends Component {
         journal: false,
         exercise: false,
         practiceidea: false,
-        actMeasure: false
+        activity: false,
+        nutrition: false,
+        heartRate: false
       },
       errorText: null
     };
@@ -56,7 +58,9 @@ class ShareSettingsPreferences extends Component {
       meta.sleep ||
       meta.exercise ||
       meta.practiceidea ||
-      meta.actMeasure;
+      meta.activity ||
+      meta.nutrition ||
+      meta.hearRate;
     if (!isItemChecked) {
       showMessage(errorMessage("Select at least one item to share"));
       return;
