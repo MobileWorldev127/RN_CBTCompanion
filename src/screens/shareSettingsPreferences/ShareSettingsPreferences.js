@@ -149,14 +149,14 @@ class ShareSettingsPreferences extends Component {
               <Text style={styles.therapistIdText}>{therapistName}</Text>
             </View>
             <View style={styles.prefContainer}>
-              <View style={styles.prefHeaderContainer}>
+              {/* <View style={styles.prefHeaderContainer}>
                 <Text style={styles.prefHeader}>
                   Diary Card Items to share:
                 </Text>
-              </View>
+              </View> */}
               <View style={styles.checkboxContainer}>
-                {/* <CheckBox
-                  style={{ width: screenSize.width / 3 }}
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
                   onClick={() => {
                     this.setState({
                       meta: {
@@ -169,10 +169,10 @@ class ShareSettingsPreferences extends Component {
                   isChecked={meta.diaryCard}
                   rightText="Diary Card"
                   rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
-                /> */}
-                {/* <CheckBox
-                  style={{ width: screenSize.width / 3 }}
+                  checkBoxColor={meta.diaryCard? "#f7992a" : "#C9CFDF"}
+                />
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
                   onClick={() => {
                     this.setState({
                       meta: {
@@ -185,42 +185,10 @@ class ShareSettingsPreferences extends Component {
                   isChecked={meta.meditation}
                   rightText="Meditation"
                   rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
-                /> */}
-                <CheckBox
-                  style={{ width: screenSize.width / 3 }}
-                  onClick={() => {
-                    this.setState({
-                      meta: {
-                        ...this.state.meta,
-                        emotion: !this.state.meta.emotion
-                      }
-                    });
-                  }}
-                  value={this.state.meta.emotion}
-                  isChecked={meta.emotion}
-                  rightText="Emotion"
-                  rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
+                  checkBoxColor={meta.meditation? "#f7992a" : "#C9CFDF"}
                 />
                 <CheckBox
-                  style={{ width: screenSize.width / 3 }}
-                  onClick={() => {
-                    this.setState({
-                      meta: {
-                        ...this.state.meta,
-                        sleep: !this.state.meta.sleep
-                      }
-                    });
-                  }}
-                  value={this.state.meta.sleep}
-                  isChecked={meta.sleep}
-                  rightText="Sleep"
-                  rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
-                />
-                <CheckBox
-                  style={{ width: screenSize.width / 3 }}
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
                   onClick={() => {
                     this.setState({
                       meta: {
@@ -233,26 +201,10 @@ class ShareSettingsPreferences extends Component {
                   isChecked={meta.exercise}
                   rightText="Exercise"
                   rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
+                  checkBoxColor={meta.exercise? "#f7992a" : "#C9CFDF"}
                 />
-                {/* <CheckBox
-                  style={{ width: screenSize.width / 3 }}
-                  onClick={() => {
-                    this.setState({
-                      meta: {
-                        ...this.state.meta,
-                        actMeasure: !this.state.meta.actMeasure
-                      }
-                    });
-                  }}
-                  value={this.state.meta.actMeasure}
-                  isChecked={meta.actMeasure}
-                  rightText="ACT Measure"
-                  rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
-                /> */}
                 <CheckBox
-                  style={{ width: screenSize.width / 3 }}
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
                   onClick={() => {
                     this.setState({
                       meta: {
@@ -265,10 +217,10 @@ class ShareSettingsPreferences extends Component {
                   isChecked={meta.journal}
                   rightText="Journal"
                   rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
+                  checkBoxColor={meta.journal? "#f7992a" : "#C9CFDF"}
                 />
-                {/* <CheckBox
-                  style={{ width: screenSize.width / 3 }}
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
                   onClick={() => {
                     this.setState({
                       meta: {
@@ -281,8 +233,90 @@ class ShareSettingsPreferences extends Component {
                   isChecked={meta.practiceidea}
                   rightText="Practice Idea"
                   rightTextStyle={styles.checkboxText}
-                  checkBoxColor={ThemeStyle.accentColor}
-                /> */}
+                  checkBoxColor={meta.practiceidea? "#f7992a" : "#C9CFDF"}
+                />
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      meta: {
+                        ...this.state.meta,
+                        emotion: !this.state.meta.emotion
+                      }
+                    });
+                  }}
+                  value={this.state.meta.emotion}
+                  isChecked={meta.emotion}
+                  rightText="Emotion"
+                  rightTextStyle={styles.checkboxText}
+                  checkBoxColor={meta.emotion? "#f7992a" : "#C9CFDF"}
+                />
+              </View>
+              <View style={[styles.checkboxContainer, {marginTop: 16}]}>
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      meta: {
+                        ...this.state.meta,
+                        activity: !this.state.meta.activity
+                      }
+                    });
+                  }}
+                  value={this.state.meta.activity}
+                  isChecked={meta.activity}
+                  rightText="Activity"
+                  rightTextStyle={styles.checkboxText}
+                  checkBoxColor={meta.activity? "#f7992a" : "#C9CFDF"}
+                />
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      meta: {
+                        ...this.state.meta,
+                        sleep: !this.state.meta.sleep
+                      }
+                    });
+                  }}
+                  value={this.state.meta.sleep}
+                  isChecked={meta.sleep}
+                  rightText="Sleep"
+                  rightTextStyle={styles.checkboxText}
+                  checkBoxColor={meta.sleep? "#f7992a" : "#C9CFDF"}
+                />
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      meta: {
+                        ...this.state.meta,
+                        nutrition: !this.state.meta.nutrition
+                      }
+                    });
+                  }}
+                  value={this.state.meta.nutrition}
+                  isChecked={meta.nutrition}
+                  rightText="Nutrition"
+                  rightTextStyle={styles.checkboxText}
+                  checkBoxColor={meta.nutrition? "#f7992a" : "#C9CFDF"}
+                />
+                <CheckBox
+                  style={{ width: screenSize.width / 3, marginTop: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      meta: {
+                        ...this.state.meta,
+                        heartRate: !this.state.meta.heartRate
+                      }
+                    });
+                  }}
+                  value={this.state.meta.heartRate}
+                  isChecked={meta.heartRate}
+                  rightText="Heart Rate"
+                  rightTextStyle={styles.checkboxText}
+                  checkBoxColor={meta.heartRate? "#f7992a" : "#C9CFDF"}
+                />
               </View>
               <View
                 style={{
@@ -307,7 +341,7 @@ class ShareSettingsPreferences extends Component {
                   isChecked={shareWithOrg}
                   rightText="Share with all clinicians who are part of this clinician's organization"
                   rightTextStyle={[styles.checkboxText, TextStyles.ContentText]}
-                  checkBoxColor={ThemeStyle.accentColor}
+                  checkBoxColor={shareWithOrg? "#f7992a" : "#C9CFDF"}
                 />
               </View>
               <View style={styles.errorTextContainer}>

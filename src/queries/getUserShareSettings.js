@@ -4,14 +4,19 @@ export const getUserShareSettings = `query getUserShareSettings($appId: String!)
       therapistId
       therapistName
       meta {
+        skill
+        target
+        activity
         diaryCard
-        meditation
         emotion
         journal
         exercise
         sleep
         practiceidea
         actMeasure
+        meditation
+        nutrition
+        heartRate
       }
       shareWithOrg
     }

@@ -111,7 +111,6 @@ export function addFoodEntry(entry, title, dateTime, foodEntryData) {
     Amplify.configure(
       getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
     );
-
     let variables = {};
 
     if (title === 'Water') {
@@ -138,13 +137,14 @@ export function addFoodEntry(entry, title, dateTime, foodEntryData) {
       variables = {
         dateTime: dateTime,
         meal: title,
-        source: "Nutritionix",
+        source: "Manual",
         details: [
           {
             name: entry.food_name,
             qty: entry.serving_qty,
             unit: entry.serving_unit,
             weight_grams: Math.round(entry.serving_weight_grams),
+            brand: entry.brand_name,
             macroNutrients: JSON.stringify({
               calories: Math.round(entry.nf_calories),
               total_fat: entry.nf_total_fat,
@@ -156,8 +156,6 @@ export function addFoodEntry(entry, title, dateTime, foodEntryData) {
               sugars: entry.nf_sugars,
               protein: entry.nf_protein,
               potassium: entry.nf_potassium,
-              P: 42.16
-  
             }),
             microNutrients: entry.full_nutrients
           }
@@ -194,8 +192,8 @@ export function getFoodEntries(date, fetchData) {
     API.graphql({
       query: getFoodEntriesquery,
       variables: {
-        startDate: date,
-        endDate: date
+        startDate: date.startDate,
+        endDate: date.endDate
       }
     })
       .then(data => {

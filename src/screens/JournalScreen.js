@@ -414,7 +414,6 @@ class JournalScreen extends Component {
             onPress={() => {
               this.props.setLoading(true);
               if (this.props.isEdit) {
-                console.log('1======')
                 const variables = {
                   id: this.props.editEntry.id,
                   entry: this.getEntryInputFromRecordFlow()
@@ -437,7 +436,6 @@ class JournalScreen extends Component {
                     this.props.setLoading(false);
                   });
               } else {
-                console.log('2======')
                 addEntry(this.getEntryInputFromRecordFlow())
                   .then(data => {
                     console.log(data);

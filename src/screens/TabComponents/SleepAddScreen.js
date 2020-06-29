@@ -25,7 +25,7 @@ import Icon from "../../common/icons";
 import Card from "../../components/Card";
 import * as Animatable from "react-native-animatable";
 import { addSleepEntry, deleteSleepEntries, getSleepEntries } from "../../actions/NutritionixActions"
-
+import { showMessage } from "react-native-flash-message";
 
 const { width, height } = Dimensions.get("window");
 
@@ -106,6 +106,11 @@ class SleepAddScreen extends Component {
     let dateTime = this.state.currentDate.format("YYYY-MM-DD");
     this.props.addSleepEntry(params, dateTime, onAdded => {
       console.log("Success to upload sleep", onAdded)
+      showMessage({
+        message:'Sleep have been saved sucessfully.',
+        type: "success"
+      });
+      this.props.navigation.goBack(null);
     })
   }
 

@@ -83,7 +83,6 @@ class EntriesScreen extends Component {
       })
       .subscribe({
         next: data => {
-
           Amplify.configure(
             getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
           );
@@ -123,7 +122,6 @@ class EntriesScreen extends Component {
 
               this.setState({
                 entries: sortList,
-                // entries: data.data.getTimeLineView,
                 loading: false
               });
             })

@@ -140,8 +140,8 @@ export const addUserExercise = (exerciseInput, onExerciseAdded) => {
           }
           console.log("CACHE TIMELINE", data);
           const isChallengeExercise =
-            input.title === "Challenge Automatic Thought";
-          const isPrediction = input.title === "Prediction";
+            input.title == "Challenge Automatic Thought";
+          const isPrediction = input.title == "Prediction";
           const timeLineObject = {
             date: moment().format("YYYY-MM-DD"),
             entries: [],

@@ -78,6 +78,7 @@ class SourceSettingsScreen extends Component {
   }
 
   render() {
+    console.log('-->', this.props.sourceSettingsList)
     const {
       activity_value,
       sleep_value,

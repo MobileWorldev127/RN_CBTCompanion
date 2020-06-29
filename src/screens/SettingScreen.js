@@ -67,7 +67,7 @@ class SettingScreen extends Component {
   };
 
   onPressShareSettings = () => {
-    this.props.setLoading(true);
+    // this.props.setLoading(true);
     Auth.currentUserInfo()
       .then(user => {
         Auth.currentSession()

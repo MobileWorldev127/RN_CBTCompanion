@@ -14,7 +14,7 @@ export default {
     fontSize: 23,
     textAlign: "justify",
     marginTop: 8,
-    fontFamily: TextStyles.SubHeaderBold.fontFamily
+    fontFamily: TextStyles.SubHeaderBold.fontFamily,
   },
   button: {
     backgroundColor: ThemeStyle.accentColor,
@@ -54,13 +54,18 @@ export default {
     marginBottom: 16
   },
   prefContainer: {
-    padding: 16
+    padding: 16,
+    paddingTop: 5,
   },
   checkboxContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    borderWidth: 1,
+    borderColor: 'darkgray',
+    padding: 15,
+    paddingBottom: 20,
+    borderRadius: 10,
   },
   boxInnerContainerStyle: {
     paddingTop: 10,

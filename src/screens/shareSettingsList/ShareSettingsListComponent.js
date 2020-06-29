@@ -126,6 +126,7 @@ class ShareSettingsListComponent extends Component {
   render() {
     const navigate = this.props.navigation.navigate;
     const { providerList } = this.props;
+    console.log('=======>', providerList)
     return (
       <Fragment>
         <Header
@@ -380,6 +381,15 @@ const ListItem = props => {
             checkBoxColor={metaData.practiceidea? "#f7992a" : "#C9CFDF"}
             disabled={true}
           />
+          <CheckBox
+            style={{ width: screenSize.width / 3, marginTop: 5 }}
+            onClick={() => {}}
+            isChecked={metaData.emotion}
+            rightText="Emotion"
+            rightTextStyle={styles.checkboxText}
+            checkBoxColor={metaData.emotion? "#f7992a" : "#C9CFDF"}
+            disabled={true}
+          />
         </View>
 
         <View 
@@ -406,56 +416,38 @@ const ListItem = props => {
             <CheckBox
               style={{ width: screenSize.width / 3, marginTop: 5 }}
               onClick={() => {}}
-              isChecked={metaData.diaryCard}
+              isChecked={metaData.activity}
               rightText="Activity"
               rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.diaryCard? "#f7992a" : "#C9CFDF"}
+              checkBoxColor={metaData.activity? "#f7992a" : "#C9CFDF"}
               leftTextStyle={{width: 40, height:10}}
               disabled={true}
             />
             <CheckBox
               style={{ width: screenSize.width / 3, marginTop: 5 }}
               onClick={() => {}}
-              isChecked={metaData.meditation}
-              rightText="Mindfulness"
-              rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.meditation? "#f7992a" : "#C9CFDF"}
-              disabled={true}
-            />
-            <CheckBox
-              style={{ width: screenSize.width / 3, marginTop: 5 }}
-              onClick={() => {}}
-              isChecked={metaData.exercise}
+              isChecked={metaData.sleep}
               rightText="Sleep"
               rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.exercise? "#f7992a" : "#C9CFDF"}
+              checkBoxColor={metaData.sleep? "#f7992a" : "#C9CFDF"}
               disabled={true}
             />
             <CheckBox
               style={{ width: screenSize.width / 3, marginTop: 5 }}
               onClick={() => {}}
-              isChecked={metaData.journal}
+              isChecked={metaData.nutrition}
               rightText="Nutrition"
               rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
+              checkBoxColor={metaData.nutrition? "#f7992a" : "#C9CFDF"}
               disabled={true}
             />
             <CheckBox
               style={{ width: screenSize.width / 3, marginTop: 5 }}
               onClick={() => {}}
-              isChecked={metaData.practiceidea}
+              isChecked={metaData.heartRate}
               rightText="Heart Rate"
               rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.practiceidea? "#f7992a" : "#C9CFDF"}
-              disabled={true}
-            />
-            <CheckBox
-              style={{ width: screenSize.width / 3, marginTop: 5 }}
-              onClick={() => {}}
-              isChecked={metaData.journal}
-              rightText="Physical"
-              rightTextStyle={styles.checkboxText}
-              checkBoxColor={metaData.journal? "#f7992a" : "#C9CFDF"}
+              checkBoxColor={metaData.heartRate? "#f7992a" : "#C9CFDF"}
               disabled={true}
             />
           </View>

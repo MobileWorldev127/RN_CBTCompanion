@@ -4,23 +4,6 @@
             "outputFile": "/Volumes/Data/WorkSpace/Git/cbt-companion-app/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-kk/values-kk.xml",
             "map": [
                 {
-                    "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/ded25730ce4712bf63fd0cc31a85a5c6/res/values-kk/values-kk.xml",
-                    "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,155,259,367",
-                        "endColumns": "99,103,107,104",
-                        "endOffsets": "150,254,362,467"
-                    },
-                    "to": {
-                        "startLines": "47,48,49,50",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "5502,5602,5706,5814",
-                        "endColumns": "99,103,107,104",
-                        "endOffsets": "5597,5701,5809,5914"
-                    }
-                },
-                {
                     "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/c7823be1dda5c9859ed09630ffa6521b/res/values-kk/values.xml",
                     "from": {
                         "startLines": "4",
@@ -103,6 +86,23 @@
                         "startOffsets": "2796,2901,3086,3214,3322,3521,3649,3802,4163,4387,4495,4683,4814,5026,5213,5306,5395",
                         "endColumns": "104,184,127,107,198,127,152,137,223,107,187,130,211,186,92,88,106",
                         "endOffsets": "2896,3081,3209,3317,3516,3644,3797,3935,4382,4490,4678,4809,5021,5208,5301,5390,5497"
+                    }
+                },
+                {
+                    "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/6a777660089f47da51762d1d72e11dbc/res/values-kk/values-kk.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,155,259,367",
+                        "endColumns": "99,103,107,104",
+                        "endOffsets": "150,254,362,467"
+                    },
+                    "to": {
+                        "startLines": "47,48,49,50",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "5502,5602,5706,5814",
+                        "endColumns": "99,103,107,104",
+                        "endOffsets": "5597,5701,5809,5914"
                     }
                 },
                 {

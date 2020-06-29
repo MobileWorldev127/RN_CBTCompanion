@@ -4,6 +4,23 @@
             "outputFile": "/Volumes/Data/WorkSpace/Git/cbt-companion-app/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
+                    "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/6a777660089f47da51762d1d72e11dbc/res/values/values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,113,179,242,304,375,447,515,582,661",
+                        "endColumns": "57,65,62,61,70,71,67,66,78,68",
+                        "endOffsets": "108,174,237,299,370,442,510,577,656,725"
+                    },
+                    "to": {
+                        "startLines": "63,64,65,66,226,227,559,563,564,565",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4005,4063,4129,4192,15053,15124,38550,39076,39143,39222",
+                        "endColumns": "57,65,62,61,70,71,67,66,78,68",
+                        "endOffsets": "4058,4124,4187,4249,15119,15191,38613,39138,39217,39286"
+                    }
+                },
+                {
                     "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/4317a4934b8ddeb23d2b07ec9d0fccff/res/values/values.xml",
                     "from": {
                         "startLines": "26,2",
@@ -56,23 +73,6 @@
                         "startOffsets": "38618,39373,39489,39653,39757,39860,39980,41743",
                         "endColumns": "143,115,81,103,102,119,104,81",
                         "endOffsets": "38757,39484,39566,39752,39855,39975,40080,41820"
-                    }
-                },
-                {
-                    "source": "/Users/macos/.gradle/caches/transforms-2/files-2.1/ded25730ce4712bf63fd0cc31a85a5c6/res/values/values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,113,179,242,304,375,447,515,582,661",
-                        "endColumns": "57,65,62,61,70,71,67,66,78,68",
-                        "endOffsets": "108,174,237,299,370,442,510,577,656,725"
-                    },
-                    "to": {
-                        "startLines": "63,64,65,66,226,227,559,563,564,565",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4005,4063,4129,4192,15053,15124,38550,39076,39143,39222",
-                        "endColumns": "57,65,62,61,70,71,67,66,78,68",
-                        "endOffsets": "4058,4124,4187,4249,15119,15191,38613,39138,39217,39286"
                     }
                 },
                 {

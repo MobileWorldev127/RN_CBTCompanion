@@ -57,7 +57,7 @@ export const getFoodEntriesquery = gql`
       source
       dateTime
       meal
-      details{
+      details {
         name
         brand
         qty
@@ -65,10 +65,10 @@ export const getFoodEntriesquery = gql`
         weight_grams
         macroNutrients
         microNutrients {
-         usda_tag,
-         name,
-         unit,
-         value
+          usda_tag
+          name
+          unit
+          value
         }
       }
     }

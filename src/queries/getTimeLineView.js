@@ -125,6 +125,10 @@ export const getSummaryTimeLineViewQuery = gql`
     getSummary(startDate: $startDate, endDate: $endDate) {
       date
       nutrition {
+        calories {
+          value
+          unit
+        }
         carbs {
           value
           unit
@@ -155,8 +159,8 @@ export const getSummaryTimeLineViewQuery = gql`
       sleep {
         totalMinutes
         sleep {
-          bed_time
-          wake_time
+          bedTime
+          wakeTime
           duration
         }
       }

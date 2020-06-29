@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 import React, { Component } from "react";
 import {
   StyleSheet,
@@ -98,7 +97,10 @@ class FoodAddScreen extends Component {
     var addedFoodList = this.state.addedFoodList;
     var foodList = [...this.state.foodList];
     if (addedFoodList.indexOf(item) > -1) {
-      let date = this.state.currentDate.format("YYYY-MM-DD");
+      let date = {
+        endDate: this.state.currentDate.format("YYYY-MM-DD"), 
+        startDate: this.state.currentDate.format("YYYY-MM-DD")
+      }
       this.props.getFoodEntries(date, fetchListData => {
         fetchListData.map(item1 => {
           if (item1.details[0].name == (item.food_name? item.food_name : item.details[0].name)){
@@ -295,7 +297,7 @@ class FoodAddScreen extends Component {
                         }}
                       >
                         <Text style={TextStyles.Header2}>
-                          {this.jsUcfirst(item.food_name)}
+                          {item.food_name ? this.jsUcfirst(item.food_name) : this.jsUcfirst(item.details[0].name)}
                         </Text>
                         <Text style={TextStyles.GeneralText}>
                           {item.nf_calories ? Math.round(item.nf_calories) : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
@@ -362,7 +364,7 @@ class FoodAddScreen extends Component {
                           {this.jsUcfirst(item.food_name)}
                         </Text>
                         <Text style={TextStyles.GeneralText}>
-                          {item.nf_calories ? Math.round(item.nf_calories) : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
+                          {item.nf_calories > -1 ? Math.round(item.nf_calories) : JSON.parse(item.details[0].macroNutrients).calories} cals - {item.serving_qty? item.serving_qty : item.details[0].qty} {item.serving_unit?item.serving_unit : item.details[0].unit}
                         </Text>
                       </View>
                       <TouchableOpacity onPress={() => this.addFoodList(item)}>

@@ -84,7 +84,7 @@ class FoodDetailScreen extends Component {
     this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
   }
 
-  getFoodEntries(date) {
+  getFoodEntries(val) {
     let { params } = this.props.navigation.state;
     let title = params.title;
     var sum_cals = 0;
@@ -97,7 +97,10 @@ class FoodDetailScreen extends Component {
     var sum_sodium = 0;
     var sum_potassium = 0;
     var sum_cholesterol = 0;
-
+    let date = {
+      endDate: val,
+      startDate: val
+    }
     this.props.getFoodEntries(date, fetchListData => {
       var arr = [];
       fetchListData.map((item, index) => {

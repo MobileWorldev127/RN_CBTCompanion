@@ -211,7 +211,11 @@ class LogFoodScreen extends Component {
     }
   }
 
-  getFoodList(date) {
+  getFoodList(val) {
+    let date = {
+      endDate: val, 
+      startDate: val
+    }
     this.props.getFoodEntries(date, fetchListData => {
       var sum_total_cals = 0;
       var sum_protein = 0;

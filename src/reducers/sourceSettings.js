@@ -1,13 +1,13 @@
 import { GET_SOURCE_SETTINGS } from "../actions/SourceSettings";
 
 const initialState = {
-  sourceSettingsList: [{
+  sourceSettingsList: {
       "activitySetting": "Manual", 
       "heartSetting": "Manual", 
       "mindfulnessSetting": "Manual", 
       "nutritionSetting": "Manual", 
       "sleepSetting": "Manual"
-    }]
+    }
 };
 
 export default (reducer = (state = initialState, action) => {
