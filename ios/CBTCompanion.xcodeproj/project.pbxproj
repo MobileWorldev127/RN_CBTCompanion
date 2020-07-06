@@ -15,6 +15,17 @@
 		1CB9C4DC23B39E0500B17ACA /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB9C4DB23B39E0500B17ACA /* RNPlaceholder.swift */; };
 		1CC72EE2231A5E56008ED0DD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CC72E9A231A5E56008ED0DD /* JavaScriptCore.framework */; };
 		22BBED432498F0BA00524203 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BBED422498F0BA00524203 /* HealthKit.framework */; };
+		22EC3B3D24AF88CC006390CA /* cuebell2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3224AF88CA006390CA /* cuebell2.mp3 */; };
+		22EC3B3E24AF88CC006390CA /* paulexhale.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3324AF88CA006390CA /* paulexhale.mp3 */; };
+		22EC3B3F24AF88CC006390CA /* endingbell1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3424AF88CA006390CA /* endingbell1.mp3 */; };
+		22EC3B4024AF88CC006390CA /* laurahold.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3524AF88CB006390CA /* laurahold.mp3 */; };
+		22EC3B4124AF88CC006390CA /* laurainhale.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3624AF88CB006390CA /* laurainhale.mp3 */; };
+		22EC3B4224AF88CC006390CA /* cuebell1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3724AF88CB006390CA /* cuebell1.mp3 */; };
+		22EC3B4324AF88CC006390CA /* paulbreatheout.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3824AF88CB006390CA /* paulbreatheout.mp3 */; };
+		22EC3B4424AF88CC006390CA /* paulhold.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3924AF88CB006390CA /* paulhold.mp3 */; };
+		22EC3B4524AF88CC006390CA /* paulinhale.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3A24AF88CB006390CA /* paulinhale.mp3 */; };
+		22EC3B4624AF88CC006390CA /* paulthein.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3B24AF88CB006390CA /* paulthein.mp3 */; };
+		22EC3B4724AF88CC006390CA /* lauraexhale.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 22EC3B3C24AF88CC006390CA /* lauraexhale.mp3 */; };
 		294B42898B3F4F248797CD8D /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3B8028612D34F40B26C096E /* Nunito-SemiBold.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -29,7 +40,6 @@
 		893E08DAB5BD4E8C986CA3A1 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E139AFCDA514DFEB5F26AF7 /* Montserrat-Regular.ttf */; };
 		A13E7BD7ADD140318CC4701F /* RTRaleway-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F02CA684A5F748B89ACE1DDF /* RTRaleway-Regular.ttf */; };
 		AF01832576648FC8AC53DD08 /* libPods-CBTCompanion.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69D8FAA207D16CA4A63A2B7A /* libPods-CBTCompanion.a */; };
-		C959A842C89901F1788D7C75 /* libPods-CBTCompanion-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A86A715D0631047E6531529 /* libPods-CBTCompanion-tvOSTests.a */; };
 		D0A399C721D2025B005FA40B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0A399C621D2025B005FA40B /* Images.xcassets */; };
 		D0F22495228178B900E59CF8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0F22494228178B900E59CF8 /* StoreKit.framework */; };
 		D90327C5A73F46C2B5D6AAD6 /* RTRaleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E68AF4FD1DC04B24B60B940F /* RTRaleway-Bold.ttf */; };
@@ -75,7 +85,6 @@
 		00E356F21AD99517003FC87E /* CBTCompanionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBTCompanionTests.m; sourceTree = "<group>"; };
 		078081DFE9A343DF8FE2B3F7 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		0A33E39F23B44143B95C6F81 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		0A86A715D0631047E6531529 /* libPods-CBTCompanion-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CBTCompanion-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DDD715E83164B168453A670 /* libLottie.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottie.a; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* CBTCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBTCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CBTCompanion/AppDelegate.h; sourceTree = "<group>"; };
@@ -86,7 +95,6 @@
 		14603DA93911405B99F932BC /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../MainApp_Animationflow/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
 		15D92D86CC4A4CCCAE7AF996 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		199A58E920264B8A9278E9F7 /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../src/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
-		1BCBC5D27B5FFB8FC44C8188 /* Pods-CBTCompanion-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBTCompanion-tvOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CBTCompanion-tvOSTests/Pods-CBTCompanion-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		1BFD91C6ADA917723BE4956A /* libPods-CBTCompanionTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CBTCompanionTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CB9C4DA23B39E0400B17ACA /* CBTCompanion-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBTCompanion-Bridging-Header.h"; sourceTree = "<group>"; };
 		1CB9C4DB23B39E0500B17ACA /* RNPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNPlaceholder.swift; sourceTree = "<group>"; };
@@ -95,6 +103,17 @@
 		1E139AFCDA514DFEB5F26AF7 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../src/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		1F204A941DD64A17AAC34982 /* AirbnbCerealApp-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AirbnbCerealApp-Medium.ttf"; path = "../src/fonts/AirbnbCerealApp-Medium.ttf"; sourceTree = "<group>"; };
 		22BBED422498F0BA00524203 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		22EC3B3224AF88CA006390CA /* cuebell2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = cuebell2.mp3; path = ../src/screens/BreathingExcercise/sound_files/cuebell2.mp3; sourceTree = "<group>"; };
+		22EC3B3324AF88CA006390CA /* paulexhale.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = paulexhale.mp3; path = ../src/screens/BreathingExcercise/sound_files/paulexhale.mp3; sourceTree = "<group>"; };
+		22EC3B3424AF88CA006390CA /* endingbell1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = endingbell1.mp3; path = ../src/screens/BreathingExcercise/sound_files/endingbell1.mp3; sourceTree = "<group>"; };
+		22EC3B3524AF88CB006390CA /* laurahold.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = laurahold.mp3; path = ../src/screens/BreathingExcercise/sound_files/laurahold.mp3; sourceTree = "<group>"; };
+		22EC3B3624AF88CB006390CA /* laurainhale.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = laurainhale.mp3; path = ../src/screens/BreathingExcercise/sound_files/laurainhale.mp3; sourceTree = "<group>"; };
+		22EC3B3724AF88CB006390CA /* cuebell1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = cuebell1.mp3; path = ../src/screens/BreathingExcercise/sound_files/cuebell1.mp3; sourceTree = "<group>"; };
+		22EC3B3824AF88CB006390CA /* paulbreatheout.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = paulbreatheout.mp3; path = ../src/screens/BreathingExcercise/sound_files/paulbreatheout.mp3; sourceTree = "<group>"; };
+		22EC3B3924AF88CB006390CA /* paulhold.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = paulhold.mp3; path = ../src/screens/BreathingExcercise/sound_files/paulhold.mp3; sourceTree = "<group>"; };
+		22EC3B3A24AF88CB006390CA /* paulinhale.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = paulinhale.mp3; path = ../src/screens/BreathingExcercise/sound_files/paulinhale.mp3; sourceTree = "<group>"; };
+		22EC3B3B24AF88CB006390CA /* paulthein.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = paulthein.mp3; path = ../src/screens/BreathingExcercise/sound_files/paulthein.mp3; sourceTree = "<group>"; };
+		22EC3B3C24AF88CC006390CA /* lauraexhale.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = lauraexhale.mp3; path = ../src/screens/BreathingExcercise/sound_files/lauraexhale.mp3; sourceTree = "<group>"; };
 		264C36E57009414191C38202 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* CBTCompanion-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBTCompanion-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* CBTCompanion-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CBTCompanion-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,7 +136,6 @@
 		6EB28D6EB87D4C29BC3C6BD6 /* Lottie.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Lottie.framework; path = System/Library/Frameworks/Lottie.framework; sourceTree = SDKROOT; };
 		70EFA229C98541FB9201BBFC /* Nunito-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Regular.ttf"; path = "../src/fonts/Nunito-Regular.ttf"; sourceTree = "<group>"; };
 		7BB6BE5CD977451287E8E024 /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-SemiBold.ttf"; path = "../MainApp_Animationflow/fonts/Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
-		85E84CCEDCA196230901EF03 /* Pods-CBTCompanion-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBTCompanion-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBTCompanion-tvOSTests/Pods-CBTCompanion-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8AE690E001D76772984532D2 /* Pods-CBTCompanionTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBTCompanionTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CBTCompanionTests/Pods-CBTCompanionTests.release.xcconfig"; sourceTree = "<group>"; };
 		9788693698164AE29CC84237 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		97B6BB6650111B3369CAE5A5 /* Pods-CBTCompanion-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBTCompanion-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBTCompanion-tvOS/Pods-CBTCompanion-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -198,7 +216,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C959A842C89901F1788D7C75 /* libPods-CBTCompanion-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +242,17 @@
 		13B07FAE1A68108700A75B9A /* CBTCompanion */ = {
 			isa = PBXGroup;
 			children = (
+				22EC3B3724AF88CB006390CA /* cuebell1.mp3 */,
+				22EC3B3224AF88CA006390CA /* cuebell2.mp3 */,
+				22EC3B3424AF88CA006390CA /* endingbell1.mp3 */,
+				22EC3B3C24AF88CC006390CA /* lauraexhale.mp3 */,
+				22EC3B3524AF88CB006390CA /* laurahold.mp3 */,
+				22EC3B3624AF88CB006390CA /* laurainhale.mp3 */,
+				22EC3B3824AF88CB006390CA /* paulbreatheout.mp3 */,
+				22EC3B3324AF88CA006390CA /* paulexhale.mp3 */,
+				22EC3B3924AF88CB006390CA /* paulhold.mp3 */,
+				22EC3B3A24AF88CB006390CA /* paulinhale.mp3 */,
+				22EC3B3B24AF88CB006390CA /* paulthein.mp3 */,
 				D0A399C621D2025B005FA40B /* Images.xcassets */,
 				D0C0CA3221AD89B90022F03D /* CBTCompanion.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -291,7 +319,6 @@
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				69D8FAA207D16CA4A63A2B7A /* libPods-CBTCompanion.a */,
 				99C8F06B7301E2B9FEA7294D /* libPods-CBTCompanion-tvOS.a */,
-				0A86A715D0631047E6531529 /* libPods-CBTCompanion-tvOSTests.a */,
 				1BFD91C6ADA917723BE4956A /* libPods-CBTCompanionTests.a */,
 			);
 			name = Frameworks;
@@ -304,8 +331,6 @@
 				BFEAB3387C472784BB1B9395 /* Pods-CBTCompanion.release.xcconfig */,
 				97B6BB6650111B3369CAE5A5 /* Pods-CBTCompanion-tvOS.debug.xcconfig */,
 				FA7511E6DDE6E2317039C0D7 /* Pods-CBTCompanion-tvOS.release.xcconfig */,
-				85E84CCEDCA196230901EF03 /* Pods-CBTCompanion-tvOSTests.debug.xcconfig */,
-				1BCBC5D27B5FFB8FC44C8188 /* Pods-CBTCompanion-tvOSTests.release.xcconfig */,
 				5E71B8CB365E49046A955DDA /* Pods-CBTCompanionTests.debug.xcconfig */,
 				8AE690E001D76772984532D2 /* Pods-CBTCompanionTests.release.xcconfig */,
 			);
@@ -444,7 +469,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CBTCompanion-tvOSTests" */;
 			buildPhases = (
-				BB4EC0162DCDE39F8D116873 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -536,16 +560,27 @@
 			files = (
 				D0A399C721D2025B005FA40B /* Images.xcassets in Resources */,
 				04F35D67C71B4D74A34D3667 /* AirbnbCerealApp-Bold.ttf in Resources */,
+				22EC3B3D24AF88CC006390CA /* cuebell2.mp3 in Resources */,
+				22EC3B4424AF88CC006390CA /* paulhold.mp3 in Resources */,
+				22EC3B4224AF88CC006390CA /* cuebell1.mp3 in Resources */,
 				E6F2CFDE9A37455997A2360B /* AirbnbCerealApp-Book.ttf in Resources */,
+				22EC3B3F24AF88CC006390CA /* endingbell1.mp3 in Resources */,
 				3F337BEF0DE046D29B5F1AB7 /* AirbnbCerealApp-Medium.ttf in Resources */,
+				22EC3B4524AF88CC006390CA /* paulinhale.mp3 in Resources */,
 				5C904DD5592F4AF383702793 /* Montserrat-Medium.ttf in Resources */,
+				22EC3B4024AF88CC006390CA /* laurahold.mp3 in Resources */,
 				893E08DAB5BD4E8C986CA3A1 /* Montserrat-Regular.ttf in Resources */,
 				68DEEAED057F414B80DDD753 /* Nunito-Bold.ttf in Resources */,
+				22EC3B4724AF88CC006390CA /* lauraexhale.mp3 in Resources */,
+				22EC3B4624AF88CC006390CA /* paulthein.mp3 in Resources */,
 				E11109F0A2F1405885CCC6CE /* Nunito-Regular.ttf in Resources */,
+				22EC3B3E24AF88CC006390CA /* paulexhale.mp3 in Resources */,
 				294B42898B3F4F248797CD8D /* Nunito-SemiBold.ttf in Resources */,
 				D90327C5A73F46C2B5D6AAD6 /* RTRaleway-Bold.ttf in Resources */,
 				4BCDBB9CA02C44F2A84E6B12 /* RTRaleway-Medium.ttf in Resources */,
 				A13E7BD7ADD140318CC4701F /* RTRaleway-Regular.ttf in Resources */,
+				22EC3B4124AF88CC006390CA /* laurainhale.mp3 in Resources */,
+				22EC3B4324AF88CC006390CA /* paulbreatheout.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,28 +667,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-CBTCompanionTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BB4EC0162DCDE39F8D116873 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CBTCompanion-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1248,7 +1261,6 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85E84CCEDCA196230901EF03 /* Pods-CBTCompanion-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1330,7 +1342,6 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1BCBC5D27B5FFB8FC44C8188 /* Pods-CBTCompanion-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

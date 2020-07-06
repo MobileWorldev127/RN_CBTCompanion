@@ -59,7 +59,7 @@ class FoodCaloriesDetailScreen extends Component {
     let itemId = params.itemId;
     let item = params.itemEntry;
     this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
-    if (itemId === 0) {
+    if (itemId === 1) {
       var value = {};
       value.serving_qty = item.details[0].qty;
       value.serving_unit = item.details[0].unit;
@@ -78,7 +78,7 @@ class FoodCaloriesDetailScreen extends Component {
         isVisiableAdd: true
       })
     }
-    else if (itemId === 1) {
+    else if (itemId === 0) {
       var value = {};
       value.serving_qty = item.serving_qty;
       value.serving_unit = item.serving_unit;
@@ -127,7 +127,7 @@ class FoodCaloriesDetailScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   // onClickAddToList = () => {

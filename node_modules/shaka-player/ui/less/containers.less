@@ -28,12 +28,13 @@
    * should be (484px vs 480px). */
   display: flex;
 
-  /* Set the fonts for all contents, with a special exception for material
-   * design icons. */
-  .material-icons {
+  /* Set a special font for material design icons. */
+  .material-icons-round {
     font-family: 'Material Icons Round';
+    font-size: 24px;
   }
 
+  /* Set the fonts for all other content. */
   * {
     font-family: Roboto-Regular, Roboto, sans-serif;
   }
@@ -212,7 +213,7 @@
   .absolute-position();
 
   /* A black gradient at the bottom, behind the controls, but only so high. */
-  background: linear-gradient(to top, rgba(0, 0, 0, 1) 0, @transparent 92px);
+  background: linear-gradient(to top, rgba(0, 0, 0, 1) 0, @transparent 15%);
 }
 
 .shaka-text-container {

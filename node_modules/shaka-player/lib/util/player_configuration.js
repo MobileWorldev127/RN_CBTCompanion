@@ -85,6 +85,7 @@ shaka.util.PlayerConfiguration = class {
       delayLicenseRequestUntilPlayed: false,
       initDataTransform: shaka.media.DrmEngine.defaultInitDataTransform,
       fairPlayTransform: true,
+      updateExpirationTime: 1,
     };
 
     const manifest = {
@@ -111,6 +112,7 @@ shaka.util.PlayerConfiguration = class {
       },
       hls: {
         ignoreTextStreamFailures: false,
+        useFullSegmentsForStartTime: false,
       },
     };
 

@@ -81,7 +81,7 @@ class FoodDetailScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   getFoodEntries(val) {

@@ -32,7 +32,6 @@ export const getUserSceduledAssessmentsRequest = () => dispatch => {
     })
     .subscribe({
       next: response => {
-        console.log(response);
         if (response.data) {
           let result = response.data.getUserSchdeuledAssessments;
           dispatch(getUserScheduledAssessmentsSuccess(result));

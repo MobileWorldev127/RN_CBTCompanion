@@ -68,7 +68,7 @@ class LogExercise extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   fetchExerciseList = date => {
@@ -92,7 +92,8 @@ class LogExercise extends Component {
     this.props.navigation.navigate("ExerciseAdd", {
       isBack: true,
       dateTime: this.state.currentDate,
-      onGoBack: this.onSelect
+      onGoBack: this.onSelect,
+      alreadyAddedExerciseList: this.state.exerciseList,
     });
   }
 
@@ -136,7 +137,7 @@ class LogExercise extends Component {
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     return (
-      <View style={[ThemeStyle.pageContainer, { overflow: "hidden" }]}>
+      <View style={[ThemeStyle.pageContainer]}>
         <LinearGradient
           colors={ThemeStyle.gradientColor}
           start={{

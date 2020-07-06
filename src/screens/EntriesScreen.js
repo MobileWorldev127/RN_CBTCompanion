@@ -91,6 +91,7 @@ class EntriesScreen extends Component {
             variables: getMonthRange(this.state.currentMonth),
           })
             .then(summarydata => {
+              console.log('====>', summarydata.data.getSummary[5])
               let entries = data.data.getTimeLineView;
               if (data.loading && !data.data) {
                 return;
@@ -110,7 +111,6 @@ class EntriesScreen extends Component {
                 .map(e => sumArr[e]);
 
               let orderlist = unique.map(u => {
-                console.log(u);
                 let b = sumArr.filter(t => t.date === u.date);
                 for (var i = 1; i < b.length; i++) {
                   Object.assign(u, b[i]);
@@ -442,7 +442,6 @@ function getEntriesWithDate(entriesData) {
         });
       });
   });
-  console.log(entryList);
   return this.entryList;
 }
 

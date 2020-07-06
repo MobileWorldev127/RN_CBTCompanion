@@ -81,9 +81,10 @@ export const ExerciseCircle: FC<Props> = ({
     duration: fadeInAnimDuration
   });
 
-  const onStepStart = (stepIndex: number) => {
+  const onStepStart = (stepIndex: number) => {    
     setCurrentStepIndex(stepIndex);
     const step = activeSteps[stepIndex];
+    
     if (step.id === "exhale") {
       // if (guidedBreathingMode === "laura") playSound("lauraBreatheOut");
       if (guidedBreathingMode === "paul") {
@@ -93,6 +94,7 @@ export const ExerciseCircle: FC<Props> = ({
         playSound("cueBell1");
       }
       if (guidedBreathingEnabled === true) {
+        console.log('@@@@@', step.id, guidedBreathingMode)
         playSound("lauraBreatheOut");
       }
       showCirlceMinAnimation.start();

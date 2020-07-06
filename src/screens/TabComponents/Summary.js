@@ -50,6 +50,7 @@ import { Auth } from "aws-amplify";
 import { getTimeLineViewQuery } from "../../queries/getTimeLineView";
 const { width, height } = Dimensions.get("screen");
 import * as Animatable from "react-native-animatable";
+import CustomButton from "../../components/Button";
 
 const STATUSBAR_HEIGHT = 15;
 class Summary extends Component {
@@ -679,6 +680,19 @@ class Summary extends Component {
                 />
               )}
             </View>
+            <CustomButton
+              style={{
+                // position: "absolute",
+                // bottom: 0,
+                // right: 24,
+                // marginBottom: 24,
+                width: width - 32,
+                alignSelf: "flex-end",
+                marginVertical: 15,
+              }}
+              name={"Health and Nutrition"}
+              onPress={() => this.props.navigation.navigate('GraphScreen', {isBack: true})}
+            />
             <View style={styles.innerContainer}>
               <View
                 style={{
@@ -1032,37 +1046,7 @@ class Summary extends Component {
                   showSubscription={this.props.showSubscription}
                 />
               )}
-              
-            </View>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('GraphScreen', {isBack: true})}>
-              <View style={styles.innerContainer}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 16,
-                    paddingBottom: 12
-                  }}
-                >
-                  <Text style={[TextStyles.Header2, { paddingTop: 20 }]}>
-                    Physical Health and Nutrition
-                  </Text>
-                  {this.props.isSubscribed && (
-                    <Dropdown
-                      containerStyle={{ width: 82, height: 40, marginTop: -16 }}
-                      data={this.rangeOptions}
-                      value={this.state.moodCorrelationRange}
-                      rippleOpacity={0.0}
-                      onChangeText={value =>
-                        this.setState({
-                          moodCorrelationRange: value
-                        })
-                      }
-                    />
-                  )}
-                </View>
-              </View>
-            </TouchableOpacity>
+            </View>            
           </View>
         </ScrollView>
         {this.getSharing()}

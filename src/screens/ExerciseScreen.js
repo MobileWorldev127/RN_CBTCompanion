@@ -38,6 +38,7 @@ import { getImagePath } from "../utils/ImageUtils";
 import Audio from "../components/exerciseComponents/Audio";
 import MultiSelectWithDesc from "../components/exerciseComponents/MultiSelectWithDesc";
 import Card from "../components/Card";
+import { setTopSafeAreaView } from "../actions/AppActions";
 
 const { width, height } = Dimensions.get("window");
 
@@ -86,6 +87,15 @@ class ExerciseScreen extends Component {
       showInstructions: false,
       instructions: ""
     };
+  }
+
+  componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    recordScreenEvent(screenNames.medication);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   renderGroup = element => {
@@ -687,7 +697,17 @@ class ExerciseScreen extends Component {
   }
 }
 
-export default withStore(ExerciseScreen, state => ({
+const mapStateToProps = state => ({
   currentExercise: state.record.currentExercise,
   isFollowUp: state.record.isFollowUp
-}));
+});
+
+const mapDispatchToProps = dispatch => ({
+  setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
+});
+
+export default withStore(
+  ExerciseScreen,
+  mapStateToProps,
+  mapDispatchToProps
+);

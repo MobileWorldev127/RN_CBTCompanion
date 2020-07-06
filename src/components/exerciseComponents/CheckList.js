@@ -10,7 +10,6 @@ import * as Animatable from "react-native-animatable";
 export default class CheckList extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {};
   }
 

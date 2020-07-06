@@ -48,7 +48,6 @@ class HomeworkScreen extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.navigation, this.props.navigation.addListener);
     this.props.setTopSafeAreaView(ThemeStyle.mainColorLight);
     this.listener = this.props.navigation.addListener("didFocus", payload => {
       console.log("---Focused Homework Screen---", payload);
@@ -75,7 +74,6 @@ class HomeworkScreen extends Component {
       })
       .subscribe({
         next: data => {
-          console.log(data);
           this.props.setLoading(false);
           if (data.data) {
             this.setState({
@@ -208,7 +206,6 @@ class HomeworkScreen extends Component {
   }
 
   onHomeworkItemPress = (item, homeworkItem) => {
-    console.log(homeworkItem);
     performNetworkTask(() => {
       this.props.setCurrentHomeworkItem(item, homeworkItem);
       switch (homeworkItem.type) {
@@ -225,8 +222,6 @@ class HomeworkScreen extends Component {
                 _.cloneDeep(data.data.getExercise),
                 flowConstants.HOMEWORK
               );
-              console.log(data.data.getExercise);
-              console.log(this.props.navigation);
               this.props.navigation.navigate("ExerciseScreen", {
                 currentIndex: 0
               });
@@ -247,7 +242,6 @@ class HomeworkScreen extends Component {
           )
             .then(data => {
               this.props.setLoading(false);
-              console.log(data);
               this.props.navigation.push("MeditationPlay", {
                 onClose: () => this.props.navigation.goBack(""),
                 item: data.data.getMeditation,

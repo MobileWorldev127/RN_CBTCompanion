@@ -9,6 +9,7 @@ import shareSettings from "./shareSettings";
 import homework from "./homeworkReducer";
 import nutritionix from './nutritionixReducer';
 import sourceSettings from "./sourceSettings";
+import devicesSettings from "./devicesSettings";
 
 const AppReducer = {
   nav: nav,
@@ -20,7 +21,8 @@ const AppReducer = {
   shareSettings,
   homework,
   nutritionix,
-  sourceSettings
+  sourceSettings,
+  devicesSettings
 };
 
 export default AppReducer;

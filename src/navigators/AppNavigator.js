@@ -122,8 +122,6 @@ class AppWithNavigationState extends Component {
       console.log(token);
     }, this.handleNotificationClick);
     AppState.addEventListener("change", nextState => {
-      console.log("NEXT STATE", nextState);
-      console.log("CURRENT STATE", this.state.appState);
       if (this.state.appState === "background" && nextState === "active") {
         console.log("APP HAS COME TO FOREGROUND");
         // this.props.initializePremiumContent();

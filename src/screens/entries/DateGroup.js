@@ -138,7 +138,7 @@ export default class DateGroup extends Component<{}, {}> {
       return this.HealthHealthEntryItem( rowData, rowData.date, "Exercise" );
     }    
 
-    else if (rowData.heartRate) {
+    else if (rowData.heartRate && rowData.heartRate.value > 0) {
       return this.HealthHealthEntryItem( rowData, rowData.date, "Heart Rate" );
     }
     

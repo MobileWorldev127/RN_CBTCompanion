@@ -526,7 +526,8 @@ shaka.extern.AdvancedDrmConfiguration;
  *   advanced: Object.<string, shaka.extern.AdvancedDrmConfiguration>,
  *   initDataTransform:
  *       ((function(!Uint8Array, ?shaka.extern.DrmInfo):!Uint8Array)|undefined),
- *   fairPlayTransform: boolean
+ *   fairPlayTransform: boolean,
+ *   updateExpirationTime: number
  * }}
  *
  * @property {shaka.extern.RetryParameters} retryParameters
@@ -559,8 +560,11 @@ shaka.extern.AdvancedDrmConfiguration;
  *   <b>Temporary, for v2.5.x only.</b><br>
  *   If true, transform the FairPlay license request/response according to the
  *   FairPlay examples; if false, don't transform.  Defaults to
- *   <code>true</code>.  Starting in v2.6 this will go away and we will never
+ *   <code>true</code>.  Starting in v3.0 this will go away and we will never
  *   provide default license request/response transforms.
+ * @property {number} updateExpirationTime
+ *   <i>Defaults to 1.</i> <br>
+ *   The frequency in seconds with which to check the expiration of a session.
  *
  * @exportDoc
  */
@@ -627,12 +631,16 @@ shaka.extern.DashManifestConfiguration;
 
 /**
  * @typedef {{
- *   ignoreTextStreamFailures: boolean
+ *   ignoreTextStreamFailures: boolean,
+ *   useFullSegmentsForStartTime: boolean
  * }}
  *
  * @property {boolean} ignoreTextStreamFailures
  *   If <code>true</code>, ignore any errors in a text stream and filter out
  *   those streams.
+ * @property {boolean} useFullSegmentsForStartTime
+ *   If <code>true</code>, force HlsParser to use a full segment request for
+ *   determining start time in case the server does not support partial requests
  * @exportDoc
  */
 shaka.extern.HlsManifestConfiguration;

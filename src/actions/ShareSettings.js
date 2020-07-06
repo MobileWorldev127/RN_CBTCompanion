@@ -23,7 +23,6 @@ export const getShareSettings = () => dispatch => {
     graphqlOperation(getUserShareSettings, { appId: getEnvVars().appId })
   )
     .then(response => {
-      console.log(response.data.getUserShareSettings);
       const result = response.data.getUserShareSettings;
       // this.setState({ providerList: result })
       dispatch(getShareSettingsSuccess(result));

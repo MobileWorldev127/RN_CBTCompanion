@@ -117,7 +117,7 @@ export function addFoodEntry(entry, title, dateTime, foodEntryData) {
       variables = {
         dateTime: dateTime,
         meal: title,
-        source: "Nutritionix",
+        source: "Manual",
         details: [
           {
             name: entry.name,
@@ -268,7 +268,6 @@ export function getNutritionixExercise(query, exerciseData) {
 };
 
 export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
-  console.log(entry)
   return function(dispatch, state) {
     // dispatch(setLoading(true));
     Amplify.configure(
@@ -284,6 +283,7 @@ export function addExerciseEntry(entry, dateTime, exerciseEntryData) {
           name: entry.name,
           duration_min: Math.round(entry.duration_min),
           calories: Math.round(entry.nf_calories),
+          met: entry.met
         }
       ],
     };

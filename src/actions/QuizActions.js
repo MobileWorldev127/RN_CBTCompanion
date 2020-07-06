@@ -29,7 +29,6 @@ export const getAllQuizItemsRequest = () => dispatch => {
     })
   )
     .then(response => {
-      console.log(response);
       let result = response.data.getAllQuizItems;
       dispatch(getAllQuizItemsSuccess(result));
     })

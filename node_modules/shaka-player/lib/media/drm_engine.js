@@ -37,12 +37,13 @@ goog.require('shaka.util.Uint8ArrayUtils');
 
 /**
  * @param {shaka.media.DrmEngine.PlayerInterface} playerInterface
+ * @param {number=} updateExpirationTime
  *
  * @constructor
  * @struct
  * @implements {shaka.util.IDestroyable}
  */
-shaka.media.DrmEngine = function(playerInterface) {
+shaka.media.DrmEngine = function(playerInterface, updateExpirationTime = 1) {
   /** @private {?shaka.media.DrmEngine.PlayerInterface} */
   this.playerInterface_ = playerInterface;
 
@@ -139,7 +140,7 @@ shaka.media.DrmEngine = function(playerInterface) {
   /** @private {?shaka.util.Timer} */
   this.expirationTimer_ = new shaka.util.Timer(() => {
     this.pollExpiration_();
-  }).tickEvery(/* seconds= */ 1);
+  }).tickEvery(/* seconds= */ updateExpirationTime);
 
   // Add a catch to the Promise to avoid console logs about uncaught errors.
   const noop = () => {};
@@ -1485,7 +1486,8 @@ shaka.media.DrmEngine.prototype.onKeyStatusesChange_ = function(event) {
         keyId.byteLength == 16 &&
         !shaka.util.Platform.isTizen() &&
         !shaka.util.Platform.isVideoFutur() &&
-        !shaka.util.Platform.isWebOS()) {
+        !shaka.util.Platform.isWebOS() &&
+        !shaka.util.Platform.isTiVo()) {
       // Read out some fields in little-endian:
       let dataView = new DataView(keyId);
       let part0 = dataView.getUint32(0, true /* LE */);

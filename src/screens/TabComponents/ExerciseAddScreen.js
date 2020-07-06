@@ -46,6 +46,7 @@ class ExerciseAddScreen extends Component {
       query: '',
       queryTxt: '',
       exerciseList: [],
+      addedExerciseList: props.navigation.state.params.alreadyAddedExerciseList,
     };
     Auth.currentUserInfo().then(info => {
       this.setState({
@@ -70,7 +71,7 @@ class ExerciseAddScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   onClickAdd = () => {
@@ -101,25 +102,55 @@ class ExerciseAddScreen extends Component {
   }
 
   addExerciseList = item => {
+    let dateTime = this.state.currentDate.format("YYYY-MM-DD");
     let { params } = this.props.navigation.state;
     let title = params.title;
     var exerciseList = [...this.state.exerciseList];
-    let dateTime = this.state.currentDate.format("YYYY-MM-DD");
-    this.props.addExerciseEntry(item, dateTime, onAdded => {
-      if (onAdded.success) {
-        this.props.navigation.state.params.onGoBack();
-        this.props.navigation.goBack("");
-      }
-      else {
-        setTimeout(() => {
-          showMessage({
-            message:'Something went wrong. Try again. Or use the search function.',
-            type: "danger"
-          })
-        }, 500);
-      }
-    });
-    // }
+    var addedExerciseList = this.state.addedExerciseList;
+    if (addedExerciseList.indexOf(item) > -1) {
+      this.props.getExerciseEntries(dateTime, fetchListData => {
+        fetchListData.map(item1 => {
+          if (item1.details[0].name == item.name){
+            this.props.deleteExerciseEntries(item1._id, fetchData => {
+              var index = addedExerciseList.indexOf(item);
+              if (index !== -1) {
+                addedExerciseList.splice(index, 1);
+                this.setState({ addedExerciseList: addedExerciseList });
+              } else {
+                return;
+              }
+            });
+          }
+        })
+      })
+              
+    } else {
+      let dateTime = this.state.currentDate.format("YYYY-MM-DD");
+      this.props.addExerciseEntry(item, dateTime, onAdded => {
+        console.log(item)
+        console.log('=+>', onAdded)
+        if (onAdded.success) {
+          addedExerciseList.push(item);
+          var index = exerciseList.indexOf(item);
+          if (index !== -1) {
+            exerciseList.splice(index, 1);
+            this.setState({
+              addedExerciseList: addedExerciseList,
+              exerciseList: exerciseList,
+            });
+          };
+
+        }
+        else {
+          setTimeout(() => {
+            showMessage({
+              message:'Something went wrong. Try again. Or use the search function.',
+              type: "danger"
+            });
+          }, 500);
+        }
+      });
+    }
   }
 
   jsUcfirst(string){
@@ -157,11 +188,6 @@ class ExerciseAddScreen extends Component {
             animation="fadeInDown"
             style={{ alignItems: "center" }}
           >
-            {/* <SearchField 
-              iconName="ios-search" 
-              placeholder="Search Exercise" 
-              onChangeText={query => this.onChangeQuery(query)}
-            /> */}
             <View style={styles.inputView}>
               <TextInput
                 style={[TextStyles.GeneralText, styles.inputBox]}
@@ -174,12 +200,69 @@ class ExerciseAddScreen extends Component {
               />
             </View>
             <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
-              <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>ADD</Text>
             </TouchableOpacity>
-            
           </Animatable.View>
         </LinearGradient>
         <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
+          {this.state.addedExerciseList.length > 0 ? 
+            <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
+          {this.state.addedExerciseList.length > 0 && this.state.addedExerciseList.map((item, index) => {
+            return (
+              <Animatable.View
+                animation="pulse"
+                delay={index * 200}
+                style={{
+                  marginHorizontal: 20,
+                  marginBottom: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Card style={{ margin: 5 }}>
+                  <TouchableOpacity                  
+                    underlayColor={item.color + "aa"}
+                    style={{
+                      backgroundColor: item.color
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 15,
+                      }}
+                    >
+                      <View
+                        style={{
+                          padding: 5,
+                          flex: 1
+                        }}
+                      >
+                        <Text style={TextStyles.Header2}>
+                          {item.name ? this.jsUcfirst(item.name) : this.jsUcfirst(item.details[0].name)}
+                        </Text>
+                        <Text style={TextStyles.GeneralText}>
+                          - {item.nf_calories? Math.round(item.nf_calories) : Math.round(item.details[0].calories)} kcal : {item.duration_min? Math.round(item.duration_min) : Math.round(item.details[0].duration_min)} min
+                        </Text>
+                      </View>
+                      <TouchableOpacity onPress={() => this.addExerciseList(item)}>
+                        <Icon
+                          family={"MaterialCommunityIcons"}
+                          name={"delete"}
+                          color="red"
+                          size={25}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                </Card>
+              </Animatable.View>
+            );
+          })}
+
+          {this.state.exerciseList.length > 0 ? 
+            <Text style={styles.listedTitleTxt}>Recent</Text> : null}
           {this.state.exerciseList.map((item, index) => {
             return (
               <Animatable.View

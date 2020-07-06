@@ -67,6 +67,10 @@ class MedicationScreen extends Component {
     recordScreenEvent(screenNames.medication);
   }
 
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
+  }
+  
   calculateDuration(sleepTime, wakeTime) {
     let hours = wakeTime.diff(sleepTime, "hours", true);
     if (hours < 0) {

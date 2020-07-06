@@ -1,3 +1,62 @@
+## 2.5.13 (2020-06-11)
+
+Bugfixes:
+  - Fix background color of nested cues
+    - https://github.com/google/shaka-player/issues/2623
+    - https://github.com/google/shaka-player/pull/2624
+  - Fix seeking from Google Home app while casting
+    - https://github.com/google/shaka-player/issues/2606
+  - Fix cancelation of pending network requests on load() and destroy()
+    - https://github.com/google/shaka-player/issues/2619
+  - Fix pixelAspectRatio extraction from DASH
+    - https://github.com/google/shaka-player/pull/2614
+  - Fix nested TTML captions with time offset
+    - https://github.com/google/shaka-player/issues/2601
+    - https://github.com/google/shaka-player/pull/2602
+  - Set explicit default font size for UI icons
+    - https://github.com/google/shaka-player/issues/2633
+  - Correct license headers in compiled output and generated externs
+    - https://github.com/google/shaka-player/issues/2638
+
+
+## 2.5.12 (2020-05-29)
+
+Bugfixes:
+  - Don't preload data on iOS
+    - https://github.com/google/shaka-player/issues/2483
+  - Make the controls background gradient proportional
+  - Work around IE 11 bug in text region positioning
+    - https://github.com/google/shaka-player/issues/2584
+  - Fix PlayReady key ID endianness for TiVo
+    - https://github.com/google/shaka-player/pull/2582
+  - Fix shaka.log in debug builds
+    - https://github.com/google/shaka-player/issues/2565
+  - Add support for null TS packets in HLS
+    - https://github.com/google/shaka-player/issues/2546
+  - Fix live seek bar on touch screens
+    - https://github.com/google/shaka-player/issues/2558
+  - Fix text track change after enabling text display
+    - https://github.com/google/shaka-player/issues/2553
+  - Fix SegmentTimeline with t attribute missing.
+    - https://github.com/google/shaka-player/issues/2590
+  - Fix various text positioning bugs
+    - https://github.com/google/shaka-player/issues/2524
+  - Allow OPUS on Tizen 5 or higher
+    - https://github.com/google/shaka-player/pull/2564
+  - Fix CEA caption extraction for b-frame content
+    - https://github.com/google/shaka-player/issues/2395
+  - Fix module wrapper to prevent conflicting exports
+    - https://github.com/google/shaka-player/issues/2549
+
+New Features:
+  - Add option to customize the polling of expiration time
+    - https://github.com/google/shaka-player/issues/2252
+    - https://github.com/google/shaka-player/pull/2579
+  - Add new option manifest.hls.useFullSegmentsForStartTime
+    - https://github.com/google/shaka-player/issues/2556
+    - https://github.com/google/shaka-player/pull/2575
+
+
 ## 2.5.11 (2020-05-05)
 
 New Features:
@@ -847,11 +906,11 @@ New Features:
 
 Deprecated:
   - Passing a ManifestParser factory to Player.load is deprecated and support
-    will be removed in v2.6. Instead, please register any custom parsers with a
+    will be removed in v3.0. Instead, please register any custom parsers with a
     MIME type, and pass a MIME type instead.  MIME types can also be used to
     force the selection of any built-in manifest parsers.
   - The |manifestUri| method on Player was changed to |assetUri|. The old method
-    is deprecated and will be removed in v2.6.
+    is deprecated and will be removed in v3.0.
 
 
 ## 2.4.4 (2018-08-23)

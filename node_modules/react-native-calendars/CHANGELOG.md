@@ -297,3 +297,20 @@
 
 ## [1.265.0] - 2020-3-12
 - Setup Detox for e2e tests (iOS).
+
+## [1.282.0] - 2020-6-04
+- New Feature - Enable swipe in calendar
+
+## [1.291.0] - 2020-6-10
+- New Feature - Render custom header in calendar
+- Update Calendar List's example with the new feature
+
+## [1.292.0] - 2020-6-10
+- New Feature - Show should six weeks in the calendar by passing showSixWeeks
+
+## [1.297.0] - 2020-6-17
+- Bug Fix - Calendar isn't getting re-rendered if the first day prop is changed.
+
+## [1.298.0] - 2020-6-17
+- New Feature - Control the swipe on Calendar with new prop - enableSwipeMonths
+

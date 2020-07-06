@@ -130,8 +130,13 @@ shakaDemo.Config = class {
     const docLink = this.resolveExternLink_('.DrmConfiguration');
     this.addSection_('DRM', docLink)
         .addBoolInput_('Delay License Request Until Played',
-                       'drm.delayLicenseRequestUntilPlayed');
-    const advanced = shakaDemoMain.getConfiguration().drm.advanced;
+                       'drm.delayLicenseRequestUntilPlayed')
+        .addNumberInput_('Update expiration time',
+            'drm.updateExpirationTime',
+            /* canBeDecimal= */ true,
+            /* canBeZero= */ false,
+            /* canBeUnset= */ true);
+    const advanced = shakaDemoMain.getConfiguration().drm.advanced || {};
     const robustnessSuggestions = [
       'SW_SECURE_CRYPTO',
       'SW_SECURE_DECODE',
@@ -182,6 +187,8 @@ shakaDemo.Config = class {
             'manifest.dash.ignoreEmptyAdaptationSet')
         .addBoolInput_('Ignore HLS Text Stream Failures',
             'manifest.hls.ignoreTextStreamFailures')
+        .addBoolInput_('Use Full Segments For Start Time',
+            'manifest.hls.useFullSegmentsForStartTime')
         .addNumberInput_('Availability Window Override',
                          'manifest.availabilityWindowOverride',
                          /* canBeDecimal = */ true,

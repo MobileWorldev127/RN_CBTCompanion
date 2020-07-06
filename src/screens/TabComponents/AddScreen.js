@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  SafeAreaView
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Header from '../../components/Header';
@@ -48,7 +49,7 @@ class AddScreen extends Component {
             this.props.navigation.navigate("ExcerciseBreathingScreen", {
               isBack: true,
             }),
-          color: ThemeStyle.communityColor,
+          color: '#000',
           iconName: "chart-arc",
           iconFamily: "MaterialCommunityIcons",
           isIcon: true,
@@ -183,7 +184,7 @@ class AddScreen extends Component {
     console.log('RENDER', this.state.items);
     const { sourceSettingsList } = this.props;
     return (
-      <View style={ThemeStyle.pageContainer}>
+      <View style={{flex: 1, backgroundColor: ThemeStyle.mainColor}}>
         <LinearGradient style={{ flex: 1 }} colors={ThemeStyle.gradientColor}>
           <Header
             isDrawer={true}

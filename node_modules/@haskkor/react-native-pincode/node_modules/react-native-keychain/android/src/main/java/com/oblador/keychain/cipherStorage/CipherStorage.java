@@ -1,6 +1,6 @@
 package com.oblador.keychain.cipherStorage;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.oblador.keychain.SecurityLevel;
 import com.oblador.keychain.exceptions.CryptoFailedException;

@@ -16,6 +16,7 @@ const soundEffects = {
 
 const preloadSound = async (id: SoundEffectId) => {
   const soundEffect = soundEffects[id];
+  console.log('success------->', soundEffect.path)
   return new Promise((resolve, reject) => {
     const sound: any = new SoundPlayer(
       soundEffect.path,
@@ -28,6 +29,7 @@ const preloadSound = async (id: SoundEffectId) => {
           soundEffect.sound = sound;
           resolve();
         }
+        
       }
     );
   });

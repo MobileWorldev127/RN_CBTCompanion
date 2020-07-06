@@ -38,7 +38,6 @@ class HomeScreen extends Component {
     this.currentMood = props.isEdit
       ? this.moods[5 - props.editEntry.mood]
       : this.moods[0];
-    console.log("HOME SCREEN MOUNT", props);
     this.state = {
       isDatePickerVisible: false,
       currentDate: props.isEdit ? moment(props.editEntry.dateTime) : moment(),
@@ -52,7 +51,6 @@ class HomeScreen extends Component {
       moodIndex: props.isEdit ? 5 - props.editEntry.mood : 0
     };
     Auth.currentUserInfo().then(info => {
-      console.log("user info", info);
       this.setState({
         userName: info && info.attributes && info.attributes.name
       });
@@ -75,11 +73,10 @@ class HomeScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    console.log("NEXT PROPS", nextProps);
     this.setState(
       {
         isDatePickerVisible: false,
@@ -159,7 +156,7 @@ class HomeScreen extends Component {
   }
 
   render() {
-    console.log("Render home", this.state);
+
     let { params } = this.props.navigation.state;
     let isBack = params && params.isBack;
     return (
@@ -209,7 +206,6 @@ class HomeScreen extends Component {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                console.log("select date");
                 if (!this.props.isEdit) {
                   this.setState({
                     isDatePickerVisible: true
@@ -327,7 +323,6 @@ class HomeScreen extends Component {
             });
           }}
           onConfirm={date => {
-            console.log(date);
             this.setState({
               isDatePickerVisible: false,
               currentDate: moment(date)

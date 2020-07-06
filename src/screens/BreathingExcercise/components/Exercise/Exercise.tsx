@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import KeepAwake from "react-native-keep-awake";
 import { useAppContext } from "../../context/AppContext";
@@ -14,6 +14,10 @@ import { initializeAudio, releaseAudio, playSound } from "../../services/sound";
 import { addBreathingEntry } from "../../../../actions/BreathingActions"
 import { withSafeAreaActions } from "../../../../utils/StoreUtils";
 import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { setTopSafeAreaView, setBottomSafeAreaView } from "../../../../actions/AppActions";
+import ThemeStyle from '../../../../styles/ThemeStyle';
+
 let moment = require("moment");
 
 
@@ -43,10 +47,21 @@ export const Exercise: FC<Props> = ({
     duration: unmountAnimDuration
   });
 
-  useOnMount(() => {
-    if (guidedBreathingMode !== "disabled") initializeAudio();
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(setTopSafeAreaView(ThemeStyle.accentColor));
+    dispatch(setBottomSafeAreaView(ThemeStyle.accentColor));
     return () => {
-      if (guidedBreathingMode !== "disabled") releaseAudio();
+      dispatch(setTopSafeAreaView(ThemeStyle.backgroundColor));
+      dispatch(setBottomSafeAreaView(ThemeStyle.appTheme));
+    }
+  }, []);
+
+  useOnMount(() => {
+    if (guidedBreathingMode == "disabled") initializeAudio();
+    return () => {
+      if (guidedBreathingMode == "disabled") releaseAudio();
     };
   });
 

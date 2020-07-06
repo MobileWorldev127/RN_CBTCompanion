@@ -276,45 +276,6 @@ describe('Player Src Equals', () => {
     expect(player.getTextLanguagesAndRoles()).toEqual([]);
   });
 
-  // TODO: test language selection w/ HLS on platforms with native HLS
-  // This test is disabled until then.
-  xit('cannot select language or role', async () => {
-    await loadWithSrcEquals(SMALL_MP4_CONTENT_URI, /* startTime */ null);
-
-    const language = 'en';
-    const role = 'main';
-
-    player.selectAudioLanguage(language);
-    expect(player.getAudioLanguages()).toEqual([]);
-    expect(player.getAudioLanguagesAndRoles()).toEqual([]);
-
-    player.selectAudioLanguage(language, role);
-    expect(player.getAudioLanguages()).toEqual([]);
-    expect(player.getAudioLanguagesAndRoles()).toEqual([]);
-
-    player.selectTextLanguage(language);
-    expect(player.getTextLanguages()).toEqual([]);
-    expect(player.getTextLanguagesAndRoles()).toEqual([]);
-
-    player.selectTextLanguage(language, role);
-    expect(player.getTextLanguages()).toEqual([]);
-    expect(player.getTextLanguagesAndRoles()).toEqual([]);
-  });
-
-  // TODO: test text visibility w/ HLS on platforms with native HLS
-  // This test is disabled until then.
-  xit('persists the text visibility setting', async () => {
-    await loadWithSrcEquals(SMALL_MP4_CONTENT_URI, /* startTime */ null);
-
-    expect(player.isTextTrackVisible()).toBe(false);
-
-    await player.setTextTrackVisibility(true);
-    expect(player.isTextTrackVisible()).toBe(true);
-
-    await player.setTextTrackVisibility(false);
-    expect(player.isTextTrackVisible()).toBe(false);
-  });
-
   // Even though we loaded content using |src=| we should still be able to get
   // the playhead position as normal.
   it('can get the playhead position', async () => {
@@ -386,6 +347,9 @@ describe('Player Src Equals', () => {
    * @return {!Promise}
    */
   async function loadWithSrcEquals(contentUri, startTime) {
+    /** @type {!shaka.util.EventManager} */
+    const eventManager = new shaka.util.EventManager();
+
     const ready = new Promise((resolve) => {
       eventManager.listenOnce(video, 'loadeddata', resolve);
     });
@@ -396,5 +360,20 @@ describe('Player Src Equals', () => {
     // Wait until the media element is ready with content. Waiting until this
     // point ensures it is safe to interact with the media element.
     await ready;
+
+    // The initial seek is triggered about the same time this ready promise
+    // resolves.  Wait (with timeout) for movement, so that the initial-seek
+    // promise chain has time to resolve before we test our expectations.
+    if (startTime != null) {
+      const waiter = new shaka.test.Waiter(eventManager);
+      if (video.currentTime == 0) {
+        // A one-second timeout is too short for Chromecast, but a longer
+        // timeout doesn't hurt anyone.  This will always resolve as fast as
+        // playback can actually start.
+        await waiter.timeoutAfter(5).failOnTimeout(true).waitForMovement(video);
+      }
+    }
+
+    eventManager.release();
   }
 });

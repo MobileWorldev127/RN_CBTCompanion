@@ -108,7 +108,7 @@ class LogFoodScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   onPressFoodDetail = title => {
@@ -165,25 +165,25 @@ class LogFoodScreen extends Component {
       case "Breakfast":
         return this.state.food_breakfast_list.map((item1, index) => {
           if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
+            return <Text style={{marginLeft: 3}}>{item1.details[0].name}</Text>;
           }
         });
       case "Lunch":
         return this.state.food_lunch_list.map((item1, index) => {
           if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
+            return <Text style={{marginLeft: 3}}>{item1.details[0].name}</Text>;
           }
         });
       case "Dinner":
         return this.state.food_dinner_list.map((item1, index) => {
           if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
+            return <Text style={{marginLeft: 3}}>{item1.details[0].name}</Text>;
           }
         });
       case "Snack":
         return this.state.food_snack_list.map((item1, index) => {
           if (index < 3) {
-            return <Text>{item1.details[0].name}</Text>;
+            return <Text style={{marginLeft: 3}}>{item1.details[0].name}</Text>;
           }
         });
     }
@@ -295,7 +295,7 @@ class LogFoodScreen extends Component {
 
     this.props.addFoodEntry(data, 'Water', dateTime, onAdded => {
       this.setState({isWaterModal: false})
-      
+      this.setState({ isWaterModal: false })
     });
   }
 
@@ -538,17 +538,21 @@ class LogFoodScreen extends Component {
                           paddingVertical: 15,
                         }}
                       >
-                        <CachedImage
-                          source={item.image}
-                          style={{
-                            width: 60,
-                            height: 60
-                          }}
-                          resizeMode="contain"
-                        />
+                        <View style={{alignItems: 'center', width: 70}}>
+                          <CachedImage
+                            source={item.image}
+                            style={{
+                              width: 40,
+                              height: 40,
+                              marginBottom: 5
+                            }}
+                            resizeMode="contain"
+                          />
+                          {this.showFoodCaloriesList(item.title)}
+                        </View>
                         <View
                           style={{
-                            paddingHorizontal: 15,
+                            paddingHorizontal: 10,
                             flex: 1,
                           }}
                         >
@@ -562,7 +566,6 @@ class LogFoodScreen extends Component {
                           >
                             {item.title}
                           </Text>
-                          {this.showFoodCaloriesList(item.title)}
                           {this.showFoodNamesList(item.title)}
                         </View>
                         <TouchableOpacity onPress={() => this.onPressAddFood(item.title)}>
@@ -699,12 +702,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginVertical: 15,
   },
   inputBox: {
     width: 120,
-    fontSize: 16,
+    fontSize: 15,
     textAlignVertical: "center",
     color: "#000",
     backgroundColor: ThemeStyle.backgroundColor,
@@ -713,15 +716,15 @@ const styles = StyleSheet.create({
   },
   addWaterBtn: {
     flex: 1,
-    height: 35,
-    marginLeft: 15,
+    height: 30,
+    marginHorizontal: 30,
     backgroundColor: '#4191fb',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
   },
   addWaterTxt: {
-    fontSize: 18,
+    fontSize: 15,
     color: 'white'
   },
   totalMeasureView: {

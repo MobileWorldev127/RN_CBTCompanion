@@ -45,15 +45,12 @@ export default class EntryItem extends Component<{}, {}> {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log("will receive props", nextProps);
     this.setState({
       ...nextProps
     });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log("should Component Update", nextState);
-    // console.log("should Component Update", this.state);
     return (
       nextState.isExpanded != this.state.isExpanded ||
       nextState.entryItem.id !== this.state.entryItem.id ||
@@ -147,7 +144,6 @@ export default class EntryItem extends Component<{}, {}> {
             onPress={
               type == "exercise"
                 ? () => {
-                    console.log(data.id);
                     this.props.navigation.navigate("ExerciseReviewScreen", {
                       title: data.title,
                       isOverview: false,
@@ -229,7 +225,6 @@ export default class EntryItem extends Component<{}, {}> {
                         uri: res
                       });
                     } else {
-                      console.log(res);
                       Linking.openURL(res);
                       // Share.open({
                       //   url: res,
@@ -354,7 +349,6 @@ export default class EntryItem extends Component<{}, {}> {
           }}
           onError={err => {
             this.props.setLoading(false);
-            console.log(err);
             showMessage({
               type: "danger",
               message: "Something went wrong"
@@ -526,7 +520,7 @@ export default class EntryItem extends Component<{}, {}> {
                             require("../../assets/images/redesign/emotion-badge.png"),
                             rowData.emotions && rowData.emotions.length
                           )}
-                          {rowExerciseData && this.renderIconWithBadge1(
+                          {/* {rowExerciseData && this.renderIconWithBadge1(
                             require("../../assets/images/redesign/timeline_exercise.png"),
                           )}
                           {rowHeartRateData && this.renderIconWithBadge1(
@@ -537,7 +531,7 @@ export default class EntryItem extends Component<{}, {}> {
                           )}
                           {rowNutritionData && this.renderIconWithBadge1(
                             require("../../assets/images/redesign/timeline_nutrition.png"),
-                          )}
+                          )} */}
                           {/* {this.renderIconWithBadge(
                             require("../../assets/images/redesign/activities-home.png"),
                             rowData.exercise && rowData.exercise.length

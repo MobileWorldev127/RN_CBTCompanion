@@ -31,7 +31,6 @@ export default class TimeLineItem extends Component<{}, {}> {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log("will receive props", nextProps);
     this.setState({
       ...nextProps
     });
@@ -88,7 +87,6 @@ export default class TimeLineItem extends Component<{}, {}> {
           onPress={() => {
             switch (this.state.type) {
               case timeLineItemTypes.EXERCISE:
-                console.log(data.id);
                 this.props.navigation.navigate("ExerciseReviewScreen", {
                   title: data.title,
                   isOverview: false,
@@ -97,7 +95,6 @@ export default class TimeLineItem extends Component<{}, {}> {
                 });
                 break;
               case timeLineItemTypes.PRACTICE_IDEAS:
-                console.log("PRACTICE IDEA ID", data.id);
                 this.props.navigation.navigate("PracticeIdeaReviewScreen", {
                   practiceIdeaId: data.id
                 });

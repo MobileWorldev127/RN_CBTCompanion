@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Text,
   Alert
 } from "react-native";
+import { useDispatch } from 'react-redux'
 import { useAppContext } from "../../context/AppContext";
 import { ButtonAnimator } from "../ButtonAnimator/ButtonAnimator";
 import { Exercise } from "./../Exercise/Exercise";
@@ -20,6 +21,8 @@ import { deviceHeight } from "./../../config/constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import Header from "./../../../../components/Header";
+import { setTopSafeAreaView, setBottomSafeAreaView } from "../../../../actions/AppActions";
+import ThemeStyle from '../../../../styles/ThemeStyle';
 
 // export default () => <SvgUri width="200" height="200" svgXmlData={testSvg} />;
 
@@ -70,7 +73,7 @@ export const AppRouter: FC<Props> = ({
   const [currentMainScreen, setCurrentMainScreen] = useState<MainScreen>(
     "menu"
   );
-
+  
   useHardwareBackButton(() => {
     if (currentScreen === "main" && currentMainScreen === "menu") {
       return false;
@@ -106,6 +109,23 @@ export const AppRouter: FC<Props> = ({
   //   theme.mainColor,
   //   currentMainScreen
   // ]);
+
+  /**
+  * Warning: This lifecycle is currently deprecated, and will be removed in React version 17+
+  More details here: https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
+  */
+  
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(setTopSafeAreaView(ThemeStyle.backgroundColor));
+    dispatch(setBottomSafeAreaView('white'));
+    return () => {
+      dispatch(setTopSafeAreaView(ThemeStyle.gradientStart));
+    }
+  }, []);
+
+ 
 
   const handleButtonAnimatorExpand = () => {
     setCurrentMainScreen("exercise");

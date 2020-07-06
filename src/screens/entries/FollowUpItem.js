@@ -82,7 +82,6 @@ export default class FollowUpItem extends Component<{}, {}> {
   };
 
   renderChips = (list, isIcon) => {
-    console.log(list);
     let elementsList = [];
     if (list.length > 0) {
       list.map(data => {

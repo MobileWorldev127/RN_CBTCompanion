@@ -34,7 +34,6 @@ export function submitHomework(
     Amplify.configure(
       getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
     );
-    console.log("--Current homework state--", state().homework);
     let variables = {
       homeworkId: homeworkID ? homeworkID : state().homework.currentHomework.id,
       appId: getEnvVars().appId,
@@ -47,10 +46,8 @@ export function submitHomework(
             homeworkItemId: state().homework.currentHomeworkItem.id
           }
     };
-    console.log("--Submitting homework--", variables);
     API.graphql(graphqlOperation(submitHomeworkMutation, variables))
       .then(data => {
-        console.log(data);
         if (onSubmitted) {
           onSubmitted(data);
         }

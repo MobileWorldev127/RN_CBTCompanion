@@ -26,6 +26,7 @@ import Card from "../../components/Card";
 import * as Animatable from "react-native-animatable";
 import { addSleepEntry, deleteSleepEntries, getSleepEntries } from "../../actions/NutritionixActions"
 import { showMessage } from "react-native-flash-message";
+import { setTopSafeAreaView } from "../../actions/AppActions";
 
 const { width, height } = Dimensions.get("window");
 
@@ -71,7 +72,12 @@ class SleepAddScreen extends Component {
   }
 
   componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
     recordScreenEvent(screenNames.medication);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   calculateDuration(sleepTime, wakeTime) {
@@ -81,7 +87,10 @@ class SleepAddScreen extends Component {
     }
     const durationHours = Math.floor(hours);
     const minutes = hours - durationHours;
-    const durationMins = Math.floor(minutes * 60);
+    let durationMins = Math.floor(minutes * 60);
+    if (durationMins < 10) {
+      durationMins = "0" + durationMins;
+    }
     return durationHours + ":" + durationMins;
   }
 
@@ -295,6 +304,7 @@ export default withStore(
     editEntry: state.record.editEntry
   }),
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setSleepData: data => dispatch(setSleepData(data)),
     addSleepEntry: (query, date, data) =>
       dispatch(addSleepEntry(query, date, data)),

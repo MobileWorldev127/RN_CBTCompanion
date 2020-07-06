@@ -73,7 +73,7 @@ class FoodAddScreen extends Component {
     }
   }
   componentWillUnmount() {
-    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   onChangeQuery = query => {
@@ -246,7 +246,7 @@ class FoodAddScreen extends Component {
               {
                 this.state.queryTxt ?
                 <TouchableOpacity style={styles.addView} onPress = {this.onClickAdd}>
-                  <Text style={{ color: "white", fontSize: 20 }}>ADD</Text>
+                  <Text style={{ color: "white", fontSize: 18 }}>ADD</Text>
                 </TouchableOpacity> : null
               }              
             </Animatable.View>
@@ -256,6 +256,7 @@ class FoodAddScreen extends Component {
           {this.state.addedFoodList.length > 0 ? 
             <Text style={styles.listedTitleTxt}>You Just Added</Text> : null}
           {this.state.addedFoodList.map((item, index) => {
+            
             return (
               <Animatable.View
                 animation="pulse"
@@ -271,10 +272,10 @@ class FoodAddScreen extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('FoodCaloriesDetail', {
                         isBack: true,
-                        foodName: item.food_name,
+                        foodName: item.food_name? item.food_name : item.details[0].name,
                         title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 1,
-                        itemEntry: item
+                        itemId: item.nix_item_id ? item.nix_item_id : item.ndb_no > 0 ? 0 : 1,
+                        itemEntry:  item
                       })
                     }
                     underlayColor={item.color + "aa"}
@@ -335,9 +336,9 @@ class FoodAddScreen extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('FoodCaloriesDetail', {
                         isBack: true,
-                        foodName: item.food_name,
+                        foodName: item.food_name? item.food_name : item.details[0].name,
                         title: title,
-                        itemId: item.nix_item_id ? item.nix_item_id : 1,
+                        itemId: item.nix_item_id ? item.nix_item_id : item.ndb_no > 0 ? 0 : 1,
                         itemEntry: item
                       })
                     }

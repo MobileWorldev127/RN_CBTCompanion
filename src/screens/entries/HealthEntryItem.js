@@ -80,7 +80,6 @@ export default class HealthEntryItem extends Component<{}, {}> {
             onPress={
               type == "exercise"
                 ? () => {
-                    console.log(data.id);
                     this.props.navigation.navigate("ExerciseReviewScreen", {
                       title: data.title,
                       isOverview: false,
@@ -162,7 +161,6 @@ export default class HealthEntryItem extends Component<{}, {}> {
                         uri: res
                       });
                     } else {
-                      console.log(res);
                       Linking.openURL(res);
                     }
                   })
@@ -260,7 +258,7 @@ export default class HealthEntryItem extends Component<{}, {}> {
             backgroundColor="#C9CFDF">
             {
               (fill) => (
-                <Text style={{fontSize: 14}}>{Math.floor(nutrition.carbs.value)}g</Text>
+                <Text style={{fontSize: 14}}>{Math.round(nutrition.carbs.value)}g</Text>
               )
             }
           </AnimatedCircularProgress>
@@ -277,7 +275,7 @@ export default class HealthEntryItem extends Component<{}, {}> {
             backgroundColor="#C9CFDF">
             {
               (fill) => (
-                <Text style={{fontSize: 14}}>{Math.floor(nutrition.protein.value)}g</Text>
+                <Text style={{fontSize: 14}}>{Math.round(nutrition.protein.value)}g</Text>
               )
             }
           </AnimatedCircularProgress>
@@ -294,7 +292,7 @@ export default class HealthEntryItem extends Component<{}, {}> {
             backgroundColor="#C9CFDF">
             {
               (fill) => (
-                <Text style={{fontSize: 14}}>{Math.floor(nutrition.fat.value)}g</Text>
+                <Text style={{fontSize: 14}}>{Math.round(nutrition.fat.value)}g</Text>
               )
             }
           </AnimatedCircularProgress>
@@ -309,15 +307,15 @@ export default class HealthEntryItem extends Component<{}, {}> {
       <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around' }}>
         <View style={{alignItems: 'center'}}>
           <Text style={{color: '#ff6a63'}}>Calories</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.calories.value}</Text>
+          <Text style={{fontSize: 17, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{exercise.calories.value}</Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#f1ce50'}}>Time</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.duration.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Min</Text></Text>
+          <Text style={{fontSize: 17, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{exercise.duration.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Min</Text></Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#4191fb'}}>Distance</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{exercise.distance.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Miile</Text></Text>
+          <Text style={{fontSize: 17, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{exercise.distance.value} <Text style={{fontSize: 12, fontWeight: '300'}}>Miile</Text></Text>
         </View>
       </View>
     )
@@ -328,15 +326,15 @@ export default class HealthEntryItem extends Component<{}, {}> {
       <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around'  }}>
         <View style={{alignItems: 'center'}}>
           <Text style={{color: '#ff6a63'}}>Heart Rate</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.heartRate}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{heartRate.value}<Text style={{fontSize: 12, fontWeight: '300'}}> BPM</Text></Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#ff6a63'}}>Resting</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.resting}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{heartRate.resting}<Text style={{fontSize: 12, fontWeight: '300'}}> BPM</Text></Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#ff6a63'}}>Variaility</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{heartRate.variability}<Text style={{fontSize: 12, fontWeight: '300'}}>BPM</Text></Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{heartRate.variability}<Text style={{fontSize: 12, fontWeight: '300'}}> BPM</Text></Text>
         </View>
       </View>
     )
@@ -347,15 +345,15 @@ export default class HealthEntryItem extends Component<{}, {}> {
       <View style={{ flexDirection: "row", marginTop: 8, justifyContent: 'space-around'  }}>
         <View style={{alignItems: 'center'}}>
           <Text style={{color: '#ff6a63'}}>Duration</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{sleep.sleep[0].duration}</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{sleep.sleep[0].duration}</Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#00cc51'}}>Bedtime</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].bed_time).format("hh:mm")}<Text style={{fontSize: 12, fontWeight: '300'}}>PM</Text></Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{moment(sleep.sleep[0].bedTime).format("hh:mm A")}</Text>
         </View>
         <View style={{marginLeft: 15}}>
           <Text style={{color: '#4191fb'}}>Wakeup</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{moment(sleep.sleep[0].wake_time).format("hh:mm")}<Text style={{fontSize: 12, fontWeight: '300'}}>AM</Text></Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', marginTop: 5, color: "#2F4858"}}>{moment(sleep.sleep[0].wakeTime).format("hh:mm A")}</Text>
         </View>
       </View>
     )
@@ -434,7 +432,7 @@ export default class HealthEntryItem extends Component<{}, {}> {
                         marginLeft: 24
                       }}
                     >
-                      <Text style={[TextStyles.HeaderBold]}>
+                      <Text style={[TextStyles.SubHeaderBold]}>
                         {type == 'Nutrition' ? "Nutrition" : 
                         type == 'Exercise' ? "Exercise" : 
                         type == 'Heart Rate' ? "Heart Rate" : 

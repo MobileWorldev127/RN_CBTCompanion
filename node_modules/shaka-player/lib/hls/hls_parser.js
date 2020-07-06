@@ -1591,6 +1591,10 @@ shaka.hls.HlsParser.prototype.fetchPartialSegment_ = async function(reference) {
       reference.endByte,
       this.config_.retryParameters);
 
+  if (this.config_.hls.useFullSegmentsForStartTime) {
+    return this.makeNetworkRequest_(fullRequest, requestType);
+  }
+
   // TODO(vaage): The need to do fall back requests is not likely to be unique
   //    to here. It would be nice if the fallback(s) could be included into the
   //    same abortable operation as the original request.
@@ -1863,9 +1867,20 @@ shaka.hls.HlsParser.prototype.getStartTimeFromTsSegment_ =
     syncByte = reader.readUint8();
     if (syncByte != 0x47) fail();
 
-    let flagsAndPacketId = reader.readUint16();
-    let hasPesPacket = flagsAndPacketId & 0x4000;
-    if (!hasPesPacket) fail();
+    const flagsAndPacketId = reader.readUint16();
+    const packetId = flagsAndPacketId & 0x1fff;
+    if (packetId == 0x1fff) {
+      // A "null" TS packet.  Skip this TS packet and try again.
+      skipPacket();
+      continue;
+    }
+
+    const hasPesPacket = flagsAndPacketId & 0x4000;
+    if (!hasPesPacket) {
+      // Not a PES packet yet.  Skip this TS packet and try again.
+      skipPacket();
+      continue;
+    }
 
     let flags = reader.readUint8();
     let adaptationFieldControl = (flags & 0x30) >> 4;

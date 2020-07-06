@@ -43,3 +43,27 @@ export const addMindfulnessMinutesMutation = gql`
     }
   }
 `;
+
+export const logAppleDataMutation = gql`
+  mutation logAppleData($input: AppleDataInput!) {
+    logAppleData(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const upsertHealthKitSourceSettings = gql`
+  mutation upsertHealthKitSourceSettings(
+    $settings: [HealthSourceSettingInput!]!
+    $fitbitToken: String!
+  ) {
+    upsertHealthKitSourceSettings(
+      settings: $settings
+      fitbitToken: $fitbitToken
+    ) {
+      sourceType
+      source
+    }
+  }
+`;
