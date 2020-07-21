@@ -8,7 +8,8 @@ import {
   StatusBar,
   TouchableHighlight,
   Platform,
-  NativeModules
+  NativeModules,
+  AsyncStorage
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import ThemeStyle from "../styles/ThemeStyle";
@@ -41,6 +42,8 @@ import { scheduleDefaultReminder } from "../utils/NotificationUtils";
 import Amplify from "aws-amplify";
 import { getAmplifyConfig, getEnvVars } from "../constants";
 import { API } from "aws-amplify";
+import { setTopSafeAreaView } from "../actions/AppActions";
+import BackgroundFetch from 'react-native-background-fetch';
 
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -52,10 +55,38 @@ class EntriesScreen extends Component {
       extraData: false,
       currentMonth: moment(),
       shareDialogVisible: false,
+      entries: [],
     };
   }
 
   componentDidMount() {
+    // BackgroundFetch.configure({
+    //   minimumFetchInterval: 15
+    // }, async (taskId) => {
+    //   // This is the fetch-event callback.
+    //   console.log("[BackgroundFetch] taskId: ", taskId);
+    
+    //   // Use a switch statement to route task-handling.
+    //   switch (taskId) {
+    //     case 'observer':
+    //       console.log("Received custom task");
+    //       break;
+    //     default:
+    //       console.log("Default fetch task");
+    //   }
+    //   // Finish, providing received taskId.
+    //   BackgroundFetch.finish(taskId);
+    // });
+    
+    // // Step 2:  Schedule a custom "oneshot" task "com.foo.customtask" to execute 5000ms from now.
+    // BackgroundFetch.scheduleTask({
+    //   taskId: "observer",
+    //   forceAlarmManager: true,
+    //   delay: 5000  // <-- milliseconds
+    // });
+
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+    // EmiiterHandlerSubscribe();
     this.listener = this.props.navigation.addListener("didFocus", payload => {
       console.log("Focused entries");
       this.props.clearRecordFlow();
@@ -91,7 +122,6 @@ class EntriesScreen extends Component {
             variables: getMonthRange(this.state.currentMonth),
           })
             .then(summarydata => {
-              console.log('====>', summarydata.data.getSummary[5])
               let entries = data.data.getTimeLineView;
               if (data.loading && !data.data) {
                 return;
@@ -99,10 +129,20 @@ class EntriesScreen extends Component {
               this.props.setLoading(false);
               let summaryList = []
               summarydata.data.getSummary.map((item, index) => {
-                if(item.nutrition.carbs.value > 0 || item.healthExercise.calories.value>0 || item.sleep.totalMinutes >0 || item.heartRate || item.mindfulnessMinutes.totalMinutes > 0) {
+                if (
+                  item.nutrition.carbs.value > 0 ||
+                  item.nutrition.fat.value > 0 ||
+                  item.nutrition.protein.value > 0 ||
+                  item.healthExercise.calories.value > 0 ||
+                  item.sleep.totalMinutes > 0 ||
+                  item.heartRate ||
+                  item.mindfulnessMinutes.totalMinutes > 0) {
                   summaryList.push(item)
                 }
               });
+              console.log('---------')
+              console.log(entries)
+              console.log(summaryList)
               let sumArr = entries.concat(summaryList);
               let unique = sumArr
                 .map(e => e.date)
@@ -119,7 +159,7 @@ class EntriesScreen extends Component {
               });
 
               let sortList = orderlist.sort((a,b) => new Date(b.date) - new Date(a.date))
-
+              console.log('###########', sortList[0])
               this.setState({
                 entries: sortList,
                 loading: false
@@ -333,7 +373,6 @@ class EntriesScreen extends Component {
   }
 
   renderItemList = rowData => {
-    // console.log(rowData);
     return (
       <EntryItem
         entryItem={rowData}
@@ -449,6 +488,7 @@ export default withSubscriptionActions(
   EntriesScreen,
   () => {},
   dispatch => ({
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     setEditEntry: entry => dispatch(setEditEntry(entry)),
     clearRecordFlow: () => dispatch(clearState())
   })

@@ -13,6 +13,7 @@
 #import "RNSplashScreen.h"
 #import "Orientation.h"
 #import "RCTLinkingManager.h"
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
 
 @implementation AppDelegate
 
@@ -59,7 +60,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
   [RNSplashScreen show];
   if (@available(iOS 13, *)) {
     self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
-  }
+  }  
   return YES;
 }
 

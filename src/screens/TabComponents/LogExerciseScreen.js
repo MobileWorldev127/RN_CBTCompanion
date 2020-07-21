@@ -162,7 +162,8 @@ class LogExercise extends Component {
           <View style={styles.dateView}>
             <TouchableOpacity onPress={this.onClickBeforeDay}>
               <Icon
-                name="ios-arrow-back"
+                family={"MaterialIcons"}
+                name="keyboard-arrow-left"
                 size={22}
                 color="white"
                 style={styles.pickerIcon}
@@ -175,7 +176,8 @@ class LogExercise extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onClickAfterDay}>
               <Icon
-                name="ios-arrow-forward"
+                family={"MaterialIcons"}
+                name="keyboard-arrow-right"
                 size={22}
                 color="white"
                 style={styles.pickerIcon}

@@ -20,6 +20,8 @@ import { Auth } from "aws-amplify";
 import { getPurchases, initializePremiumContent } from "../actions/IAPActions";
 import { APP } from "../constants";
 import { recordScreenEvent, screenNames } from "../utils/AnalyticsUtils";
+import { withSafeAreaActions } from "../utils/StoreUtils";
+import { setTopSafeAreaView } from "../actions/AppActions";
 
 const STATUSBAR_HEIGHT = 15;
 
@@ -110,7 +112,12 @@ class SettingScreen extends Component {
   };
 
   componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
     recordScreenEvent(screenNames.settings);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
   }
 
   render() {
@@ -223,7 +230,9 @@ class SettingScreen extends Component {
               <TouchableOpacity
                 style={styles.inerContainer}
                 onPress={() =>
-                  this.props.navigation.navigate("DeviceList")
+                  this.premiumNavigation('DeviceList', {
+                    isAffirmation: false,
+                  })
                 }
               >
                 <Text style={styles.textContent}>Devices</Text>
@@ -239,7 +248,9 @@ class SettingScreen extends Component {
               <TouchableOpacity
                 style={styles.inerContainer}
                 onPress={() =>
-                  this.props.navigation.navigate("SourceSettings")
+                  this.premiumNavigation('SourceSettings', {
+                    isAffirmation: false,
+                  })
                 }
               >
                 <Text style={styles.textContent}>Source Settings</Text>
@@ -321,6 +332,8 @@ export default withSubscriptionActions(
   SettingScreen,
   () => {},
   dispatch => ({
+    clearRecordFlow: () => dispatch(clearState()),
+    setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color)),
     initializePremiumContent: cb => dispatch(initializePremiumContent(cb)),
     getPurchases: cb => dispatch(getPurchases(cb))
   })

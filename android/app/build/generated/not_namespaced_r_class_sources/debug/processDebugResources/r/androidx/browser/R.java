@@ -178,22 +178,22 @@ public final class R {
     public static final class string {
         private string() {}
 
-        public static final int copy_toast_msg = 0x7f0d0052;
-        public static final int fallback_menu_item_copy_link = 0x7f0d0056;
-        public static final int fallback_menu_item_open_in_browser = 0x7f0d0057;
-        public static final int fallback_menu_item_share_link = 0x7f0d0058;
-        public static final int status_bar_notification_info_overflow = 0x7f0d007d;
+        public static final int copy_toast_msg = 0x7f0e0052;
+        public static final int fallback_menu_item_copy_link = 0x7f0e0056;
+        public static final int fallback_menu_item_open_in_browser = 0x7f0e0057;
+        public static final int fallback_menu_item_share_link = 0x7f0e0058;
+        public static final int status_bar_notification_info_overflow = 0x7f0e007d;
     }
     public static final class style {
         private style() {}
 
-        public static final int TextAppearance_Compat_Notification = 0x7f0e0125;
-        public static final int TextAppearance_Compat_Notification_Info = 0x7f0e0126;
-        public static final int TextAppearance_Compat_Notification_Line2 = 0x7f0e0128;
-        public static final int TextAppearance_Compat_Notification_Time = 0x7f0e012b;
-        public static final int TextAppearance_Compat_Notification_Title = 0x7f0e012d;
-        public static final int Widget_Compat_NotificationActionContainer = 0x7f0e01df;
-        public static final int Widget_Compat_NotificationActionText = 0x7f0e01e0;
+        public static final int TextAppearance_Compat_Notification = 0x7f0f0125;
+        public static final int TextAppearance_Compat_Notification_Info = 0x7f0f0126;
+        public static final int TextAppearance_Compat_Notification_Line2 = 0x7f0f0128;
+        public static final int TextAppearance_Compat_Notification_Time = 0x7f0f012b;
+        public static final int TextAppearance_Compat_Notification_Title = 0x7f0f012d;
+        public static final int Widget_Compat_NotificationActionContainer = 0x7f0f01df;
+        public static final int Widget_Compat_NotificationActionText = 0x7f0f01e0;
     }
     public static final class styleable {
         private styleable() {}
@@ -240,6 +240,6 @@ public final class R {
     public static final class xml {
         private xml() {}
 
-        public static final int image_share_filepaths = 0x7f100001;
+        public static final int image_share_filepaths = 0x7f110001;
     }
 }

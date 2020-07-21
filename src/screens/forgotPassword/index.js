@@ -48,7 +48,7 @@ class ForgotPasswordScreen extends Component {
         style={styles.headerLeftButton}
         onPress={onPress ? onPress : () => this.props.navigation.goBack(null)}
       >
-        <Icon name="ios-arrow-round-back" size={40} color={"#fff"} />
+        <Icon name="arrow-back" size={40} color={"#fff"} />
       </TouchableOpacity>
     </View>
   );
@@ -275,7 +275,7 @@ class ForgotPasswordScreen extends Component {
                   </View>
                   <View style={styles.singleInput}>
                     <Icon
-                      name="ios-lock"
+                      name="ios-lock-closed-outline"
                       size={28}
                       color={"#fff"}
                       style={styles.icon}

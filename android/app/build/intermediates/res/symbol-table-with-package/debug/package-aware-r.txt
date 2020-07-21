@@ -1512,6 +1512,17 @@ layout youtube_layout
 mipmap ic_launcher
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
+raw cuebell1
+raw cuebell2
+raw endingbell1
+raw lauraexhale
+raw laurahold
+raw laurainhale
+raw paulbreatheout
+raw paulexhale
+raw paulhold
+raw paulinhale
+raw paulthein
 string abc_action_bar_home_description
 string abc_action_bar_up_description
 string abc_action_menu_overflow_description

@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const addEntryQuery = gql`
   mutation addEntryQuery($entry: AddEntryInput!) {
@@ -62,6 +62,17 @@ export const upsertHealthKitSourceSettings = gql`
       settings: $settings
       fitbitToken: $fitbitToken
     ) {
+      sourceType
+      source
+    }
+  }
+`;
+
+export const upsertHealthKitSourceSettings1 = gql`
+  mutation upsertHealthKitSourceSettings(
+    $settings: [HealthSourceSettingInput!]!
+  ) {
+    upsertHealthKitSourceSettings(settings: $settings) {
       sourceType
       source
     }

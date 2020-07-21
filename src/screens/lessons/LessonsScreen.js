@@ -243,7 +243,7 @@ const ModuleSection = ({
                 }}
               >
                 <Icon
-                  name="md-heart-empty"
+                  name="md-heart-outline"
                   size={28}
                   color={"red"}
                   family="Ionicons"
@@ -251,11 +251,15 @@ const ModuleSection = ({
               </TouchableOpacity>
             </View>
           ) : (
-            <Icon
-              family={"Ionicons"}
-              name={"ios-lock"}
-              color="#ffc107"
-              backgroundColor="transparent"
+            <Image
+              source={require("../../src/ios_lock.png")}
+              style={{
+                width: 28,
+                height: 28,
+                tintColor: '#ffc107',
+                backgroundColor: 'transparent'
+              }}
+              resizeMode="contain"
             />
           )
         ) : null}
@@ -335,11 +339,14 @@ const SubChild = ({
                 right: 8
               }}
             >
-              <Icon
-                family={"Ionicons"}
-                name={"ios-lock"}
-                color="#ffc107"
-                backgroundColor="transparent"
+              <Image
+                source={require("../../src/ios_lock.png")}
+                style={{
+                  width: 28,
+                  height: 28,
+                  tintColor: '#ffc107'
+                }}
+                resizeMode="contain"
               />
             </View>
           ) : isLesson ? (
@@ -360,11 +367,14 @@ const SubChild = ({
                 });
               }}
             >
-              <Icon
-                name="md-heart-empty"
-                size={24}
-                color={"red"}
-                family="Ionicons"
+              <Image
+                source={require("../../src/heart.png")}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: 'red'
+                }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           ) : null}

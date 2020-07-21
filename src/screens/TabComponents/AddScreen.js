@@ -5,7 +5,8 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  Image,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Header from '../../components/Header';
@@ -16,7 +17,7 @@ import CachedImage from 'react-native-image-cache-wrapper';
 import { client } from '../../App';
 import { screenNames, recordScreenEvent } from '../../utils/AnalyticsUtils';
 import { getExercisesByModuleQuery } from '../../queries/getExercisesByModule';
-
+import Icon from "../../common/icons";
 import { getExerciseByIDQuery } from '../../queries/getExercise';
 import { flowConstants } from '../../constants';
 import { setCurrentExercise } from '../../actions/RecordActions';
@@ -25,6 +26,10 @@ import { performNetworkTask } from '../../utils/NetworkUtils';
 import LinearGradient from 'react-native-linear-gradient';
 import Card from '../../components/Card';
 import { setTopSafeAreaView } from '../../actions/AppActions';
+import Amplify from 'aws-amplify';
+import { API } from 'aws-amplify';
+import { getAmplifyConfig, getEnvVars } from './../../constants';
+import { getHealthKitSourceSettings } from '../../queries/getHealthKitSourceSettings';
 import _ from 'lodash';
 
 class AddScreen extends Component {
@@ -41,7 +46,8 @@ class AddScreen extends Component {
           color: '#000',
           isIcon: true,
           image: require('../../assets/images/redesign/cbt-recordentry-graphic.png'),
-          isShow: true
+          isShow: true,
+          isPremium: true,
         },
         {
           title: "Breathing Excercise",
@@ -54,90 +60,127 @@ class AddScreen extends Component {
           iconFamily: "MaterialCommunityIcons",
           isIcon: true,
           image: require("../../assets/images/breathing_exercise_ico.png"),
-          isShow: props.sourceSettingsList.mindfulnessSetting == 'Manual' ? true : false
+          isShow: true,
+          isPremium: true,
         }
       ],
     };
   }
 
   componentDidMount() {
-    const { sourceSettingsList } = this.props;
     recordScreenEvent(screenNames.add);
     this.props.setLoading(true);
-    client
-      .watchQuery({
-        query: getExercisesByModuleQuery,
-        variables: { module: 'CBT Tracking' },
+    this.fetchSourceSettings();
+  }
+
+  fetchSourceSettings() {console.log('$%%%%%%%%', this.props.subscribe)
+    this.props.setLoading(true);
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: getHealthKitSourceSettings,
+    })
+      .then(data => {
+        this.props.setLoading(false);
+        let nutrition_value = "";
+        let sleep_value = "";
+        let activity_value = "";
+        data.data.getHealthKitSourceSettings.map(item => {
+          if (item.sourceType == 'Exercise') {
+            activity_value = item.source;
+          }
+          if (item.sourceType == 'Sleep') {
+            sleep_value = item.source;
+          }
+          if (item.sourceType == 'Nutrition') {
+            nutrition_value = item.source;
+          }
+        });
+        client
+          .watchQuery({
+            query: getExercisesByModuleQuery,
+            variables: { module: 'CBT Tracking' },
+          })
+          .subscribe({
+            next: data => {
+              this.props.setLoading(false);
+              if (data.loading && !data.data) {
+                return;
+              }
+              if (
+                data.data &&
+                data.data.getExercisesByModule &&
+                data.data.getExercisesByModule.length
+              ) {
+                const items = this.state.items;
+                data.data.getExercisesByModule.forEach(exercise => {
+                  const isPrediction = exercise.title === 'Prediction';
+                  items.push({
+                    ...exercise,
+                    image: isPrediction
+                      ? require('../../assets/images/redesign/cbt-predictions-graphic-blue.png')
+                      : require('../../assets/images/redesign/cbt-automaticthought-graphic.png'),
+                    color: isPrediction ? ThemeStyle.mainColor : '#39F',
+                    onPress: () => this.navigateToExercise(exercise),
+                    type: 'exercise',
+                    isShow: true,
+                    isPremium: true,
+                  });
+                });
+                items.push(
+                  {
+                    title: 'Log Food Entry',
+                    onPress: () =>
+                      this.premiumNavigation("LogFood", {
+                        isAffirmation: false,
+                        isBack: true
+                      }),
+                    color: "#000",
+                    isIcon: true,
+                    image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
+                    isShow: nutrition_value == "MANUAL" ? true : false,
+                    isPremium: this.props.isSubscribed
+                  },
+                  {
+                    title: 'Log Exercise',
+                    onPress: () =>
+                      this.premiumNavigation("LogExercise", {
+                        isAffirmation: false,
+                        isBack: true
+                      }),
+                    color: "#000",
+                    isIcon: true,
+                    image: require('../../assets/images/redesign/workout.png'),
+                    isShow: activity_value == "MANUAL" ? true : false,
+                    isPremium: this.props.isSubscribed
+                  },
+                  {
+                    title: 'Log Sleep',
+                    onPress: () =>
+                      this.props.navigation.navigate('SleepAdd', {
+                        isBack: true,
+                      }),
+                    color: "#000",
+                    isIcon: true,
+                    image: require('../../assets/images/redesign/Sleep_Duration-graphic.png'),
+                    isShow: sleep_value == "MANUAL" ? true : false,
+                    isPremium: true,
+                  }
+                );
+                this.setState({ items });
+              }
+            },
+            error: err => {
+              console.log(err);
+              this.props.setLoading(false);
+              showApiError(true);
+            },
+          });
       })
-      .subscribe({
-        next: data => {
-          this.props.setLoading(false);
-          if (data.loading && !data.data) {
-            return;
-          }
-          console.log('DATA', data);
-          if (
-            data.data &&
-            data.data.getExercisesByModule &&
-            data.data.getExercisesByModule.length
-          ) {
-            const items = this.state.items;
-            data.data.getExercisesByModule.forEach(exercise => {
-              const isPrediction = exercise.title === 'Prediction';
-              items.push({
-                ...exercise,
-                image: isPrediction
-                  ? require('../../assets/images/redesign/cbt-predictions-graphic-blue.png')
-                  : require('../../assets/images/redesign/cbt-automaticthought-graphic.png'),
-                color: isPrediction ? ThemeStyle.mainColor : '#39F',
-                onPress: () => this.navigateToExercise(exercise),
-                type: 'exercise',
-                isShow: true
-              });
-            });
-            items.push(
-              {
-                title: 'Log Food Entry',
-                onPress: () =>
-                  this.props.navigation.navigate('LogFood', {
-                    isBack: true,
-                  }),
-                color: "#000",
-                isIcon: true,
-                image: require('../../assets/images/redesign/cbt-logfood-graphic.png'),
-                isShow: sourceSettingsList.nutritionSetting == 'Manual' ? true : false
-              },
-              {
-                title: 'Log Exercise',
-                onPress: () =>
-                  this.props.navigation.navigate('LogExercise', {
-                    isBack: true,
-                  }),
-                color: "#000",
-                isIcon: true,
-                image: require('../../assets/images/redesign/workout.png'),
-                isShow: sourceSettingsList.activitySetting == 'Manual' ? true : false
-              },
-              {
-                title: 'Log Sleep',
-                onPress: () =>
-                  this.props.navigation.navigate('SleepAdd', {
-                    isBack: true,
-                  }),
-                color: "#000",
-                isIcon: true,
-                image: require('../../assets/images/redesign/Sleep_Duration-graphic.png'),
-                isShow: sourceSettingsList.sleepSetting == 'Manual' ? true : false
-              },
-            );
-            this.setState({ items });
-          }
-        },
-        error: err => {
-          console.log(err);
-          this.props.setLoading(false);
-          showApiError(true);
-        },
+      .catch(err => {
+        this.props.setLoading(false);
+        console.log(err);
       });
   }
 
@@ -147,7 +190,6 @@ class AddScreen extends Component {
     } else {
       this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
       this.props.setLoading(true);
-      console.log(exercise);
       const query = client
         .watchQuery({
           query: getExerciseByIDQuery,
@@ -180,11 +222,17 @@ class AddScreen extends Component {
     }
   }
 
+  premiumNavigation = (path, params) => {
+    if (this.props.isSubscribed) {
+      this.props.navigation.push(path, params);
+    } else {
+      this.props.showSubscription();
+    }
+  };
+
   render() {
-    console.log('RENDER', this.state.items);
-    const { sourceSettingsList } = this.props;
     return (
-      <View style={{flex: 1, backgroundColor: ThemeStyle.mainColor}}>
+      <View style={{ flex: 1, backgroundColor: ThemeStyle.mainColor }}>
         <LinearGradient style={{ flex: 1 }} colors={ThemeStyle.gradientColor}>
           <Header
             isDrawer={true}
@@ -219,6 +267,23 @@ class AddScreen extends Component {
                         }}
                         resizeMode="contain"
                       />
+                      {
+                        !item.isPremium? (
+                          <Image
+                            source={require("../../src/ios_lock.png")}
+                            style={{
+                              width: 30,
+                              height: 30,
+                              tintColor: '#ffc107',
+                              backgroundColor: 'transparent',
+                              position: 'absolute', 
+                              bottom: 10, 
+                              right: 10
+                            }}
+                            resizeMode="contain"
+                          />
+                        ) : null
+                      }
                       <TouchableOpacity onPress={item.onPress}>
                         <View
                           style={{
@@ -256,8 +321,7 @@ class AddScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  completedExercise: state.record.completedExercise,
-  sourceSettingsList: state.sourceSettings.sourceSettingsList
+  completedExercise: state.record.completedExercise
 });
 
 const mapDispatchToProps = dispatch => ({

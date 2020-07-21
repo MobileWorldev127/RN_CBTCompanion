@@ -4,8 +4,18 @@ import Header from "../components/Header";
 import HTML from "react-native-render-html";
 import { APP } from "../constants";
 import ThemeStyle from "../styles/ThemeStyle";
+import { withSafeAreaActions } from '../utils/StoreUtils';
+import { setTopSafeAreaView } from '../actions/AppActions';
 
-export default class FaqScreen extends Component {
+class FaqScreen extends Component {
+  componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
+  }
+  
   render() {
     return (
       <View style={ThemeStyle.pageContainer}>
@@ -29,3 +39,7 @@ export default class FaqScreen extends Component {
     );
   }
 }
+
+export default withSafeAreaActions(FaqScreen, dispatch => ({
+  setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color))
+}));

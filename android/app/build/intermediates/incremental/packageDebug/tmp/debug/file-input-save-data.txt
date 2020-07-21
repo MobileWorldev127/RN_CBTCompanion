@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jun 24 15:50:45 CDT 2020
+#Thu Jul 16 11:47:21 CDT 2020
 60.set=NATIVE_RESOURCE
 52.set=DEX
 53.base=/Volumes/Data/WorkSpace/Git/cbt-companion-app/android/app/build/intermediates/merged_assets/debug/out

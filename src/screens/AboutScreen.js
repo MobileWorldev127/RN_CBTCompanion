@@ -5,8 +5,18 @@ import HTML from "react-native-render-html";
 import { APP } from "../constants";
 import ThemeStyle from "../styles/ThemeStyle";
 import TextStyles from "../common/TextStyles";
+import { withSafeAreaActions } from '../utils/StoreUtils';
+import { setTopSafeAreaView } from '../actions/AppActions';
 
-export default class AboutScreen extends Component {
+class AboutScreen extends Component {
+  componentDidMount() {
+    this.props.setTopSafeAreaView(ThemeStyle.backgroundColor);
+  }
+
+  componentWillUnmount() {
+    this.props.setTopSafeAreaView(ThemeStyle.gradientStart);
+  }
+  
   render() {
     return (
       <View style={ThemeStyle.pageContainer}>
@@ -30,3 +40,7 @@ export default class AboutScreen extends Component {
     );
   }
 }
+
+export default withSafeAreaActions(AboutScreen, dispatch => ({
+  setTopSafeAreaView: color => dispatch(setTopSafeAreaView(color))
+}));

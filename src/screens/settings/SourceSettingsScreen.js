@@ -1,34 +1,25 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
-  TextInput,
-  KeyboardAvoidingView,
   Dimensions,
-  Platform,
   StyleSheet
 } from "react-native";
 import Icon from "../../common/icons";
-import { Auth, Storage, Logger } from "aws-amplify";
-import { NavigationActions } from "react-navigation";
-import PhoneInput from "react-native-phone-input";
-import validator from "validator";
 import Header from "../../components/Header";
-import ImagePicker from "react-native-image-picker";
-import { withStore } from "../../utils/StoreUtils";
 import { showMessage } from "react-native-flash-message";
-import { errorMessage } from "../../utils";
-import { recordScreenEvent, screenNames } from "../../utils/AnalyticsUtils";
-import { requestCameraPermission } from "../../utils/PermissionUtils";
 import ThemeStyle from "../../styles/ThemeStyle";
-import Button from "../../components/Button";
-import { Alert } from "react-native";
-import TextStyles from "../../common/TextStyles";
 import { withSafeAreaActions } from "../../utils/StoreUtils";
 import { getSourceSettings } from "../../actions/SourceSettings";
+import Amplify from 'aws-amplify';
+import { API } from 'aws-amplify';
+import { getAmplifyConfig, getEnvVars } from './../../constants';
+import {
+  upsertHealthKitSourceSettings1
+} from '../../queries/addEntry';
+import  { getHealthKitSourceSettings } from '../../queries/getHealthKitSourceSettings';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -36,12 +27,46 @@ class SourceSettingsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activity_value: props.sourceSettingsList.activitySetting || 'Manual',
-      sleep_value: props.sourceSettingsList.sleepSetting ||'Manual',
-      heart_rate_value: props.sourceSettingsList.heartSetting ||'Manual',
-      mindfulness_value: props.sourceSettingsList.mindfulnessSetting ||'Manual',
-      nutrition_value: props.sourceSettingsList.nutritionSetting ||'Manual'
+      activity_value: '',
+      sleep_value: '',
+      heart_rate_value:'',
+      mindfulness_value: '',
+      nutrition_value: ''
     };
+  }
+
+  componentDidMount() {
+    this.props.setLoading(true);
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: getHealthKitSourceSettings,
+    })
+      .then(data => {
+        this.props.setLoading(false);
+        data.data.getHealthKitSourceSettings.map(item => {
+          if (item.sourceType == 'Exercise') {
+            this.setState({ activity_value: item.source })
+          }
+          if (item.sourceType == 'Sleep') {
+            this.setState({ sleep_value: item.source })
+          }
+          if (item.sourceType == 'HeartRate') {
+            this.setState({ heart_rate_value: item.source })
+          }
+          if (item.sourceType == 'MindfulnessMinutes') {
+            this.setState({ mindfulness_value: item.source })
+          }
+          if (item.sourceType == 'Nutrition') {
+            this.setState({ nutrition_value: item.source })
+          }
+        })
+      })
+      .catch(err => {
+        this.props.setLoading(false);
+        console.log(err);
+      });
   }
 
   onClickSetting(index, val) {
@@ -67,14 +92,51 @@ class SourceSettingsScreen extends Component {
       message:'Source settings have been saved sucessfully.',
       type: "success"
     });
+
     let data = {};
     data.activitySetting = this.state.activity_value;
     data.sleepSetting = this.state.sleep_value;
     data.heartSetting = this.state.heart_rate_value;
     data.mindfulnessSetting = this.state.mindfulness_value;
     data.nutritionSetting = this.state.nutrition_value;
-    this.props.getSourceSettings(data);
-    this.props.navigation.goBack(null)
+
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: upsertHealthKitSourceSettings1,
+      variables: {
+        settings: [
+          {
+            sourceType: 'Nutrition',
+            source: data.nutritionSetting,
+          },
+          {
+            sourceType: 'Exercise',
+            source: data.activitySetting,
+          },
+          {
+            sourceType: 'Sleep',
+            source: data.sleepSetting,
+          },
+          {
+            sourceType: 'HeartRate',
+            source: data.heartSetting,
+          },
+          {
+            sourceType: 'MindfulnessMinutes',
+            source: data.mindfulnessSetting,
+          },
+        ]
+      },
+    })
+      .then(data => {
+        this.props.getSourceSettings(data);
+        this.props.navigation.goBack(null);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   render() {
@@ -120,29 +182,29 @@ class SourceSettingsScreen extends Component {
             <View style={styles.itemView}>
               <Text style={styles.label1}>Activity</Text>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'Apple')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'APPLEHEALTH')}>
                   <View style={styles.rowCellView}>
-                    <View style={activity_value === 'Apple'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={activity_value === 'APPLEHEALTH'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Apple Health</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'Google')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'GOOGLEFIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={activity_value === 'Google'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={activity_value === 'GOOGLEFIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Google Fit</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'Fitbit')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'FITBIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={activity_value === 'Fitbit'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={activity_value === 'FITBIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Fitbit</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'Manual')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(0, 'MANUAL')}>
                   <View style={styles.rowCellView}>
-                    <View style={activity_value === 'Manual'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={activity_value === 'MANUAL'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Manual</Text>
                   </View>
                 </TouchableOpacity>
@@ -152,29 +214,29 @@ class SourceSettingsScreen extends Component {
             <View style={styles.itemView}>
               <Text style={styles.label1}>Sleep</Text>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'Apple')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'APPLEHEALTH')}>
                   <View style={styles.rowCellView}>
-                    <View style={sleep_value === 'Apple'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={sleep_value === 'APPLEHEALTH'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Apple Health</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'Google')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'GOOGLEFIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={sleep_value === 'Google'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={sleep_value === 'GOOGLEFIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Google Fit</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'Fitbit')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'FITBIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={sleep_value === 'Fitbit'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={sleep_value === 'FITBIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Fitbit</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'Manual')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(1, 'MANUAL')}>
                   <View style={styles.rowCellView}>
-                    <View style={sleep_value === 'Manual'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={sleep_value === 'MANUAL'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Manual</Text>
                   </View>
                 </TouchableOpacity>
@@ -184,29 +246,29 @@ class SourceSettingsScreen extends Component {
             <View style={styles.itemView}>
               <Text style={styles.label1}>Heart Rate</Text>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'Apple')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'APPLEHEALTH')}>
                   <View style={styles.rowCellView}>
-                    <View style={heart_rate_value === 'Apple'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={heart_rate_value === 'APPLEHEALTH'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Apple Health</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'Google')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'GOOGLEFIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={heart_rate_value === 'Google'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={heart_rate_value === 'GOOGLEFIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Google Fit</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'Fitbit')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'FITBIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={heart_rate_value === 'Fitbit'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={heart_rate_value === 'FITBIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Fitbit</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'Manual')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(2, 'MANUAL')}>
                   <View style={styles.rowCellView}>
-                    <View style={heart_rate_value === 'Manual'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={heart_rate_value === 'MANUAL'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Manual</Text>
                   </View>
                 </TouchableOpacity>
@@ -216,29 +278,29 @@ class SourceSettingsScreen extends Component {
             <View style={styles.itemView}>
               <Text style={styles.label1}>Mindfulness</Text>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'Apple')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'APPLEHEALTH')}>
                   <View style={styles.rowCellView}>
-                    <View style={mindfulness_value === 'Apple'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={mindfulness_value === 'APPLEHEALTH'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Apple Health</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'Google')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'GOOGLEFIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={mindfulness_value === 'Google'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={mindfulness_value === 'GOOGLEFIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Google Fit</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'Fitbit')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'FITBIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={mindfulness_value === 'Fitbit'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={mindfulness_value === 'FITBIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Fitbit</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'Manual')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(3, 'MANUAL')}>
                   <View style={styles.rowCellView}>
-                    <View style={mindfulness_value === 'Manual'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={mindfulness_value === 'MANUAL'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Manual</Text>
                   </View>
                 </TouchableOpacity>
@@ -248,29 +310,29 @@ class SourceSettingsScreen extends Component {
             <View style={styles.itemView}>
               <Text style={styles.label1}>Nutrition</Text>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'Apple')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'APPLEHEALTH')}>
                   <View style={styles.rowCellView}>
-                    <View style={nutrition_value === 'Apple'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={nutrition_value === 'APPLEHEALTH'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Apple Health</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'Google')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'GOOGLEFIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={nutrition_value === 'Google'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={nutrition_value === 'GOOGLEFIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Google Fit</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'Fitbit')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'FITBIT')}>
                   <View style={styles.rowCellView}>
-                    <View style={nutrition_value === 'Fitbit'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={nutrition_value === 'FITBIT'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Fitbit</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'Manual')}>
+                <TouchableOpacity style={{width: '50%'}} onPress = {() => this.onClickSetting(4, 'MANUAL')}>
                   <View style={styles.rowCellView}>
-                    <View style={nutrition_value === 'Manual'? styles.clickedBtn : styles.unClickedBtn}/>
+                    <View style={nutrition_value === 'MANUAL'? styles.clickedBtn : styles.unClickedBtn}/>
                     <Text style={styles.label2}>  Manual</Text>
                   </View>
                 </TouchableOpacity>

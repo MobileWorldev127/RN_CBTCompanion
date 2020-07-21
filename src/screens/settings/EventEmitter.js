@@ -1,24 +1,70 @@
 import { NativeAppEventEmitter } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+import BackgroundFetch from 'react-native-background-fetch';
 import AppleHealthKit from 'rn-apple-healthkit';
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import { logAppleDataMutation } from "../../queries/addEntry";
 
-
-export function EmiiterHandlerSubscribe(val_permissoin) {
-  AppleHealthKit.setObserver({ type: "Height" });
-
+export async function EmiiterHandlerSubscribe(val_permissoin) {
   let permissionOptions = {
     permissions: {
-      read: ['Height'],
+      read: ['StepCount'],
     },
   }
-console.log('----------_>', val_permissoin)
-  if(val_permissoin) {
-    permissionOptions = val_permissoin
-  }
+  let indexSum = 0;
+  let arr = [];
+  const device = await AsyncStorage.getItem('DEVICE');
+  const last_logged_time = await AsyncStorage.getItem('LAST_BACKGROUND_TIME');
+  if (device == 'APPLEHEALTH') {
+    arr.push(
+      'Biotin',
+      'Caffeine',
+      'Calcium',
+      'Carbohydrates',
+      'Chloride',
+      'Cholesterol',
+      'Copper',
+      'EnergyConsumed',
+      'FatMonounsaturated',
+      'FatPolyunsaturated',
+      'FatSaturated',
+      'FatTotal',
+      'Fiber',
+      'Folate',
+      'Iodine',
+      'Iron',
+      'Magnesium',
+      'Manganese',
+      'Molybdenum',
+      'Niacin',
+      'PantothenicAcid',
+      'Phosphorus',
+      'Potassium',
+      'Protein',
+      'Riboflavin',
+      'Selenium',
+      'Sodium',
+      'Sugar',
+      'Thiamin',
+      'VitaminA',
+      'VitaminB12',
+      'VitaminB6',
+      'VitaminC',
+      'VitaminD',
+      'VitaminE',
+      'VitaminK',
+      'Zinc',
+      'Water',
+      'ActiveEnergyBurned',
+      'StepCount', 'DistanceWalkingRunning', 'SleepAnalysis', 'HeartRate', 'RestingHeartRate', 'HeartRateVariability', 'MindfulSession'
+    );
 
-  AppleHealthKit.setObserver({ type: "Walking" });
+  permissionOptions = {
+    permissions: {
+      read: arr,
+    },
+  };
 
   AppleHealthKit.initHealthKit(permissionOptions, err => {
     if (err) {
@@ -26,17 +72,77 @@ console.log('----------_>', val_permissoin)
       return;
     }
     AppleHealthKit.setObserver({ type: "Walking" });
+    AppleHealthKit.setObserver({ type: "Running" });
+    AppleHealthKit.setObserver({ type: "Sleep" });
+    AppleHealthKit.setObserver({ type: "ActiveEnergyBurned" });
+    AppleHealthKit.setObserver({ type: "HeartRate" });
+    AppleHealthKit.setObserver({ type: "RestingHeartRate" });
+    AppleHealthKit.setObserver({ type: "HeartRateVariability" });
+    AppleHealthKit.setObserver({ type: "MindfulSession" });
+    AppleHealthKit.setObserver({ type: "Biotin" });
+    AppleHealthKit.setObserver({ type: "Caffeine" });
+    AppleHealthKit.setObserver({ type: "Calcium" });
+    AppleHealthKit.setObserver({ type: "Carbohydrates" });
+    AppleHealthKit.setObserver({ type: "Chloride" });
+    AppleHealthKit.setObserver({ type: "Cholesterol" });
+    AppleHealthKit.setObserver({ type: "Copper" });
+    AppleHealthKit.setObserver({ type: "EnergyConsumed" });
+    AppleHealthKit.setObserver({ type: "FatMonounsaturated" });
+    AppleHealthKit.setObserver({ type: "FatPolyunsaturated" });
+    AppleHealthKit.setObserver({ type: "FatSaturated" });
+    AppleHealthKit.setObserver({ type: "FatTotal" });
+    AppleHealthKit.setObserver({ type: "Fiber" });
+    AppleHealthKit.setObserver({ type: "Folate" });
+    AppleHealthKit.setObserver({ type: "Iodine" });
+    AppleHealthKit.setObserver({ type: "Iron" });
+    AppleHealthKit.setObserver({ type: "Magnesium" });
+    AppleHealthKit.setObserver({ type: "Manganese" });
+    AppleHealthKit.setObserver({ type: "Molybdenum" });
+    AppleHealthKit.setObserver({ type: "HeartRate" });
+    AppleHealthKit.setObserver({ type: "Niacin" });
+    AppleHealthKit.setObserver({ type: "PantothenicAcid" });
+    AppleHealthKit.setObserver({ type: "Phosphorus" });
+    AppleHealthKit.setObserver({ type: "Potassium" });
+    AppleHealthKit.setObserver({ type: "Protein" });
+    AppleHealthKit.setObserver({ type: "Riboflavin" });
+    AppleHealthKit.setObserver({ type: "Selenium" });
+    AppleHealthKit.setObserver({ type: "Sodium" });
+    AppleHealthKit.setObserver({ type: "Sugar" });
+    AppleHealthKit.setObserver({ type: "Thiamin" });
+    AppleHealthKit.setObserver({ type: "VitaminA" });
+    AppleHealthKit.setObserver({ type: "VitaminB12" });
+    AppleHealthKit.setObserver({ type: "VitaminB6" });
+    AppleHealthKit.setObserver({ type: "VitaminC" });
+    AppleHealthKit.setObserver({ type: "VitaminD" });
+    AppleHealthKit.setObserver({ type: "VitaminE" });
+    AppleHealthKit.setObserver({ type: "VitaminK" });
+    AppleHealthKit.setObserver({ type: "Zinc" });
+    AppleHealthKit.setObserver({ type: "Water" });
 
     NativeAppEventEmitter.addListener("observer", () => {
+      
+      indexSum = 0;
       let options = {
-        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
         endDate: new Date().toISOString(),
-        limit: 10
+        limit: 1000
       };
+
+      // let options = {
+      //   startDate: new Date(new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString().setHours(0, 0, 0, 0)).toISOString(),
+      //   endDate: new Date().toISOString(),
+      //   limit: 1000
+      // };
+
+      
+      // console.log('$$$$$', new Date(new Date(new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString()).setHours(0,0,0)).toISOString())
+      // console.log(new Date())
+
       AppleHealthKit.getMindfulSession(
         options,
         (err: Object, results_mindfulness: Array<Object>) => {
           if (err) {
+            console.log('####', err)
             return;
           }
           console.log('Mindfulness==>');
@@ -44,10 +150,10 @@ console.log('----------_>', val_permissoin)
           
           let options_heart = {
             unit: "bpm",
-            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
             endDate: new Date().toISOString(),
             ascending: false,
-            limit: 10
+            limit: 1000
           };
           AppleHealthKit.getHeartRateSamples(
             options_heart,
@@ -74,7 +180,7 @@ console.log('----------_>', val_permissoin)
                       console.log("Heart Rate Variability==>");
                       console.log(results_heartRateVariability);
                       let options_steps = {
-                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                         endDate: new Date().toISOString(),
                       };
                       AppleHealthKit.getStepCount(
@@ -94,7 +200,7 @@ console.log('----------_>', val_permissoin)
                               console.log("Active Energy==>");
                               console.log(results_activeEnergy);
                               let options_active = {
-                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                 endDate: new Date().toISOString(),
                                 unit: "mile"
                               };
@@ -114,26 +220,12 @@ console.log('----------_>', val_permissoin)
                                       }
                                       console.log("Sleep==>");
                                       console.log(results_sleep);
-                                      let options_FatTotal = {
-                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-                                        endDate: new Date().toISOString(),
-                                        unit: "gram",
-                                        type: "FatTotal"
-                                      };
-                                      AppleHealthKit.getNutritionSamples(
-                                        options_FatTotal,
-                                        (err: Object, results_totalFat: Object) => {
-                                          if (err) {
-                                            return;
-                                          }
-                                          console.log("Total Fat==>");
-                                          console.log(results_totalFat);
                                           let options_Biotin = {
-                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-                                            endDate: new Date().toISOString(),
-                                            unit: "gram",
-                                            type: "Biotin"
-                                          };
+                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
+                                                endDate: new Date().toISOString(),
+                                                unit: "gram",
+                                                type: "Biotin"
+                                              };
                                           AppleHealthKit.getNutritionSamples(
                                             options_Biotin,
                                             (err: Object, results_Biotin: Object) => {
@@ -143,7 +235,7 @@ console.log('----------_>', val_permissoin)
                                               console.log("Nutrition Biotin==>");
                                               console.log(results_Biotin);
                                               let options_Caffeine = {
-                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                 endDate: new Date().toISOString(),
                                                 unit: "gram",
                                                 type: "Caffeine"
@@ -157,7 +249,7 @@ console.log('----------_>', val_permissoin)
                                                   console.log("Nutrition Caffeine==>");
                                                   console.log(results_caffeine);
                                                   let options_calcium = {
-                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                     endDate: new Date().toISOString(),
                                                     unit: "gram",
                                                     type: "Calcium"
@@ -171,7 +263,7 @@ console.log('----------_>', val_permissoin)
                                                       console.log("Nutrition Calcium==>");
                                                       console.log(results_calcium);
                                                       let options_Carbohydrates = {
-                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                         endDate: new Date().toISOString(),
                                                         unit: "gram",
                                                         type: "Carbohydrates"
@@ -185,7 +277,7 @@ console.log('----------_>', val_permissoin)
                                                           console.log("Nutrition Carbohydrates==>");
                                                           console.log(results_carbohydrates);
                                                           let options_Chloride = {
-                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                             endDate: new Date().toISOString(),
                                                             unit: "gram",
                                                             type: "Chloride"
@@ -199,7 +291,7 @@ console.log('----------_>', val_permissoin)
                                                               console.log("Nutrition Chloride==>");
                                                               console.log(results_chloride);
                                                               let options_Copper = {
-                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                 endDate: new Date().toISOString(),
                                                                 unit: "gram",
                                                                 type: "Copper"
@@ -213,7 +305,7 @@ console.log('----------_>', val_permissoin)
                                                                   console.log("Nutrition Copper==>");
                                                                   console.log(results_copper);
                                                                   let options_Cholesterol = {
-                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                     endDate: new Date().toISOString(),
                                                                     unit: "gram",
                                                                     type: "Cholesterol"
@@ -227,7 +319,7 @@ console.log('----------_>', val_permissoin)
                                                                       console.log("Nutrition Cholesterol==>");
                                                                       console.log(results_cholesterol);
                                                                       let options_Sugar = {
-                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                         endDate: new Date().toISOString(),
                                                                         unit: "gram",
                                                                         type: "Sugar"
@@ -241,7 +333,7 @@ console.log('----------_>', val_permissoin)
                                                                           console.log("Nutrition Sugar==>");
                                                                           console.log(results_sugar);
                                                                           let options_fiber = {
-                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                             endDate: new Date().toISOString(),
                                                                             unit: "gram",
                                                                             type: "Fiber"
@@ -255,7 +347,7 @@ console.log('----------_>', val_permissoin)
                                                                               console.log("Nutrition Fiber==>");
                                                                               console.log(results_fiber);
                                                                               let options_Folate = {
-                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                 endDate: new Date().toISOString(),
                                                                                 unit: "gram",
                                                                                 type: "Folate"
@@ -269,7 +361,7 @@ console.log('----------_>', val_permissoin)
                                                                                   console.log("Nutrition Folate==>");
                                                                                   console.log(results_folate);
                                                                                   let options_Iodine = {
-                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                     endDate: new Date().toISOString(),
                                                                                     unit: "gram",
                                                                                     type: "Iodine"
@@ -283,7 +375,7 @@ console.log('----------_>', val_permissoin)
                                                                                       console.log("Nutrition Iodine==>");
                                                                                       console.log(results_iodine);
                                                                                       let options_Iron = {
-                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                         endDate: new Date().toISOString(),
                                                                                         unit: "gram",
                                                                                         type: "Iron"
@@ -297,7 +389,7 @@ console.log('----------_>', val_permissoin)
                                                                                           console.log("Nutrition Iron==>");
                                                                                           console.log(results_iron);
                                                                                           let options_Magnesium = {
-                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                             endDate: new Date().toISOString(),
                                                                                             unit: "gram",
                                                                                             type: "Magnesium"
@@ -311,7 +403,7 @@ console.log('----------_>', val_permissoin)
                                                                                               console.log("Nutrition Magnesium==>");
                                                                                               console.log(results_magnesium);
                                                                                               let options_Molybdenum = {
-                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                 endDate: new Date().toISOString(),
                                                                                                 unit: "gram",
                                                                                                 type: "Molybdenum"
@@ -325,7 +417,7 @@ console.log('----------_>', val_permissoin)
                                                                                                   console.log("Nutrition Molybdenum==>");
                                                                                                   console.log(results_molybdenum);
                                                                                                   let options_FatMonounsaturated = {
-                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                     endDate: new Date().toISOString(),
                                                                                                     unit: "gram",
                                                                                                     type: "FatMonounsaturated"
@@ -339,7 +431,7 @@ console.log('----------_>', val_permissoin)
                                                                                                       console.log("Nutrition FatMonounsaturated==>");
                                                                                                       console.log(results_monounsaturated);
                                                                                                       let options_Niacin = {
-                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                         endDate: new Date().toISOString(),
                                                                                                         unit: "gram",
                                                                                                         type: "Niacin"
@@ -353,7 +445,7 @@ console.log('----------_>', val_permissoin)
                                                                                                           console.log("Nutrition Niacin==>");
                                                                                                           console.log(results_niacin);
                                                                                                           let options_PantothenicAcid = {
-                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                             endDate: new Date().toISOString(),
                                                                                                             unit: "gram",
                                                                                                             type: "PantothenicAcid"
@@ -367,7 +459,7 @@ console.log('----------_>', val_permissoin)
                                                                                                               console.log("Nutrition PantothenicAcid==>");
                                                                                                               console.log(results_pantothenicAcid);
                                                                                                               let options_Phosphorus = {
-                                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                 endDate: new Date().toISOString(),
                                                                                                                 unit: "gram",
                                                                                                                 type: "Phosphorus"
@@ -381,7 +473,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                   console.log("Nutrition Phosphorus==>");
                                                                                                                   console.log(results_phosphorus);
                                                                                                                   let options_FatPolyunsaturated = {
-                                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                     endDate: new Date().toISOString(),
                                                                                                                     unit: "gram",
                                                                                                                     type: "FatPolyunsaturated"
@@ -395,7 +487,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                       console.log("Nutrition FatPolyunsaturated==>");
                                                                                                                       console.log(results_polyunsaturatedFat);
                                                                                                                       let options_Potassium = {
-                                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                         endDate: new Date().toISOString(),
                                                                                                                         unit: "gram",
                                                                                                                         type: "Potassium"
@@ -409,7 +501,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                           console.log("Nutrition Potassium==>");
                                                                                                                           console.log(results_potassium);
                                                                                                                           let options_Protein = {
-                                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                             endDate: new Date().toISOString(),
                                                                                                                             unit: "gram",
                                                                                                                             type: "Protein"
@@ -423,7 +515,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                               console.log("Nutrition Protein==>");
                                                                                                                               console.log(results_protein);
                                                                                                                               let options_Riboflavin = {
-                                                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                 endDate: new Date().toISOString(),
                                                                                                                                 unit: "gram",
                                                                                                                                 type: "Riboflavin"
@@ -437,7 +529,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                   console.log("Nutrition Riboflavin==>");
                                                                                                                                   console.log(results_riboflavin);
                                                                                                                                   let options_FatSaturated = {
-                                                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                     endDate: new Date().toISOString(),
                                                                                                                                     unit: "gram",
                                                                                                                                     type: "FatSaturated"
@@ -451,7 +543,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                       console.log("Nutrition FatSaturated==>");
                                                                                                                                       console.log(results_fatSaturated);
                                                                                                                                       let options_Selenium = {
-                                                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                         endDate: new Date().toISOString(),
                                                                                                                                         unit: "gram",
                                                                                                                                         type: "Selenium"
@@ -465,7 +557,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                           console.log("Nutrition Selenium==>");
                                                                                                                                           console.log(results_selenium);
                                                                                                                                           let options_Sodium = {
-                                                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                             endDate: new Date().toISOString(),
                                                                                                                                             unit: "gram",
                                                                                                                                             type: "Sodium"
@@ -479,7 +571,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                               console.log("Nutrition Sodium==>");
                                                                                                                                               console.log(results_sodium);
                                                                                                                                               let options_Thiamin = {
-                                                                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                 endDate: new Date().toISOString(),
                                                                                                                                                 unit: "gram",
                                                                                                                                                 type: "Thiamin"
@@ -493,7 +585,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                   console.log("Nutrition Thiamin==>");
                                                                                                                                                   console.log(results_thiamin);
                                                                                                                                                   let options_FatTotal = {
-                                                                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                     endDate: new Date().toISOString(),
                                                                                                                                                     unit: "gram",
                                                                                                                                                     type: "FatTotal"
@@ -507,7 +599,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                       console.log("Nutrition FatTotal==>");
                                                                                                                                                       console.log(results_fatTotal);
                                                                                                                                                       let options_VitaminA = {
-                                                                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                         endDate: new Date().toISOString(),
                                                                                                                                                         unit: "gram",
                                                                                                                                                         type: "VitaminA"
@@ -521,7 +613,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                           console.log("Nutrition VitaminA==>");
                                                                                                                                                           console.log(results_vitaminA);
                                                                                                                                                           let options_VitaminB12 = {
-                                                                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                             endDate: new Date().toISOString(),
                                                                                                                                                             unit: "gram",
                                                                                                                                                             type: "VitaminB12"
@@ -535,7 +627,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                               console.log("Nutrition VitaminB12==>");
                                                                                                                                                               console.log(results_vatiaminB12);
                                                                                                                                                               let options_VitaminB6 = {
-                                                                                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                 endDate: new Date().toISOString(),
                                                                                                                                                                 unit: "gram",
                                                                                                                                                                 type: "VitaminB6"
@@ -549,7 +641,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                   console.log("Nutrition VitaminB6==>");
                                                                                                                                                                   console.log(results_vitaminB6);
                                                                                                                                                                   let options_VitaminC = {
-                                                                                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                     endDate: new Date().toISOString(),
                                                                                                                                                                     unit: "gram",
                                                                                                                                                                     type: "VitaminC"
@@ -563,7 +655,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                       console.log("Nutrition VitaminC==>");
                                                                                                                                                                       console.log(results_vitaminC);
                                                                                                                                                                       let options_VitaminD = {
-                                                                                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                         endDate: new Date().toISOString(),
                                                                                                                                                                         unit: "gram",
                                                                                                                                                                         type: "VitaminD"
@@ -577,7 +669,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                           console.log("Nutrition VitaminD==>");
                                                                                                                                                                           console.log(results_vitaminD);
                                                                                                                                                                           let options_VitaminE = {
-                                                                                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                             endDate: new Date().toISOString(),
                                                                                                                                                                             unit: "gram",
                                                                                                                                                                             type: "VitaminE"
@@ -591,7 +683,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                               console.log("Nutrition VitaminE==>");
                                                                                                                                                                               console.log(results_vitaminE);
                                                                                                                                                                               let options_VitaminK = {
-                                                                                                                                                                                startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                                startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                                 endDate: new Date().toISOString(),
                                                                                                                                                                                 unit: "gram",
                                                                                                                                                                                 type: "VitaminK"
@@ -605,7 +697,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                                   console.log("Nutrition VitaminK==>");
                                                                                                                                                                                   console.log(results_vitaminK);
                                                                                                                                                                                   let options_Zinc = {
-                                                                                                                                                                                    startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                                    startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                                     endDate: new Date().toISOString(),
                                                                                                                                                                                     unit: "gram",
                                                                                                                                                                                     type: "Zinc"
@@ -619,7 +711,7 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                                       console.log("Nutrition Zinc==>");
                                                                                                                                                                                       console.log(results_zinc);
                                                                                                                                                                                       let options_Water = {
-                                                                                                                                                                                        startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                                        startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                                         endDate: new Date().toISOString(),
                                                                                                                                                                                         unit: "gram",
                                                                                                                                                                                         type: "Water"
@@ -633,9 +725,8 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                                           console.log("Nutrition Water==>");
                                                                                                                                                                                           console.log(results_water);
                                                                                                                                                                                           let options_EnergyConsumed = {
-                                                                                                                                                                                            startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+                                                                                                                                                                                            startDate: new Date(new Date(last_logged_time).setHours(0,0,0)).toISOString(),
                                                                                                                                                                                             endDate: new Date().toISOString(),
-                                                                                                                                                                                            unit: "gram",
                                                                                                                                                                                             type: "EnergyConsumed"
                                                                                                                                                                                           };
                                                                                                                                                                                           AppleHealthKit.getNutritionSamples(
@@ -651,11 +742,10 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                                                 HeartRate: results_heartRate.length > 0 ? results_heartRate : null,
                                                                                                                                                                                                 RestingHeartRate: results_restingHeartRate.length > 0 ? results_restingHeartRate : null,
                                                                                                                                                                                                 HeartRateVariability: results_heartRateVariability.length > 0 ? results_heartRateVariability : null,
-                                                                                                                                                                                                Steps: results_steps,
-                                                                                                                                                                                                TotalCalories: results_activeEnergy,
-                                                                                                                                                                                                WalkingRunning: results_distanceWalkingRunning,
+                                                                                                                                                                                                Steps: results_steps? results_steps : null ,
+                                                                                                                                                                                                TotalCalories: results_activeEnergy ? results_activeEnergy : null,
+                                                                                                                                                                                                WalkingRunning: results_distanceWalkingRunning ? results_distanceWalkingRunning : null,
                                                                                                                                                                                                 Sleep: results_sleep.length > 0 ? results_sleep : null,
-                                                                                                                                                                                                TotalFat: results_totalFat.length > 0 ? results_totalFat : null,
                                                                                                                                                                                                 Biotin: results_Biotin.length > 0 ? results_Biotin : null,
                                                                                                                                                                                                 Caffeine: results_caffeine.length > 0 ? results_caffeine : null,
                                                                                                                                                                                                 Calcium: results_calcium.length > 0 ? results_calcium : null,
@@ -693,21 +783,24 @@ console.log('----------_>', val_permissoin)
                                                                                                                                                                                                 VitaminK: results_vitaminK.length > 0 ? results_vitaminK : null,
                                                                                                                                                                                                 Zinc: results_zinc.length > 0 ? results_zinc : null,
                                                                                                                                                                                                 Water: results_water.length > 0 ? results_water : null,
-                                                                                                                                                
                                                                                                                                                                                             };
-                                                                                                                                                                                            console.log('###=>', variables);
-                                                                                                                                                                                            API.graphql({
-                                                                                                                                                                                              query: logAppleDataMutation,
-                                                                                                                                                                                              variables: {
-                                                                                                                                                                                                input: variables
-                                                                                                                                                                                              }
-                                                                                                                                                                                            })
-                                                                                                                                                                                              .then(data => {
-                                                                                                                                                                                                console.log('%%%%%%%%%=>', data)
+                                                                                                                                                                                            indexSum += 1;
+                                                                                                                                                                                            if (indexSum == 46) {
+                                                                                                                                                                                              console.log('###=>', variables);
+                                                                                                                                                                                              API.graphql({
+                                                                                                                                                                                                query: logAppleDataMutation,
+                                                                                                                                                                                                variables: {
+                                                                                                                                                                                                  input: variables
+                                                                                                                                                                                                }
                                                                                                                                                                                               })
-                                                                                                                                                                                              .catch(err => {
-                                                                                                                                                                                                console.log(err);
-                                                                                                                                                                                              })
+                                                                                                                                                                                                .then(data => {
+                                                                                                                                                                                                  console.log('%%%%%%%%%=>', data)
+                                                                                                                                                                                                })
+                                                                                                                                                                                                .catch(err => {
+                                                                                                                                                                                                  console.log(err);
+                                                                                                                                                                                                })
+                                                                                                                                                                                            }                                                                                                                                                                        
+                                                                                                                                                                                            
                                                                                                                                                                                             }
                                                                                                                                                                                           ); 
                                                                                                                                                                                         }
@@ -781,8 +874,6 @@ console.log('----------_>', val_permissoin)
                                                 }
                                               );
                                             }
-                                          );
-                                        }
                                       );
                                     }
                                   );
@@ -802,32 +893,7 @@ console.log('----------_>', val_permissoin)
       );
     });
   });
-  
+  } else {
+    return
+  }
 }
-
-function onGetData(event: any){
-  console.log("HealthEmitterHandler.Observer", event);
-  // const { workouts } = event;
-  // this.sendToBackEnd(workouts);
-};
-
-// class EmitterHandler {
-//   subscription: any
-
-//   subscribe() {
-//     AppleHealthKit.setObserver({ type: "Height" });
-//     this.subscription = NativeAppEventEmitter.addListener("observer", this.onGetData);
-//     console.log("subscribeEmitter", this.subscription);
-//   }
-//   unsubscribe() {
-//     this.subscription.remove();
-//   }
-//   onGetData = (event: any) => {
-//     console.log("HealthEmitterHandler.Observer", event);
-//     // const { workouts } = event;
-//     // this.sendToBackEnd(workouts);
-//   };
-
-// }
-
-// export default EmitterHandler;

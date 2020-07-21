@@ -18,12 +18,18 @@ import co.swasth.cbtcompanion.R;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 // @react-native-community/netinfo
 import com.reactnativecommunity.netinfo.NetInfoPackage;
+// @react-native-community/toolbar-android
+import com.reactnativecommunity.toolbarandroid.ReactToolbarPackage;
 // amazon-cognito-identity-js
 import com.amazonaws.RNAWSCognitoPackage;
 // bugsnag-react-native
 import com.bugsnag.BugsnagReactNative;
 // lottie-react-native
 import com.airbnb.android.react.lottie.LottiePackage;
+// react-native-background-fetch
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
+// react-native-background-task
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 // react-native-document-picker
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
 // react-native-gesture-handler
@@ -113,9 +119,12 @@ public class PackageList {
       new MainReactPackage(mConfig),
       new AsyncStoragePackage(),
       new NetInfoPackage(),
+      new ReactToolbarPackage(),
       new RNAWSCognitoPackage(),
       BugsnagReactNative.getPackage(),
       new LottiePackage(),
+      new RNBackgroundFetchPackage(),
+      new BackgroundTaskPackage(),
       new DocumentPickerPackage(),
       new RNGestureHandlerPackage(),
       new GoogleFitPackage(BuildConfig.APPLICATION_ID),

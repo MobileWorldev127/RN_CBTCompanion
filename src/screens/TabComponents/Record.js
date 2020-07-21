@@ -367,7 +367,7 @@ class AnimatedRecordItem extends Component {
                           .locked !== false && !this.props.isSubscribed ? (
                         <Icon
                           family={"Ionicons"}
-                          name={"ios-lock"}
+                          name={"ios-lock-closed-outline"}
                           color="#ffc107"
                           backgroundColor="transparent"
                         />
@@ -379,7 +379,7 @@ class AnimatedRecordItem extends Component {
                         >
                           <TouchableOpacity onPress={this.props.onFavPress}>
                             <Icon
-                              name="md-heart-empty"
+                              name="md-heart-outline"
                               size={24}
                               style={{ marginRight: 8 }}
                               color={"red"}

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import React, { Component } from "react";
 import {
   BackHandler,
@@ -39,6 +40,7 @@ import {
 import OfflineModal, { setOfflineModal } from "../components/OfflineModal";
 import "react-native-gesture-handler";
 import UpdateModal from "../screens/UpdateModal";
+let moment = require("moment");
 
 let SlideFromRight = (index, position, width) => {
   const inputRange = [index - 1, index, index + 1];
@@ -116,7 +118,7 @@ class AppWithNavigationState extends Component {
     this.setState({ showAlert: false });
   };
 
-  componentDidMount() {
+  componentDidMount = async() => {
     this.props.initializePremiumContent();
     configure(token => {
       console.log(token);
@@ -137,6 +139,8 @@ class AppWithNavigationState extends Component {
         // }
       }
       this.setState({ appState: nextState });
+      console.log("APP HAS COME TO BACKGROUND");
+      AsyncStorage.setItem('LAST_BACKGROUND_TIME', moment().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"));
     });
   }
 

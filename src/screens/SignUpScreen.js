@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   NativeModules,
-  LayoutAnimation,
+  Image,
   Keyboard
 } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -279,11 +279,14 @@ class SignupScreen extends Component<{}, {}> {
                   onPress={() => this.showPolicy(false)}
                   style={styles.policyClose}
                 >
-                  <Icon
-                    name="ios-close-circle-outline"
-                    size={28}
-                    color="white"
-                    style={styles.icon}
+                  <Image
+                    source={require("../src/ios_lock.png")}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      tintColor: 'white'
+                    }}
+                    resizeMode="contain"
                   />
                 </TouchableOpacity>
               </View>
@@ -413,7 +416,7 @@ class SignupScreen extends Component<{}, {}> {
         </View>
 
         <View style={styles.singleInput}>
-          <Icon name="ios-lock" size={28} color={"#fff"} style={styles.icon} />
+          <Icon name="ios-lock-closed-outline" size={28} color={"#fff"} style={styles.icon} />
           <TextInput
             style={[TextStyles.SubHeaderBold, styles.input]}
             onChangeText={password => (this.password = password.trim())}

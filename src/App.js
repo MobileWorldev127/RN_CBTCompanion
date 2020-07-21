@@ -14,8 +14,8 @@ import {
 } from "./utils/NetworkUtils";
 import AsyncStorage from "@react-native-community/async-storage";
 import { getEntriesComponent } from "./screens/EntriesScreen";
-import bugsnagClient from "./utils/Bugsnag";
 import {EmiiterHandlerSubscribe} from './screens/settings/EventEmitter'
+import bugsnagClient from "./utils/Bugsnag";
 
 Amplify.configure(getEnvVars().awsConfig);
 
@@ -85,7 +85,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // EmiiterHandlerSubscribe();
+    console.log('123123123')
+    EmiiterHandlerSubscribe();
     addNetworkChangeListener();
   }
 

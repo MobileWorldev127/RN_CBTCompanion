@@ -155,7 +155,7 @@ export default class MeditationPlay extends Component {
           }}
         >
           <Icon
-            name="md-heart-empty"
+            name="md-heart-outline"
             size={24}
             style={{ marginRight: 8 }}
             color={"#fff"}

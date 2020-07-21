@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 export const getTimeLineViewQuery = gql`
   query getTimeLineView($startDate: String!, $endDate: String!) {
@@ -30,91 +30,237 @@ export const getTimeLineViewQuery = gql`
       }
       exercises {
         id
+        dateTime
+        module
         title
+        sequence
+        description
         color
-      }
-      predictions {
-        id
-        title
-        color
-        followupDate
-        followCompleted
+        example {
+          key
+          value
+        }
+        default
         details {
           question
           type
+          placeholder
+          image
+          color
+          source
+          title
           value {
             intValues
             stringValues
+            booleanValues
             keyValues {
               key {
+                id
                 name
+                description
                 color
+                description
               }
               value
             }
           }
-          details {
-            question
-            type
-            value {
-              intValues
-              stringValues
-              keyValues {
-                key {
-                  name
-                  color
-                }
-                value
-              }
-            }
+          scale {
+            min
+            max
+            step
+            start
+            placeholder
           }
+          options {
+            color
+            id
+            name
+            value
+          }
+          icon
         }
+        image
+        dateTime
+        instructions
+        isFollowUp
+        followCompleted
+        followupDate
       }
       challengeExercises {
         id
+        dateTime
+        module
         title
+        sequence
+        description
         color
-        followupDate
-        followCompleted
+        example {
+          key
+          value
+        }
+        default
         details {
           question
           type
+          placeholder
+          image
+          color
+          source
+          title
           value {
             intValues
             stringValues
+            booleanValues
             keyValues {
               key {
+                id
                 name
+                description
                 color
+                description
               }
               value
             }
           }
+          scale {
+            min
+            max
+            step
+            start
+            placeholder
+          }
+          options {
+            color
+            id
+            name
+            value
+          }
+          icon
+        }
+        image
+        dateTime
+        instructions
+        isFollowUp
+        followCompleted
+        followupDate
+      }
+      predictions {
+        id
+        module
+        title
+        sequence
+        description
+        color
+        example {
+          key
+          value
+        }
+        default
+        details {
+          question
+          type
+          placeholder
+          image
+          color
+          source
+          title
+          value {
+            intValues
+            stringValues
+            booleanValues
+            keyValues {
+              key {
+                id
+                name
+                description
+                color
+                icon
+              }
+              value
+            }
+          }
+          scale {
+            min
+            max
+            step
+            start
+            placeholder
+          }
+          options {
+            color
+            id
+            name
+            value
+          }
           details {
             question
             type
+            placeholder
+            image
+            color
+            source
+            title
             value {
               intValues
               stringValues
+              booleanValues
               keyValues {
                 key {
+                  id
                   name
+                  description
                   color
+                  icon
                 }
                 value
               }
             }
+            scale {
+              min
+              max
+              step
+              start
+              placeholder
+            }
+            options {
+              color
+              id
+              name
+              value
+            }
+            icon
           }
+          icon
         }
-      }
-      practiceIdeas {
-        id
-        title
+        image
+        entryDate
+        dateTime
+        instructions
+        isFollowUp
+        followCompleted
+        followupDate
       }
       meditations {
         id
-        totalMinutes
+        userId
+        app
         title
+        image
+        startDate
+        endDate
+        totalMinutes
+      }
+      practiceIdeas {
+        id
+        userId
+        practiceIdeaId
+        type
+        date
+        timestamp
+        sequence
+        instruction
+        title
+        lesson
       }
     }
   }
@@ -155,6 +301,10 @@ export const getSummaryTimeLineViewQuery = gql`
           value
           unit
         }
+        steps {
+          value
+          unit
+        }
       }
       sleep {
         totalMinutes
@@ -167,6 +317,8 @@ export const getSummaryTimeLineViewQuery = gql`
       heartRate {
         state
         value
+        valueAtRest
+        variabilty
       }
       mindfulnessMinutes {
         totalMinutes

@@ -10,6 +10,7 @@ import {
   Linking,
   NativeAppEventEmitter,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from '../../common/icons';
 import { NavigationActions } from 'react-navigation';
 import Header from '../../components/Header';
@@ -18,17 +19,23 @@ import { showMessage } from 'react-native-flash-message';
 import ThemeStyle from '../../styles/ThemeStyle';
 import qs from 'qs';
 import config from './../../constants/AppConfigs';
-import { getAmplifyConfig, getEnvVars } from "./../../constants";
+import { getAmplifyConfig, getEnvVars } from './../../constants';
 import AppleHealthKit from 'rn-apple-healthkit';
 import GoogleFit, { Scopes } from 'react-native-google-fit';
-import Amplify from "aws-amplify";
-import { API } from "aws-amplify";
-import { logAppleDataMutation, upsertHealthKitSourceSettings } from "../../queries/addEntry";
-import { setAppleHealthSettings } from "../../actions/DevicesSettings";
-import {EmiiterHandlerSubscribe} from '../../screens/settings/EventEmitter'
+import Amplify from 'aws-amplify';
+import { API } from 'aws-amplify';
+import {
+  logAppleDataMutation,
+  upsertHealthKitSourceSettings,
+} from '../../queries/addEntry';
+import { setAppleHealthSettings } from '../../actions/DevicesSettings';
+import {
+  EmiiterHandlerSubscribe,
+  EmiiterHandlerSubscribe1,
+} from '../../screens/settings/EventEmitter';
+import { getHealthKitSourceSettings } from '../../queries/getHealthKitSourceSettings';
 
-
-let moment = require("moment");
+let moment = require('moment');
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -46,7 +53,7 @@ function OAuth(client_id, cb) {
   const oauthurl = `https://www.fitbit.com/oauth2/authorize?${qs.stringify({
     client_id,
     response_type: 'token',
-    scope: 'heartrate activity activity profile sleep',
+    scope: 'heartrate activity nutrition profile sleep weight',
     redirect_uri: 'CBTCompanion://fit',
     expires_in: '31536000',
   })}`;
@@ -71,32 +78,125 @@ class DeviceListSceen extends Component {
           read: ['Walking'],
         },
       },
-
-      // permissionOptions: {"permissions": {"read": ["Height", "StepCount", "DistanceWalkingRunning", "SleepAnalysis", "HeartRate", "RestingHeartRate", "HeartRateVariability", "MindfulSession", "Biotin", "Caffeine", "Calcium", "Carbohydrates", "Chloride", "Cholesterol", "Copper", "EnergyConsumed", "FatMonounsaturated", "FatPolyunsaturated", "FatSaturated", "FatTotal", "Fiber", "Folate", "Iodine", "Iron", "Magnesium", "Manganese", "Molybdenum", "Niacin", "PantothenicAcid", "Phosphorus", "Potassium", "Protein", "Riboflavin", "Selenium", "Sodium", "Sugar", "Thiamin", "VitaminA", "VitaminB12", "VitaminB6", "VitaminC", "VitaminD", "VitaminE", "VitaminK", "Zinc", "Water"]}},
-
       Mindfulness: [],
       HeartRate: [],
-      Steps:  {},
+      Steps: {},
       Sleep: [],
-      TotalFat: []
+      TotalFat: [],
+      activitySetting: '',
+      sleepSetting: '',
+      heartSetting: '',
+      mindfulnessSetting: '',
+      nutritionSetting: '',
     };
+  }
+
+  componentDidMount = async() => {
+    this.props.setLoading(true);
+    Amplify.configure(
+      getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
+    );
+    API.graphql({
+      query: getHealthKitSourceSettings,
+    })
+      .then(data => {
+        this.props.setLoading(false);
+        data.data.getHealthKitSourceSettings.map(item => {
+          if (item.sourceType == 'Exercise') {
+            this.setState({ activitySetting: item.source });
+          }
+          if (item.sourceType == 'Sleep') {
+            this.setState({ sleepSetting: item.source });
+          }
+          if (item.sourceType == 'HeartRate') {
+            this.setState({ heartSetting: item.source });
+          }
+          if (item.sourceType == 'MindfulnessMinutes') {
+            this.setState({ mindfulnessSetting: item.source });
+          }
+          if (item.sourceType == 'Nutrition') {
+            this.setState({ nutritionSetting: item.source });
+          }
+        });
+      })
+      .catch(err => {
+        this.props.setLoading(false);
+        console.log(err);
+      });
+      const device = await AsyncStorage.getItem('DEVICE');
+      if (device == 'APPLEHEALTH') {
+        this.setState({ isApple: true })
+      }
+
+      const device1 = await AsyncStorage.getItem('DEVICE_FITBIT');
+      if (device == 'FITBIT') {
+        this.setState({ isFitbit: true })
+      }
   }
 
   goack = () => this.props.navigation.dispatch(NavigationActions.back());
 
   clickedDevice(val) {
     if (val === 'google_fit') {
-      GoogleFit.checkIsAuthorized();
+      // GoogleFit.checkIsAuthorized();
       const options = {
         scopes: [
-          Scopes.FITNESS_ACTIVITY_READ_WRITE,
-          Scopes.FITNESS_BODY_READ_WRITE,
+          Scopes.FITNESS_ACTIVITY_READ,
+          Scopes.FITNESS_LOCATION_READ,
+          Scopes.FITNESS_BODY_READ,
+          Scopes.FITNESS_NUTRITION_READ,
+          Scopes.FITNESS_BLOOD_PRESSURE_READ,
+          Scopes.FITNESS_BLOOD_GLUCOSE_READ,
+          Scopes.FITNESS_OXYGEN_SATURATION_READ,
+          Scopes.FITNESS_BODY_TEMPERATURE_READ,
+          Scopes.FITNESS_REPRODUCTIVE_HEALTH_READ
         ],
       };
       GoogleFit.authorize(options)
         .then(authResult => {
           if (authResult.success) {
-            console.log(authResult);
+            const options1 = {
+              startDate: new Date(
+                new Date().setHours(0, 0, 0, 0)
+              ).toISOString(),
+              endDate: new Date().toISOString(),
+            };
+            GoogleFit.getHeartRateSamples(
+              options1,
+              (error, results_heartRate) => {
+                console.log('Heart Rate >>> ', results_heartRate);
+                GoogleFit.getDailyNutritionSamples(
+                  options1,
+                  (error, results_Nutrition) => {
+                    // console.log("Nutrition >>>", results_Nutrition);
+                    GoogleFit.getDailyStepCountSamples(options1)
+                      .then(results_dailyStepsCount => {
+                        // console.log("Daily steps >>> ", results_dailyStepsCount);
+                        results_dailyStepsCount.map(item => {
+                          console.log(item);;
+                        });;
+                        GoogleFit.getSleepData(
+                          options1,
+                          (isError, result_sleep) => {
+                            // console.log('sleep result', isError, result_sleep);
+                            let variables = {
+                              HeartRate: results_heartRate,
+                              Nutrition: results_Nutrition,
+                              DailyStepsCount: results_dailyStepsCount,
+                              Sleep: result_sleep,
+                            };;
+                            console.log("@@");;
+                            console.log(variables);;
+                          }
+                        );
+                      })
+                      .catch(err => {
+                        console.warn(err);
+                      });
+                  }
+                );
+              }
+            );
           } else {
             // dispatch("AUTH_DENIED", authResult.message);
             console.log(authResult);
@@ -112,180 +212,146 @@ class DeviceListSceen extends Component {
         isGoogleFit: true,
       });
     } else if (val === 'fitbit') {
-      let dateTime = moment().format('YYYY-MM-DD')
+      let dateTime = moment().format('YYYY-MM-DD');
       OAuth(config.Fitbit.client_id, access_token => {
-        fetch('https://api.fitbit.com/1.2/user/-/sleep/date/' + dateTime + '.json', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-          // body: `root=auto&path=${Math.random()}`
-        })
+        fetch(
+          'https://api.fitbit.com/1.2/user/-/sleep/date/' + dateTime + '.json',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+            // body: `root=auto&path=${Math.random()}`
+          }
+        )
           .then(res => res.json())
           .then(res => {
             console.log(`res: ${JSON.stringify(res)}`);
-            
+
             Amplify.configure(
               getAmplifyConfig(getEnvVars().SWASTH_COMMONS_ENDPOINT_URL)
             );
             API.graphql({
               query: upsertHealthKitSourceSettings,
               variables: {
-                settings: {
-                  sourceType: "HeartRate",
-                  source: "FITBIT"
-                },
-                fitbitToken: access_token
-              }
+                settings: [
+                  {
+                    sourceType: 'Nutrition',
+                    source: 'FITBIT',
+                  },
+                  {
+                    sourceType: 'Exercise',
+                    source: 'FITBIT',
+                  },
+                  {
+                    sourceType: 'Sleep',
+                    source: 'FITBIT',
+                  },
+                  {
+                    sourceType: 'HeartRate',
+                    source: 'FITBIT',
+                  },
+                  {
+                    sourceType: 'MindfulnessMinutes',
+                    source: 'FITBIT',
+                  },
+                ],
+                fitbitToken: access_token,
+              },
             })
               .then(data => {
+                console.log(
+                  'Fitbit result : ',
+                  data.data.upsertHealthKitSourceSettings
+                );
                 this.setState({
                   isApple: false,
                   isFitbit: true,
                   isGoogleFit: false,
                   token: access_token,
                 });
+                AsyncStorage.setItem('DEVICE_FITBIT', 'FITBIT')
               })
               .catch(err => {
                 console.log(err);
-              })
-
-            
+              });
           })
           .catch(err => {
             console.error('Error: ', err);
           });
       });
     } else {
-      if (Platform.OS === 'ios') {
-        const { sourceSettingsList } = this.props;
-        console.log('SourceSettings ==>', sourceSettingsList)
-        let arr = [];
-        if (
-          sourceSettingsList &&
-          sourceSettingsList.activitySetting == 'Apple'
-        ) {
-          arr.push('StepCount', 'DistanceWalkingRunning');
-        }
-        if (sourceSettingsList && sourceSettingsList.sleepSetting == 'Apple') {
-          arr.push('SleepAnalysis');
-        }
-        if (sourceSettingsList && sourceSettingsList.heartSetting == 'Apple') {
-          arr.push('HeartRate', 'RestingHeartRate', 'HeartRateVariability');
-        }
-        if (
-          sourceSettingsList &&
-          sourceSettingsList.mindfulnessSetting == 'Apple'
-        ) {
-          arr.push('MindfulSession');
-        }
-        if (
-          sourceSettingsList &&
-          sourceSettingsList.nutritionSetting == 'Apple'
-        ) {
-          console.log('#####')
-          arr.push(
-            'Biotin',
-            'Caffeine',
-            'Calcium',
-            'Carbohydrates',
-            'Chloride',
-            'Cholesterol',
-            'Copper',
-            'EnergyConsumed',
-            'FatMonounsaturated',
-            'FatPolyunsaturated',
-            'FatSaturated',
-            'FatTotal',
-            'Fiber',
-            'Folate',
-            'Iodine',
-            'Iron',
-            'Magnesium',
-            'Manganese',
-            'Molybdenum',
-            'Niacin',
-            'PantothenicAcid',
-            'Phosphorus',
-            'Potassium',
-            'Protein',
-            'Riboflavin',
-            'Selenium',
-            'Sodium',
-            'Sugar',
-            'Thiamin',
-            'VitaminA',
-            'VitaminB12',
-            'VitaminB6',
-            'VitaminC',
-            'VitaminD',
-            'VitaminE',
-            'VitaminK',
-            'Zinc',
-            'Water'
-          );
-        }
-        if (arr.length == 0) {
-          alert('You have to select permission at Source Settings')
-          return;
-        }
-        let optionsPermission = {
-          permissions: {
-            read: arr,
-          },
-        };
-        this.setState({ permissionOptions: optionsPermission });
-
-        this.props.setAppleHealthSettings(optionsPermission);
-        
-        EmiiterHandlerSubscribe(optionsPermission);
-
-
-            // let options_EnergyConsumed = {
-            //   startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-            //   endDate: new Date().toISOString(),
-            //   unit: "gram",
-            //   type: "EnergyConsumed"
-            // };
-            // AppleHealthKit.getNutritionSamples(
-            //   options_EnergyConsumed,
-            //   (err: Object, results: Object) => {
-            //     if (err) {
-            //       return;
-            //     }
-            //     console.log("Nutrition EnergyConsumed==>");
-            //     console.log(results);
-            //   }
-            // );
-
-            // let options_Water = {
-            //   startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-            //   endDate: new Date().toISOString(),
-            //   unit: "gram",
-            //   type: "Water"
-            // };
-            // AppleHealthKit.getNutritionSamples(
-            //   options_Water,
-            //   (err: Object, results: Object) => {
-            //     if (err) {
-            //       return;
-            //     }
-            //     console.log("Nutrition Water==>");
-            //     console.log(results);
-            //   }
-            // );
-
-      } else {
-        showMessage({
-          message: 'You have to click Apple Health button on iPhone device',
-          type: 'warning',
-        });
+      let arr = [];
+      arr.push(
+        'Biotin',
+        'Caffeine',
+        'Calcium',
+        'Carbohydrates',
+        'Chloride',
+        'Cholesterol',
+        'Copper',
+        'EnergyConsumed',
+        'FatMonounsaturated',
+        'FatPolyunsaturated',
+        'FatSaturated',
+        'FatTotal',
+        'Fiber',
+        'Folate',
+        'Iodine',
+        'Iron',
+        'Magnesium',
+        'Manganese',
+        'Molybdenum',
+        'Niacin',
+        'PantothenicAcid',
+        'Phosphorus',
+        'Potassium',
+        'Protein',
+        'Riboflavin',
+        'Selenium',
+        'Sodium',
+        'Sugar',
+        'Thiamin',
+        'VitaminA',
+        'VitaminB12',
+        'VitaminB6',
+        'VitaminC',
+        'VitaminD',
+        'VitaminE',
+        'VitaminK',
+        'Zinc',
+        'Water',
+        'StepCount',
+        'DistanceWalkingRunning',
+        'SleepAnalysis',
+        'HeartRate',
+        'RestingHeartRate',
+        'HeartRateVariability',
+        'MindfulSession'
+      );
+      if (arr.length == 0) {
+        alert('You have to select permission at Source Settings');
+        return;
       }
+      let optionsPermission = {
+        permissions: {
+          read: arr,
+        },
+      };
+      this.setState({ 
+        permissionOptions: optionsPermission,
+        isApple: true 
+      });
+      this.props.setAppleHealthSettings(optionsPermission);
+
+      AsyncStorage.setItem('DEVICE', 'APPLEHEALTH');
+      EmiiterHandlerSubscribe(optionsPermission);
     }
   }
 
-  render() {
+  render(){
     const { isApple, isFitbit, isGoogleFit } = this.state;
+    // const device = await AsyncStorage.getItem('DEVICE');
     return (
       <View style={ThemeStyle.pageContainer}>
         <Header
@@ -315,17 +381,26 @@ class DeviceListSceen extends Component {
           goBack={() => this.props.navigation.goBack(null)}
         />
         <View style={styles.mainView}>
-          <TouchableOpacity onPress={() => this.clickedDevice('health')}>
-            <View style={isApple ? styles.clickedView : styles.unClickedView}>
-              <Image
-                source={require('../../assets/images/redesign/applehealth_logo.png')}
-                style={styles.iconImg}
-              />
-              <Text style={isApple ? styles.clickedTxt : styles.unClickedTxt}>
-                Apple Health
-              </Text>
-            </View>
-          </TouchableOpacity>
+          {Platform.OS === 'ios' ? (
+            <TouchableOpacity onPress={() => this.clickedDevice('health')}>
+              <View style={isApple ? styles.clickedView : styles.unClickedView}>
+                <Image
+                  source={require('../../assets/images/redesign/applehealth_logo.png')}
+                  style={styles.iconImg}
+                />
+                <Text style={isApple ? styles.clickedTxt : styles.unClickedTxt}>
+                  Apple Health
+                </Text>
+                {
+                  isApple ? 
+                  <Image
+                    source={require('../../src/check.png')}
+                    style={styles.checkImg}
+                  /> : null
+                }
+              </View>
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity onPress={() => this.clickedDevice('fitbit')}>
             <View style={isFitbit ? styles.clickedView : styles.unClickedView}>
               <Image
@@ -335,6 +410,13 @@ class DeviceListSceen extends Component {
               <Text style={isFitbit ? styles.clickedTxt : styles.unClickedTxt}>
                 Fitbit
               </Text>
+              {
+                isFitbit ? 
+                <Image
+                  source={require('../../src/check.png')}
+                  style={styles.checkImg}
+                /> : null
+              }
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => this.clickedDevice('google_fit')}>
@@ -407,6 +489,14 @@ const styles = StyleSheet.create({
     height: 30,
     resizeMode: 'contain',
   },
+  checkImg: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    position: 'absolute',
+    top: 10,
+    right: 10
+  }
 });
 
 const mapStateToProps = state => ({
@@ -415,7 +505,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setAppleHealthSettings: data => dispatch(setAppleHealthSettings(data))
+  setAppleHealthSettings: data => dispatch(setAppleHealthSettings(data)),
 });
 
 export default withSubscriptionActions(

@@ -6,7 +6,8 @@ import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
+  Image
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import LinearGradient from "react-native-linear-gradient";
@@ -299,7 +300,16 @@ class LoginScreen extends Component {
       </View>
 
       <View style={styles.singleInput}>
-        <Icon name="ios-lock" size={24} color={"#fff"} style={styles.icon} />
+        <Image
+          source={require("../src/ios_lock.png")}
+          style={{
+            width: 24,
+            height: 24,
+            tintColor: 'white'
+          }}
+          resizeMode="contain"
+        />
+        {/* <Icon name="ios-lock-closed-outline" size={24} color={"#fff"} style={styles.icon} /> */}
         <TextInput
           style={[TextStyles.SubHeaderBold, styles.input]}
           onChangeText={password => (this.password = password.trim())}
